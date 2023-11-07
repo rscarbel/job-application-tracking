@@ -1,6 +1,14 @@
 export const MAX_CHARACTERS = 10;
 
-export const getStatusColor = (status) => {
+type Status =
+  | "applied"
+  | "interview"
+  | "offer"
+  | "rejected"
+  | "passed"
+  | "accepted";
+
+export const getStatusColor = (status: Status): string => {
   switch (status) {
     case "applied":
       return "bg-blue-100";
@@ -19,7 +27,9 @@ export const getStatusColor = (status) => {
   }
 };
 
-export const payFrequencyOptions = [
+type PayFrequency = "hourly" | "weekly" | "biweekly" | "monthly" | "yearly";
+
+export const payFrequencyOptions: { label: string; value: PayFrequency }[] = [
   { label: "per hour", value: "hourly" },
   { label: "per week", value: "weekly" },
   { label: "biweekly", value: "biweekly" },
@@ -27,7 +37,7 @@ export const payFrequencyOptions = [
   { label: "per year", value: "yearly" },
 ];
 
-export const humanizedPayFrequency = {
+export const humanizedPayFrequency: { [K in PayFrequency]: string } = {
   hourly: "per hour",
   weekly: "per week",
   biweekly: "biweekly",
@@ -35,7 +45,7 @@ export const humanizedPayFrequency = {
   yearly: "per year",
 };
 
-export const prettifyPay = (pay) => {
+export const prettifyPay = (pay: number | string): string => {
   let payInteger = typeof pay === "number" ? pay : parseInt(pay);
 
   const prettifiedPay = new Intl.NumberFormat("en-US", {
@@ -50,19 +60,31 @@ export const prettifyPay = (pay) => {
   return prettifiedPay;
 };
 
-export const truncateText = (text, maxLength = MAX_CHARACTERS) => {
+export const truncateText = (
+  text: string,
+  maxLength: number = MAX_CHARACTERS
+): string => {
   if (!text) return text;
 
   if (text.length <= maxLength) return text;
   return `${text.substring(0, maxLength)}...`;
 };
 
+interface Column {
+  id: string;
+  applicationCardIds: string[];
+}
+
+interface MoveResult {
+  [key: string]: Column;
+}
+
 export const handleSameColumnMove = (
-  startColumn,
-  source,
-  destination,
-  draggableId
-) => {
+  startColumn: Column,
+  source: { index: number },
+  destination: { index: number },
+  draggableId: string
+): MoveResult => {
   const newTaskIds = Array.from(startColumn.applicationCardIds);
   newTaskIds.splice(source.index, 1);
   newTaskIds.splice(destination.index, 0, draggableId);
@@ -72,12 +94,12 @@ export const handleSameColumnMove = (
 };
 
 export const handleDifferentColumnMove = (
-  startColumn,
-  endColumn,
-  source,
-  destination,
-  draggableId
-) => {
+  startColumn: Column,
+  endColumn: Column,
+  source: { index: number },
+  destination: { index: number },
+  draggableId: string
+): MoveResult => {
   const newStartTaskIds = Array.from(startColumn.applicationCardIds);
   newStartTaskIds.splice(source.index, 1);
 

@@ -11,7 +11,7 @@ import { ProgressSpinner } from "primereact/progressspinner";
 import { updateCardStatus, updateCard, deleteCard } from "../network";
 import ColumnRenderer from "./column/ColumnRenderer";
 import EditCardFormModal from "../edit-card/EditCardFormModal";
-import { EditCardContext } from "./card/EditCardContext";
+import { EditCardContext } from "./card/EditCardContext.ts";
 import NoCards from "./NoCards";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
