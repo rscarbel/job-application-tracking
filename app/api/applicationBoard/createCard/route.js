@@ -7,7 +7,7 @@ import { reportError } from "@/app/api/reportError/reportError";
 export async function POST(request) {
   const {
     status,
-    applicationBoardId,
+    boardId,
     jobTitle,
     company,
     payAmount,
@@ -45,7 +45,7 @@ export async function POST(request) {
 
       const applicationBoard = await client.applicationBoard.findFirst({
         where: {
-          id: applicationBoardId,
+          id: boardId,
         },
       });
 

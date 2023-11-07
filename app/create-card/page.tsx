@@ -15,49 +15,84 @@ import { useRouter } from "next/router";
 
 const PLACEHOLDER_USER_ID = 1;
 
-const TODAY = new Date().toISOString();
+const TODAY: string = new Date().toISOString();
 
-const defaultFormData = {
-  applicationCardId: "",
-  applicationBoardId: 1,
+interface Company {
+  companyId: string;
+  name: string;
+}
+
+interface ChangeEvent {
+  target: {
+    name: string;
+    value: any;
+  };
+}
+
+interface FormData {
+  applicationCardId?: string;
+  boardId: number;
+  company: Company;
+  jobTitle: string;
+  jobDescription: string;
+  workMode: WorkMode;
+  payAmount: number;
+  payFrequency: PayFrequency;
+  currency: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  applicationLink: string;
+  applicationDate: string;
+  positionIndex: number;
+  notes: string;
+  status: ApplicationStatus;
+}
+
+const defaultFormData: FormData = {
+  applicationCardId: undefined,
   boardId: 1,
   company: {
-    companyId: "",
-    name: "",
+    companyId: undefined,
+    name: undefined,
   },
-  jobTitle: "",
-  description: "",
+  jobTitle: undefined,
+  jobDescription: undefined,
   workMode: WorkMode.onsite,
   payAmount: 0,
   payFrequency: PayFrequency.hourly,
   currency: "USD",
-  streetAddress: "",
-  city: "",
-  state: "",
+  streetAddress: undefined,
+  city: undefined,
+  state: undefined,
   country: "United States",
-  postalCode: "",
-  applicationLink: "",
+  postalCode: undefined,
+  applicationLink: undefined,
   applicationDate: TODAY,
   positionIndex: 0,
-  notes: "",
+  notes: undefined,
   status: ApplicationStatus.applied,
 };
 
-const CreateCard = () => {
-  const [formData, setFormData] = useState(defaultFormData);
-  const [loading, setLoading] = useState(false);
-  const [existingJobData, setExistingJobData] = useState(null);
+const CreateCard: React.FC = () => {
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [existingJobData, setExistingJobData] = useState<any>(null);
   const router = useRouter();
 
-  const toast = useRef();
-  const isDataValid = formData.company.name && formData.jobTitle;
+  const toast = useRef<Toast>(null);
+  const isDataValid: boolean = Boolean(
+    formData.company.name && formData.jobTitle
+  );
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const showError = (errorMessage) => {
+  const showError = (errorMessage: string) => {
     toast.current?.show({
       severity: "error",
       summary: "Error",
