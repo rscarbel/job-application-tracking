@@ -10,19 +10,19 @@ const BUTTON_STYLE_CLASSES =
 const menuItems = [
   {
     key: "board",
-    href: "/application-board/board",
+    href: "/board",
     label: "Board",
     iconClass: "pi pi-fw pi-home",
   },
   {
     key: "Create-Card",
-    href: "/application-board/create-card",
+    href: "/create-card",
     label: "Create Card",
     iconClass: "pi pi-fw pi-plus",
   },
   {
     key: "table",
-    href: "/application-board/table",
+    href: "/table",
     label: "Table",
     iconClass: "pi pi-fw pi-table",
   },

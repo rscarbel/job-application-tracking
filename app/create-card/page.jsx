@@ -11,8 +11,8 @@ import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 import { findJobTitle } from "../network";
 import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
+import { useRouter } from "next/router";
 
-const MILLISECONDS_FOR_MESSAGES = 5000;
 const PLACEHOLDER_USER_ID = 1;
 
 const TODAY = new Date().toISOString();
@@ -47,6 +47,7 @@ const CreateCard = () => {
   const [formData, setFormData] = useState(defaultFormData);
   const [loading, setLoading] = useState(false);
   const [existingJobData, setExistingJobData] = useState(null);
+  const router = useRouter();
 
   const toast = useRef();
   const isDataValid = formData.company.name && formData.jobTitle;
@@ -61,7 +62,7 @@ const CreateCard = () => {
       severity: "error",
       summary: "Error",
       detail: errorMessage,
-      life: MILLISECONDS_FOR_MESSAGES,
+      sticky: true,
     });
   };
 
@@ -97,14 +98,15 @@ const CreateCard = () => {
   const handleFormSubmission = async () => {
     setLoading(true);
     try {
-      console.log(formData);
       const result = await createCard(formData);
-      const data = result.data;
-      console.log(JSON.parse(data));
-
-      // window.location.href = "/application-board/board";
+      if (result.ok) {
+        router.push("/board");
+      } else {
+        showError("There was a problem with the submission.");
+      }
     } catch (error) {
       showError(error.message);
+    } finally {
       setLoading(false);
     }
   };
