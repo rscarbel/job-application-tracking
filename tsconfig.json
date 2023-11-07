@@ -38,7 +38,8 @@
     ".next/types/**/*.ts",
     "prisma/seed.js",
     "prisma/data/currenciesList.js",
-    "prisma/data/countrySymbols.js"
+    "prisma/data/countrySymbols.js",
+    "tailwind.config.js"
   ],
   "exclude": ["node_modules", "prisma/seed.js"]
 }
