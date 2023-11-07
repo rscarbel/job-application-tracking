@@ -1,7 +1,6 @@
 "use client";
 
 import FormFields from "../form/FormFields";
-import TopMenu from "../TopMenu";
 import { useState, useRef } from "react";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
@@ -112,7 +111,6 @@ const CreateCard = () => {
 
   return (
     <>
-      <TopMenu activeIndex={1} />
       <div className="mt-10 mb-10 mx-auto p-10 bg-white rounded-lg shadow-md xs:w-full md:w-1/2 claymorphic-shadow">
         <FormFields
           {...formData}

@@ -2,7 +2,6 @@ import dynamic from "next/dynamic";
 import prisma from "@/services/globalPrismaClient";
 import { getFormattedCardsForBoard } from "@/services/applicationCardService";
 import BoardSkeleton from "./boardSkeleton";
-import TopMenu from "../TopMenu";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 import { calculateBoardStructure } from "@/app/api/applicationBoard/calculateBoardStructure";
@@ -33,12 +32,7 @@ const getCardsForUser = async (email) => {
 const Job = async () => {
   const board = await getCardsForUser("user1@example.com");
 
-  return (
-    <>
-      <TopMenu />
-      <DynamicTextEditor board={board} />
-    </>
-  );
+  return <DynamicTextEditor board={board} />;
 };
 
 export default Job;
