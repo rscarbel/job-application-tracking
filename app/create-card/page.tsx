@@ -1,7 +1,7 @@
 "use client";
 
 import FormFields from "../form/FormFields";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -11,7 +11,7 @@ import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 import { findJobTitle } from "../network";
 import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const PLACEHOLDER_USER_ID = 1;
 
@@ -77,10 +77,10 @@ const defaultFormData: FormData = {
 };
 
 const CreateCard: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [loading, setLoading] = useState<boolean>(false);
   const [existingJobData, setExistingJobData] = useState<any>(null);
-  const router = useRouter();
 
   const toast = useRef<Toast>(null);
   const isDataValid: boolean = Boolean(
@@ -130,14 +130,18 @@ const CreateCard: React.FC = () => {
   const countrySymbol = getCountryCode(formData.country);
   const currencySymbol = getCurrencySymbol(formData.country);
 
-  const handleFormSubmission = async () => {
+  const handleFormSubmission = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
       const result = await createCard(formData);
+      console.log(result);
       if (result.ok) {
         router.push("/board");
       } else {
-        showError("There was a problem with the submission.");
+        showError(
+          result?.data?.error || "There was a problem with the submission."
+        );
       }
     } catch (error) {
       showError(error.message);

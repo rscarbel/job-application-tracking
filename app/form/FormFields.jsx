@@ -50,8 +50,8 @@ const FormFields = ({
       <div className="p-field">
         <CompaniesField
           selectedCompany={{
-            name: companyName || "",
-            companyId: companyId || "",
+            name: companyName || undefined,
+            companyId: companyId || undefined,
           }}
           onChange={onCompanyChange}
           isDisabled={isDisabled}

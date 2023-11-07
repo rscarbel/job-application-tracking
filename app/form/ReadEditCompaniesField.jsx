@@ -49,7 +49,7 @@ const ReadEditCompaniesField = ({
     if (selected) {
       setCompany(selected);
     } else {
-      setCompany({ name: e.value, companyId: "" });
+      setCompany({ name: e.value, companyId: undefined });
     }
   };
 

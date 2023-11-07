@@ -32,7 +32,7 @@ const CompaniesField = ({ selectedCompany, onChange, isDisabled = false }) => {
     if (selected) {
       onChange(selected);
     } else {
-      onChange({ name: e.value, companyId: null });
+      onChange({ name: e.value, companyId: undefined });
     }
   };
 
