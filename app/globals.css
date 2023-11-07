@@ -1,27 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@layer tailwind-base, primereact, tailwind-utilities;
+@layer tailwind-base {
+  @tailwind base;
+}
+@layer tailwind-utilities {
+  @tailwind components;
+  @tailwind utilities;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.claymorphic-shadow {
+  box-shadow: 12px 12px 40px 0px rgba(170, 170, 170, 0.5), inset -4px -4px 8px 0px rgba(112, 112, 112, 0.6), inset 0px 6px 14px 0px rgb(255, 255, 255);
+  backdrop-filter: blur(10px);
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.claymorphic-shadow-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 30px 30px 60px 0px rgba(112, 112, 112, 0.5), inset -5px -5px 10px 0px rgba(112, 112, 112, 0.6), inset 0px 7px 18px 0px rgb(255, 255, 255);
+  backdrop-filter: blur(10px);
+}
+
+.claymorphic-shadow-hover:active {
+  transform: translateY(0px);
+  box-shadow: 12px 12px 40px 0px rgba(170, 170, 170, 0.5), inset -4px -4px 8px 0px rgba(112, 112, 112, 0.6), inset 0px 6px 14px 0px rgb(255, 255, 255);
+  backdrop-filter: blur(10px);
+}
+
+.concave-container-shadow {
+  box-shadow: inset 3px 3px 5px #d5d5d5, inset 1px 1px 2px 2px #d1d1d1, inset -3px -3px 5px #ffffff;
 }

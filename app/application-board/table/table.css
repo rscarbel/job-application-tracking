@@ -1,0 +1,5 @@
+@media (max-width: 768px) {
+    .p-datatable .address-column{
+        display: none;
+    }
+}

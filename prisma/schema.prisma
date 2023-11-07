@@ -1,0 +1,263 @@
+generator client {
+  provider = "prisma-client-js"
+  seed     = "./seed.js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EmailStatus {
+  SENT
+  FAILED
+  DRAFT
+}
+
+enum WorkMode {
+  onsite
+  remote
+  hybrid
+}
+
+enum ApplicationStatus {
+  applied
+  interview
+  offer
+  rejected
+  accepted
+  passed
+}
+
+enum PayFrequency {
+  hourly
+  weekly
+  biweekly
+  monthly
+  yearly
+}
+
+model ApplicationCard {
+  id                 Int               @id @default(autoincrement())
+  applicationDate    DateTime?
+  applicationLink    String?
+  job                Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId              Int
+  positionIndex      Int
+  notes              String?
+  status             ApplicationStatus @default(applied)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @default(now()) @updatedAt
+  applicationBoard   ApplicationBoard  @relation(fields: [applicationBoardId], references: [id], onDelete: Cascade)
+  applicationBoardId Int
+
+  @@index([applicationBoardId])
+}
+
+model Job {
+  id           Int               @id @default(autoincrement())
+  title        String
+  description  String?
+  company      Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId    Int
+  applications ApplicationCard[]
+  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int
+  workMode     WorkMode?
+  compensation Compensation?
+  address      JobAddress?
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @default(now()) @updatedAt
+
+  @@unique([title, companyId, userId, workMode])
+  @@index([companyId])
+  @@index([userId])
+}
+
+model Compensation {
+  id           Int          @id @default(autoincrement())
+  payAmount    Float        @default(0)
+  payFrequency PayFrequency @default(hourly)
+  currency     String       @default("USD")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @default(now()) @updatedAt
+  job          Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId        Int          @unique
+}
+
+model ApplicationBoard {
+  id               Int               @id @default(autoincrement())
+  name             String
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           Int
+  applicationCards ApplicationCard[]
+
+  @@unique([name, userId])
+}
+
+model User {
+  id             Int                @id @default(autoincrement())
+  email          String             @unique
+  firstName      String?
+  lastName       String?
+  imageURL       String?
+  oAuth          OAuth[]
+  applications   ApplicationBoard[]
+  companies      Company[]
+  emailTemplates EmailTemplate[]
+  emails         Email[]
+  contacts       Contact[]
+  jobs           Job[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @default(now()) @updatedAt
+  addresses      UserAddress[]
+}
+
+model Company {
+  id         Int             @id @default(autoincrement())
+  name       String
+  contacts   Contact[]
+  notes      String?
+  sentEmails Email[]
+  jobs       Job[]
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  locationId Int?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @default(now()) @updatedAt
+  address    CompanyAddress?
+
+  @@unique([name, userId])
+  @@index([userId])
+}
+
+model Contact {
+  id         Int                @id @default(autoincrement())
+  firstName  String
+  lastName   String
+  phone      String?
+  email      String?
+  company    Company?           @relation(fields: [companyId], references: [id])
+  companyId  Int?
+  notes      String?
+  sentEmails Email[]
+  attributes ContactAttribute[]
+  addresses  ContactAddress[]
+  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+
+  @@unique([userId, firstName, lastName, email, companyId])
+}
+
+model ContactAttribute {
+  id        Int     @id @default(autoincrement())
+  name      String
+  value     String
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId Int
+
+  @@unique([name, contactId])
+}
+
+model UserAddress {
+  id             Int       @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?   @default("United States")
+  postalCode     String?
+  fromDate       DateTime  @default(now())
+  throughDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int       @unique
+}
+
+model JobAddress {
+  id             Int      @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?  @default("United States")
+  postalCode     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId          Int      @unique
+}
+
+model CompanyAddress {
+  id             Int      @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?  @default("United States")
+  postalCode     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId      Int      @unique
+}
+
+model ContactAddress {
+  id             Int       @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?   @default("United States")
+  postalCode     String?
+  fromDate       DateTime  @default(now())
+  throughDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  contact        Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId      Int       @unique
+}
+
+model Email {
+  id        Int         @id @default(autoincrement())
+  subject   String
+  body      String
+  sentAt    DateTime    @default(now())
+  opens     DateTime[]
+  status    EmailStatus @default(DRAFT)
+  contact   Contact?    @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId Int?
+  company   Company?    @relation(fields: [companyId], references: [id])
+  companyId Int?
+  user      User        @relation(fields: [userId], references: [id])
+  userId    Int
+
+  @@index([contactId])
+  @@index([companyId])
+  @@index([userId])
+}
+
+model EmailTemplate {
+  id      Int    @id @default(autoincrement())
+  name    String
+  subject String
+  body    String
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+
+  @@unique([name, userId])
+  @@index([userId])
+}
+
+model OAuth {
+  id         Int          @id @default(autoincrement())
+  provider   String
+  externalId String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+
+  @@unique([provider, externalId, userId])
+}
