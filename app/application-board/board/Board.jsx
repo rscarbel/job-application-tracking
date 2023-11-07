@@ -2,10 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { DragDropContext } from "@hello-pangea/dnd";
-import {
-  handleDifferentColumnMove,
-  handleSameColumnMove,
-} from "../../../utils/board";
+import { handleDifferentColumnMove, handleSameColumnMove } from "./utils";
 import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { updateCardStatus, updateCard, deleteCard } from "../network";

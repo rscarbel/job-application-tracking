@@ -1,10 +1,12 @@
+import { FC } from "react";
 import { Draggable } from "@hello-pangea/dnd";
-import { getStatusColor, humanizedPayFrequency } from "@/utils/board";
 import { useEditCard } from "./EditCardContext";
 import { formatCurrency } from "@/utils/global";
 import { findCard } from "../../network";
+import { getStatusColor, humanizedPayFrequency } from "../utils";
+import { ApplicationCardInterface } from "../types";
 
-const ApplicationCard = ({
+const ApplicationCard: FC<ApplicationCardInterface> = ({
   cardId,
   boardId,
   companyName,

@@ -1,14 +1,7 @@
+import { ApplicationStatus } from "@prisma/client";
 export const MAX_CHARACTERS = 10;
 
-type Status =
-  | "applied"
-  | "interview"
-  | "offer"
-  | "rejected"
-  | "passed"
-  | "accepted";
-
-export const getStatusColor = (status: Status): string => {
+export const getStatusColor = (status: ApplicationStatus): string => {
   switch (status) {
     case "applied":
       return "bg-blue-100";

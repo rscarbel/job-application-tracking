@@ -5,10 +5,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { STYLE_CLASSES, formatCurrency, prettifyDate } from "@/utils/global";
-import {
-  payFrequencyOptions,
-  humanizedPayFrequency,
-} from "../../../utils/board";
+import { payFrequencyOptions, humanizedPayFrequency } from "../board/utils";
 import ReadEditCountriesField from "./ReadEditCountriesField";
 import ReadEditCompaniesField from "./ReadEditCompaniesField";
 import { Inplace, InplaceDisplay, InplaceContent } from "primereact/inplace";

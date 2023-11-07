@@ -1,10 +1,14 @@
 import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/utils/global";
+import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
 
-export const getFormattedCardData = async (
+export const getFormattedCardData = async ({
   applicationCardId,
-  client = prisma
-) => {
+  client = prisma,
+}: {
+  applicationCardId: number;
+  client?: typeof prisma;
+}) => {
   const applicationCard = await client.applicationCard.findUnique({
     where: {
       id: applicationCardId,
@@ -52,7 +56,13 @@ export const getFormattedCardData = async (
   };
 };
 
-export const getFormattedCardsForBoard = async (boardId, client = prisma) => {
+export const getFormattedCardsForBoard = async ({
+  boardId,
+  client = prisma,
+}: {
+  boardId: number;
+  client?: typeof prisma;
+}) => {
   const applicationCards = await client.applicationCard.findMany({
     where: {
       applicationBoardId: boardId,
@@ -92,6 +102,11 @@ export const incrementCardsAfterIndex = async ({
   status,
   index,
   client = prisma,
+}: {
+  boardId: number;
+  status: ApplicationStatus;
+  index: number;
+  client?: typeof prisma;
 }) => {
   await client.applicationCard.updateMany({
     where: {
@@ -114,6 +129,11 @@ export const decrementCardsAfterIndex = async ({
   status,
   index,
   client = prisma,
+}: {
+  boardId: number;
+  status: ApplicationStatus;
+  index: number;
+  client?: typeof prisma;
 }) => {
   await client.applicationCard.updateMany({
     where: {
@@ -131,7 +151,13 @@ export const decrementCardsAfterIndex = async ({
   });
 };
 
-export const deleteCard = async (cardId, client = prisma) => {
+export const deleteCard = async ({
+  cardId,
+  client = prisma,
+}: {
+  cardId: number;
+  client?: typeof prisma;
+}) => {
   const cardToDelete = await client.applicationCard.findUnique({
     where: {
       id: cardId,

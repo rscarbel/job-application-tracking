@@ -4,7 +4,7 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { STYLE_CLASSES } from "@/utils/global";
-import { payFrequencyOptions } from "../../../utils/board";
+import { payFrequencyOptions } from "../board/utils";
 import CountriesField from "./CountriesField";
 import CompaniesField from "./CompaniesField";
 import SameJobMessage from "./SameJobMessage";

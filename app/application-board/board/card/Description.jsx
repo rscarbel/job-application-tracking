@@ -1,4 +1,4 @@
-import { MAX_CHARACTERS, truncateText } from "../../../../utils/board";
+import { MAX_CHARACTERS, truncateText } from "../utils";
 
 const Description = ({ description, isExpanded, toggle }) => {
   const handleClick = (e) => {
