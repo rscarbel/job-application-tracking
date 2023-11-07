@@ -1,6 +1,6 @@
 import { Draggable } from "@hello-pangea/dnd";
 import { getStatusColor, humanizedPayFrequency } from "@/utils/board";
-import { useEditCard } from "./EditCardContext.ts";
+import { useEditCard } from "./EditCardContext";
 import { formatCurrency } from "@/utils/global";
 import { findCard } from "../../network";
 
