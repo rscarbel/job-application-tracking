@@ -12,46 +12,20 @@ import "primeicons/primeicons.css";
 import { findJobTitle } from "../network";
 import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 import { useRouter } from "next/navigation";
+import { NewApplicationCardFormData } from "../types";
 
 const PLACEHOLDER_USER_ID = 1;
 
 const TODAY: string = new Date().toISOString();
 
-interface Company {
-  companyId: string;
-  name: string;
-}
-
-interface ChangeEvent {
+type ChangeEvent = {
   target: {
     name: string;
     value: any;
   };
-}
+};
 
-interface FormData {
-  applicationCardId?: string;
-  boardId: number;
-  company: Company;
-  jobTitle: string;
-  jobDescription: string;
-  workMode: WorkMode;
-  payAmount: number;
-  payFrequency: PayFrequency;
-  currency: string;
-  streetAddress: string;
-  city: string;
-  state: string;
-  country: string;
-  postalCode: string;
-  applicationLink: string;
-  applicationDate: string;
-  positionIndex: number;
-  notes: string;
-  status: ApplicationStatus;
-}
-
-const defaultFormData: FormData = {
+const defaultFormData: NewApplicationCardFormData = {
   applicationCardId: undefined,
   boardId: 1,
   company: {
@@ -78,7 +52,8 @@ const defaultFormData: FormData = {
 
 const CreateCard: React.FC = () => {
   const router = useRouter();
-  const [formData, setFormData] = useState<FormData>(defaultFormData);
+  const [formData, setFormData] =
+    useState<NewApplicationCardFormData>(defaultFormData);
   const [loading, setLoading] = useState<boolean>(false);
   const [existingJobData, setExistingJobData] = useState<any>(null);
 

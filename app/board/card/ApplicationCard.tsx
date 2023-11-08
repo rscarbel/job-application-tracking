@@ -4,7 +4,7 @@ import { useEditCard } from "./EditCardContext";
 import { formatCurrency } from "@/utils/global";
 import { findCard } from "../../network";
 import { getStatusColor, humanizedPayFrequency } from "../utils";
-import { ApplicationCardInterface } from "../types";
+import { ApplicationCardInterface } from "../../types";
 
 const ApplicationCard: FC<ApplicationCardInterface> = ({
   cardId,

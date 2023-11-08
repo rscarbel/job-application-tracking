@@ -3,6 +3,8 @@ import { findOrCreateCompany } from "@/services/companyService";
 import { createOrUpdateJob } from "@/services/jobService";
 import { incrementCardsAfterIndex } from "@/services/applicationCardService";
 import { reportError } from "@/app/api/reportError/reportError";
+import { getRequestUser } from "@/services/userService";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(request) {
   const {
@@ -26,17 +28,23 @@ export async function POST(request) {
     positionIndex,
     notes,
   } = await request.json();
+  const token = await getToken({ req: request });
+  const { sub, provider } = token || { sub: null, provider: null };
+  if (!sub || !provider)
+    return new Response(
+      JSON.stringify({
+        error: "You must login before creating a new application",
+      }),
+      { status: 403 }
+    );
+
   try {
     await prisma.$transaction(async (client) => {
-      const user = await client.user.findFirst({
-        where: {
-          id: 1,
-        },
-      });
+      const user = await getRequestUser({ sub, provider });
 
       const addressProperties = {
         streetAddress,
-        streetAddress2: streetAddress2 || "",
+        streetAddress2,
         city,
         state,
         postalCode,
@@ -46,6 +54,7 @@ export async function POST(request) {
       const applicationBoard = await client.applicationBoard.findFirst({
         where: {
           id: boardId,
+          userId: user.id,
         },
       });
 

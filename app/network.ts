@@ -1,4 +1,5 @@
 import { reportErrorToServer } from "@/utils/global";
+import { ApplicationCardFrontEndType } from "./types";
 
 export const updateCardStatus = async (cardId, newStatus, index) => {
   const response = await fetch("/api/applicationBoard/updateStatus", {
@@ -17,7 +18,7 @@ export const updateCardStatus = async (cardId, newStatus, index) => {
   return { response, data };
 };
 
-export const updateCard = async (card) => {
+export const updateCard = async (card: ApplicationCardFrontEndType) => {
   const response = await fetch("/api/applicationBoard/updateCard", {
     method: "POST",
     headers: {
@@ -30,7 +31,7 @@ export const updateCard = async (card) => {
   return { response, data };
 };
 
-export const deleteCard = async (cardId) => {
+export const deleteCard = async (cardId: number) => {
   const response = await fetch("/api/applicationBoard/deleteCard", {
     method: "POST",
     headers: {
@@ -43,7 +44,7 @@ export const deleteCard = async (cardId) => {
   return { response, data };
 };
 
-export const createCard = async (card) => {
+export const createCard = async (card: ApplicationCardFrontEndType) => {
   try {
     const response = await fetch("/api/applicationBoard/createCard", {
       method: "POST",
@@ -59,7 +60,7 @@ export const createCard = async (card) => {
   }
 };
 
-export const findCompanies = async (userId) => {
+export const findCompanies = async (userId: String) => {
   const response = await fetch(
     `/api/applicationBoard/find/companies?userId=${userId}`
   );
@@ -78,6 +79,11 @@ export const findJobTitle = async ({
   companyName,
   jobTitle,
   boardId,
+}: {
+  userId: string;
+  companyName: string;
+  jobTitle: string;
+  boardId: number;
 }) => {
   const response = await fetch(
     `/api/applicationBoard/find/jobTitle?userId=${userId}&companyName=${companyName}&jobTitle=${jobTitle}&boardId=${boardId}`
@@ -92,7 +98,7 @@ export const findJobTitle = async ({
   return data?.body || null;
 };
 
-export const findCard = async (cardId) => {
+export const findCard = async (cardId: number) => {
   const response = await fetch(
     `/api/applicationBoard/find/card?cardId=${cardId}`
   );

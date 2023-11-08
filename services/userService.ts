@@ -9,12 +9,15 @@ export const getRequestUser = async ({
   provider: string;
   client: typeof prisma;
 }) => {
+  if (process.env.NODE_ENV === "development")
+    return await client.user.findFirst();
+
   if (!sub || !provider) return null;
 
   const authRecord = await client.oAuth.findUnique({
     where: {
       provider_externalId: {
-        provider: provider as string,
+        provider: provider,
         externalId: sub,
       },
     },

@@ -1,5 +1,53 @@
 import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
 
+type Company = {
+  companyId?: number;
+  name: string;
+};
+
+export type NewApplicationCardFormData = {
+  applicationCardId?: string;
+  boardId: number;
+  company: Company;
+  jobTitle: string;
+  jobDescription: string;
+  workMode: WorkMode;
+  payAmount: number;
+  payFrequency: PayFrequency;
+  currency: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  applicationLink: string;
+  applicationDate: string;
+  positionIndex: number;
+  notes: string;
+  status: ApplicationStatus;
+};
+
+export type ApplicationCardFrontEndType = {
+  cardId: number;
+  boardId: number;
+  jobId: number;
+  company: Company;
+  jobTitle: string;
+  description?: string;
+  workMode: WorkMode;
+  payAmount: number;
+  payFrequency: PayFrequency;
+  currency: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  applicationLink?: string;
+  notes?: string;
+  status: ApplicationStatus;
+};
+
 export type ApplicationCardType = {
   id: number;
   boardId: number;
