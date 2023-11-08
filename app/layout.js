@@ -7,7 +7,7 @@ import NavMenu from "./components/NavMenu";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Job Tracker",
+  title: "Application Tracker",
   description: "Track your job applications",
 };
 
