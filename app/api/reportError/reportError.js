@@ -13,6 +13,7 @@ if (!(process.env.NODE_ENV === "development")) {
  * e.g. { message: "An error occurred", stack: "Error: An error occurred", user: { id: "123", email: "djones@email.com", firstName: "Davy", lastName: "Jones" } }
  */
 export const reportError = (errorObject) => {
+  console.error(errorObject.message);
   if (process.env.NODE_ENV === "development") return;
 
   try {

@@ -7,7 +7,7 @@ export const getRequestUser = async ({
 }: {
   sub: string;
   provider: string;
-  client: typeof prisma;
+  client?: typeof prisma;
 }) => {
   if (process.env.NODE_ENV === "development")
     return await client.user.findFirst();
