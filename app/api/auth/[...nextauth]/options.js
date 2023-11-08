@@ -134,6 +134,7 @@ export const options = {
     async jwt({ token, user, account, profile }) {
       if (user) {
         token.uid = user.id;
+        token.provider = account.provider;
       }
       return token;
     },

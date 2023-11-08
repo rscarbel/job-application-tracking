@@ -1,8 +1,10 @@
 import Bugsnag from "@bugsnag/js";
 
-Bugsnag.start({
-  apiKey: process.env.BUGSNAG_API_KEY || "",
-});
+if (!(process.env.NODE_ENV === "development")) {
+  Bugsnag.start({
+    apiKey: process.env.BUGSNAG_API_KEY || "",
+  });
+}
 
 /**
  * Helper function to report events.
@@ -11,6 +13,8 @@ Bugsnag.start({
  * e.g. { message: "An error occurred", stack: "Error: An error occurred", user: { id: "123", email: "djones@email.com", firstName: "Davy", lastName: "Jones" } }
  */
 export const reportError = (errorObject) => {
+  if (process.env.NODE_ENV === "development") return;
+
   try {
     const defaultErrorMessage = "An unknown error occurred";
     const defaultErrorStack = "No stack trace available";

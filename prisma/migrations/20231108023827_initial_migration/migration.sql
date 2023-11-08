@@ -32,7 +32,7 @@ CREATE TABLE "Job" (
     "title" TEXT NOT NULL,
     "description" TEXT,
     "companyId" INTEGER NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "workMode" "WorkMode",
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -59,14 +59,14 @@ CREATE TABLE "ApplicationBoard" (
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "ApplicationBoard_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
+    "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "firstName" TEXT,
     "lastName" TEXT,
@@ -82,7 +82,7 @@ CREATE TABLE "Company" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "notes" TEXT,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "locationId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -99,7 +99,7 @@ CREATE TABLE "Contact" (
     "email" TEXT,
     "companyId" INTEGER,
     "notes" TEXT,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Contact_pkey" PRIMARY KEY ("id")
 );
@@ -127,7 +127,7 @@ CREATE TABLE "UserAddress" (
     "throughDate" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "UserAddress_pkey" PRIMARY KEY ("id")
 );
@@ -192,7 +192,7 @@ CREATE TABLE "Email" (
     "status" "EmailStatus" NOT NULL DEFAULT 'DRAFT',
     "contactId" INTEGER,
     "companyId" INTEGER,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Email_pkey" PRIMARY KEY ("id")
 );
@@ -203,7 +203,7 @@ CREATE TABLE "EmailTemplate" (
     "name" TEXT NOT NULL,
     "subject" TEXT NOT NULL,
     "body" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "EmailTemplate_pkey" PRIMARY KEY ("id")
 );
@@ -213,7 +213,7 @@ CREATE TABLE "OAuth" (
     "id" SERIAL NOT NULL,
     "provider" TEXT NOT NULL,
     "externalId" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "OAuth_pkey" PRIMARY KEY ("id")
 );
@@ -279,7 +279,7 @@ CREATE INDEX "EmailTemplate_userId_idx" ON "EmailTemplate"("userId");
 CREATE UNIQUE INDEX "EmailTemplate_name_userId_key" ON "EmailTemplate"("name", "userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "OAuth_provider_externalId_userId_key" ON "OAuth"("provider", "externalId", "userId");
+CREATE UNIQUE INDEX "OAuth_provider_externalId_key" ON "OAuth"("provider", "externalId");
 
 -- AddForeignKey
 ALTER TABLE "ApplicationCard" ADD CONSTRAINT "ApplicationCard_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -4,16 +4,23 @@ import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
 
 export const getFormattedCardData = async ({
   applicationCardId,
+  userId,
   client = prisma,
 }: {
   applicationCardId: number;
-  client?: typeof prisma;
+  userId: string;
+  client: typeof prisma;
 }) => {
   const applicationCard = await client.applicationCard.findUnique({
     where: {
       id: applicationCardId,
     },
     include: {
+      applicationBoard: {
+        include: {
+          user: true,
+        },
+      },
       job: {
         include: {
           company: true,
@@ -26,6 +33,10 @@ export const getFormattedCardData = async ({
 
   if (!applicationCard) {
     throw new Error("Application Card not found");
+  }
+
+  if (applicationCard.applicationBoard.userId !== userId) {
+    throw new Error("Unauthorized");
   }
 
   return {

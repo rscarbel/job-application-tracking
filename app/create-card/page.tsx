@@ -84,7 +84,7 @@ const CreateCard: React.FC = () => {
 
   const toast = useRef<Toast>(null);
   const isDataValid: boolean = Boolean(
-    formData.company.name && formData.jobTitle
+    formData?.company?.name && formData?.jobTitle
   );
 
   const handleInputChange = (e: ChangeEvent) => {
@@ -135,7 +135,6 @@ const CreateCard: React.FC = () => {
     setLoading(true);
     try {
       const result = await createCard(formData);
-      console.log(result);
       if (result.ok) {
         router.push("/board");
       } else {

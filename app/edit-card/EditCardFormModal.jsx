@@ -48,7 +48,7 @@ const EditCardFormModal = ({
   const [isReadOnly, setIsReadOnly] = useState(true);
 
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
-  const isDataValid = formData.company.name && formData.jobTitle;
+  const isDataValid = formData?.company?.name && formData?.jobTitle;
   const callToActionIcon =
     isDataValid && hasDataChanged ? "pi pi-check" : "pi pi-times";
   const callToActionStyle =
