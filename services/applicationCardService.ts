@@ -9,7 +9,7 @@ export const getFormattedCardData = async ({
 }: {
   applicationCardId: number;
   userId: string;
-  client: typeof prisma;
+  client?: typeof prisma;
 }) => {
   const applicationCard = await client.applicationCard.findUnique({
     where: {
