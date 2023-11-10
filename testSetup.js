@@ -1,11 +1,9 @@
-import resetDatabase from "./prisma/resetDatabase";
-
 process.env.NODE_ENV = "test";
 process.env.DATABASE_URL =
   "postgres://postgres:@localhost:5432/application_tracking_test";
 
 try {
-  await resetDatabase();
+  require("./prisma/seed");
 } catch {
   console.error("\nThere was an error resetting your test database");
   console.log(
