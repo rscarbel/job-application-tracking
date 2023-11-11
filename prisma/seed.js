@@ -3,6 +3,7 @@ const {
   PayFrequency,
   WorkMode,
   PrismaClient,
+  DocumentType,
   ContactInteractionType,
   CompanySize,
   CompanyType,
@@ -10,6 +11,9 @@ const {
 const { faker } = require("@faker-js/faker");
 const { currenciesList } = require("./data/currenciesList");
 const { countrySymbols } = require("./data/countrySymbols");
+const {
+  createDocumentsForUser,
+} = require("./seedHelpers/createDocumentsForUser");
 let alternateCompensation = true;
 
 const getRandomInteger = (min, max) => {
@@ -198,6 +202,7 @@ async function main() {
       },
     },
   });
+  await createDocumentsForUser(user1.id, prisma);
 
   await prisma.oAuth.create({
     data: {
