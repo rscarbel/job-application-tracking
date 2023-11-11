@@ -2,12 +2,22 @@ const {
   ApplicationStatus,
   PayFrequency,
   WorkMode,
-  EmailStatus,
   PrismaClient,
+  ContactInteractionType,
+  CompanySize,
+  CompanyType,
 } = require("@prisma/client");
-const { faker, fa } = require("@faker-js/faker");
+const { faker } = require("@faker-js/faker");
 const { currenciesList } = require("./data/currenciesList");
 const { countrySymbols } = require("./data/countrySymbols");
+let alternateCompensation = true;
+
+const getRandomInteger = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 const getCountryCode = (country) => {
   const countrySymbol = countrySymbols[country];
@@ -22,6 +32,30 @@ const getCurrencySymbol = (country) => {
 const prisma = new PrismaClient();
 
 const NUM_APPLICATION_CARDS = 10;
+const TAG_OPTIONS = ["Near Home", "Good Benefits", "Tech Industry"];
+
+const getRandomTags = () => {
+  const shuffledTags = [...TAG_OPTIONS].sort(() => 0.5 - Math.random());
+  const numberOfTags = getRandomInteger(0, TAG_OPTIONS.length);
+  return shuffledTags.slice(0, numberOfTags);
+};
+
+const generateCompanyDetails = () => {
+  return {
+    culture: faker.company.buzzVerb(),
+    desireability: getRandomInteger(1, 10),
+    industry: faker.company.buzzNoun(),
+    size: cycleCompanySize(),
+    website: faker.internet.url(),
+    type: cycleCompanyType(),
+    history: faker.lorem.paragraph(),
+    mission: faker.lorem.sentence(),
+    vision: faker.lorem.sentence(),
+    values: faker.lorem.words(5),
+    description: faker.lorem.paragraphs(2),
+    notes: faker.lorem.sentences(3),
+  };
+};
 
 let applicationStatusIndex = 0;
 const cycleApplicationStatus = () => {
@@ -29,11 +63,22 @@ const cycleApplicationStatus = () => {
   return statuses[applicationStatusIndex++ % statuses.length];
 };
 
-let emailStatusIndex = 0;
-const cycleEmailStatus = () => {
-  const statuses = Object.values(EmailStatus);
-  const randomIndex = Math.floor(emailStatusIndex++ % statuses.length);
-  return statuses[randomIndex];
+let contactInteractionIndex = 0;
+const cycleContactInteractionType = () => {
+  const interactionTypes = Object.values(ContactInteractionType);
+  return interactionTypes[contactInteractionIndex++ % interactionTypes.length];
+};
+
+let companySizeIndex = 0;
+const cycleCompanySize = () => {
+  const companySizes = Object.values(CompanySize);
+  return companySizes[companySizeIndex++ % companySizes.length];
+};
+
+let companyTypeIndex = 0;
+const cycleCompanyType = () => {
+  const companyTypes = Object.values(CompanyType);
+  return companyTypes[companyTypeIndex++ % companyTypes.length];
 };
 
 let payFrequencyIndex = 0;
@@ -42,29 +87,64 @@ const cyclePayFrequency = () => {
   const frequency = frequencies[payFrequencyIndex++ % frequencies.length];
 
   let amount;
+  let rangeModifier;
   switch (frequency) {
     case PayFrequency.hourly:
-      amount = faker.finance.amount(15, 60, 0); // Random hourly wage between $15 and $60
+      amount = getRandomInteger(15, 60); // Random hourly wage between $15 and $60
+      rangeModifier = 5;
       break;
     case PayFrequency.weekly:
-      amount = faker.finance.amount(500, 1500, 0); // Random weekly salary
+      amount = getRandomInteger(500, 1500); // Random weekly salary
+      rangeModifier = 100;
       break;
     case PayFrequency.biweekly:
-      amount = faker.finance.amount(1000, 3000, 0); // Random bi-weekly salary
+      amount = getRandomInteger(1000, 3000); // Random bi-weekly salary
+      rangeModifier = 200;
       break;
     case PayFrequency.monthly:
-      amount = faker.finance.amount(4000, 10000, 0); // Random monthly salary
+      amount = getRandomInteger(4000, 10000); // Random monthly salary
+      rangeModifier = 400;
       break;
     case PayFrequency.yearly:
-      amount = faker.finance.amount(50000, 120000, 0); // Random yearly salary
+      amount = getRandomInteger(50000, 120000); // Random yearly salary
+      rangeModifier = 5000;
       break;
     default:
       amount = 0;
   }
 
+  let salaryRangeMin = amount - rangeModifier;
+  let salaryRangeMax = amount + rangeModifier;
+
+  if (alternateCompensation) {
+    salaryRangeMin = 0;
+    salaryRangeMax = 0;
+  } else {
+    amount = 0;
+  }
+
+  alternateCompensation = !alternateCompensation;
+
+  const negotiable = faker.datatype.boolean();
+  const benefits = faker.datatype.boolean()
+    ? { health: "Yes", vacation: "2 weeks" }
+    : null;
+  const bonuses = faker.datatype.boolean()
+    ? { annual: getRandomInteger(1000, 5000) }
+    : null;
+  const allowances = faker.datatype.boolean()
+    ? { travel: getRandomInteger(300, 1000) }
+    : null;
+
   return {
     frequency,
     amount: parseFloat(amount),
+    salaryRangeMin: parseFloat(salaryRangeMin),
+    salaryRangeMax: parseFloat(salaryRangeMax),
+    negotiable,
+    benefits,
+    bonuses,
+    allowances,
   };
 };
 
@@ -78,8 +158,13 @@ const NUM_CONTACTS_PER_COMPANY = 3;
 
 const resetDatabase = async () => {
   await prisma.user.deleteMany();
+  await prisma.applicationBoard.deleteMany();
+  await prisma.interview.deleteMany();
+  await prisma.document.deleteMany();
   await prisma.company.deleteMany();
+  await prisma.companyDetail.deleteMany();
   await prisma.applicationCard.deleteMany();
+  await prisma.applicationTag.deleteMany();
   await prisma.job.deleteMany();
   await prisma.jobAddress.deleteMany();
   await prisma.userAddress.deleteMany();
@@ -88,7 +173,7 @@ const resetDatabase = async () => {
   await prisma.contact.deleteMany();
   await prisma.contactAddress.deleteMany();
   await prisma.contactAttribute.deleteMany();
-  await prisma.email.deleteMany();
+  await prisma.contactInteraction.deleteMany();
   await prisma.emailTemplate.deleteMany();
   await prisma.oAuth.deleteMany();
 };
@@ -124,10 +209,30 @@ async function main() {
 
   const board1 = await prisma.applicationBoard.create({
     data: {
-      name: "Seed Job Applications",
+      name: "Initial Board",
       userId: user1.id,
     },
   });
+
+  const createdTags = await Promise.all(
+    TAG_OPTIONS.map(async (tag) => {
+      return await prisma.applicationTag.create({
+        data: {
+          name: tag,
+          board: {
+            connect: {
+              id: board1.id,
+            },
+          },
+        },
+      });
+    })
+  );
+
+  const tagMap = createdTags.reduce((acc, tag) => {
+    acc[tag.name] = tag.id;
+    return acc;
+  }, {});
 
   const statusIndices = Object.values(ApplicationStatus).reduce(
     (acc, status) => {
@@ -159,6 +264,18 @@ async function main() {
       },
     });
 
+    const companyDetails = generateCompanyDetails();
+    await prisma.companyDetail.create({
+      data: {
+        company: {
+          connect: {
+            id: company.id,
+          },
+        },
+        ...companyDetails,
+      },
+    });
+
     for (let j = 0; j < NUM_CONTACTS_PER_COMPANY; j++) {
       const contact = await prisma.contact.create({
         data: {
@@ -183,24 +300,6 @@ async function main() {
               city: faker.location.city(),
               state: faker.location.state(),
               country: faker.location.country(),
-            },
-          },
-        },
-      });
-
-      await prisma.email.create({
-        data: {
-          subject: "Initial Contact",
-          body: faker.lorem.sentences(3),
-          status: cycleEmailStatus(),
-          contact: {
-            connect: {
-              id: contact.id,
-            },
-          },
-          user: {
-            connect: {
-              id: user1.id,
             },
           },
         },
@@ -245,7 +344,16 @@ async function main() {
     });
 
     const currentStatus = cycleApplicationStatus();
-    const { frequency, amount } = cyclePayFrequency();
+    const {
+      frequency,
+      amount,
+      benefits,
+      bonuses,
+      allowances,
+      salaryRangeMin,
+      salaryRangeMax,
+      negotiable,
+    } = cyclePayFrequency();
 
     const job = await prisma.job.create({
       data: {
@@ -262,6 +370,12 @@ async function main() {
             payAmount: amount,
             payFrequency: frequency,
             currency: getCurrencySymbol(country),
+            benefits: benefits,
+            bonuses: bonuses,
+            allowances: allowances,
+            salaryRangeMin: salaryRangeMin,
+            salaryRangeMax: salaryRangeMax,
+            negotiable: negotiable,
           },
         },
         user: {
@@ -280,6 +394,9 @@ async function main() {
         },
       },
     });
+
+    const randomTags = getRandomTags();
+    const tagIds = randomTags.map((tagName) => tagMap[tagName]);
 
     await prisma.applicationCard.create({
       data: {
@@ -300,6 +417,9 @@ async function main() {
           connect: {
             id: board1.id,
           },
+        },
+        tags: {
+          connect: tagIds.map((id) => ({ id })),
         },
       },
     });

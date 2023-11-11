@@ -8,12 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum EmailStatus {
-  SENT
-  FAILED
-  DRAFT
-}
-
 enum WorkMode {
   onsite
   remote
@@ -37,6 +31,35 @@ enum PayFrequency {
   yearly
 }
 
+enum DocumentType {
+  RESUME
+  COVER_LETTER
+  PORTFOLIO
+  OTHER
+}
+
+enum ContactInteractionType {
+  EMAIL
+  CALL
+  MEETING
+  OTHER
+}
+
+enum CompanySize {
+  TINY
+  SMALL
+  MEDIUM
+  LARGE
+  MASSIVE
+}
+
+enum CompanyType {
+  GOVERNMENT_AGENCY
+  NON_PROFIT
+  PRIVATE
+  PUBLIC
+}
+
 model ApplicationCard {
   id                 Int               @id @default(autoincrement())
   applicationDate    DateTime?
@@ -50,8 +73,22 @@ model ApplicationCard {
   updatedAt          DateTime          @default(now()) @updatedAt
   applicationBoard   ApplicationBoard  @relation(fields: [applicationBoardId], references: [id], onDelete: Cascade)
   applicationBoardId Int
+  documents          Document[]
+  interviews         Interview[]
+  tags               ApplicationTag[]
 
   @@index([applicationBoardId])
+}
+
+model ApplicationTag {
+  id           Int               @id @default(autoincrement())
+  name         String
+  board        ApplicationBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId      Int
+  applications ApplicationCard[]
+
+  @@unique([name, boardId])
+  @@index([boardId])
 }
 
 model Job {
@@ -75,14 +112,21 @@ model Job {
 }
 
 model Compensation {
-  id           Int          @id @default(autoincrement())
-  payAmount    Float        @default(0)
-  payFrequency PayFrequency @default(hourly)
-  currency     String       @default("USD")
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @default(now()) @updatedAt
-  job          Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId        Int          @unique
+  id                Int          @id @default(autoincrement())
+  payAmount         Float        @default(0)
+  payFrequency      PayFrequency @default(hourly)
+  currency          String       @default("USD")
+  benefits          Json?
+  bonuses           Json?
+  allowances        Json?
+  salaryRangeMin    Float?
+  salaryRangeMax    Float?
+  hoursWeek         Int         @default(40)
+  negotiable        Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @default(now()) @updatedAt
+  job               Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId             Int          @unique
 }
 
 model ApplicationBoard {
@@ -93,6 +137,7 @@ model ApplicationBoard {
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String
   applicationCards ApplicationCard[]
+  tags             ApplicationTag[]
 
   @@unique([name, userId])
 }
@@ -107,20 +152,18 @@ model User {
   applications   ApplicationBoard[]
   companies      Company[]
   emailTemplates EmailTemplate[]
-  emails         Email[]
   contacts       Contact[]
   jobs           Job[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @default(now()) @updatedAt
   addresses      UserAddress[]
+  documents      Document[]
 }
 
 model Company {
   id         Int             @id @default(autoincrement())
   name       String
   contacts   Contact[]
-  notes      String?
-  sentEmails Email[]
   jobs       Job[]
   user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
@@ -128,27 +171,51 @@ model Company {
   createdAt  DateTime        @default(now())
   updatedAt  DateTime        @default(now()) @updatedAt
   address    CompanyAddress?
+  details    CompanyDetail?
 
   @@unique([name, userId])
   @@index([userId])
 }
 
+model CompanyDetail {
+  id            Int          @id @default(autoincrement())
+  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId     Int          @unique
+  culture       String?
+  desireability Int?
+  industry      String?
+  size          CompanySize?
+  website       String?
+  type          CompanyType?
+  history       String?
+  mission       String?
+  vision        String?
+  values        String?
+  description   String?
+  notes         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+
+  @@index([companyId])
+}
+
 model Contact {
-  id         Int                @id @default(autoincrement())
-  firstName  String
-  lastName   String
-  phone      String?
-  email      String?
-  company    Company?           @relation(fields: [companyId], references: [id])
-  companyId  Int?
-  notes      String?
-  sentEmails Email[]
-  attributes ContactAttribute[]
-  addresses  ContactAddress[]
-  user       User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
+  id           Int                  @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  phone        String?
+  email        String?
+  company      Company?             @relation(fields: [companyId], references: [id])
+  companyId    Int?
+  notes        String?
+  attributes   ContactAttribute[]
+  interactions ContactInteraction[]
+  addresses    ContactAddress[]
+  user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
 
   @@unique([userId, firstName, lastName, email, companyId])
+  @@index([companyId])
 }
 
 model ContactAttribute {
@@ -221,25 +288,6 @@ model ContactAddress {
   contactId      Int       @unique
 }
 
-model Email {
-  id        Int         @id @default(autoincrement())
-  subject   String
-  body      String
-  sentAt    DateTime    @default(now())
-  opens     DateTime[]
-  status    EmailStatus @default(DRAFT)
-  contact   Contact?    @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId Int?
-  company   Company?    @relation(fields: [companyId], references: [id])
-  companyId Int?
-  user      User        @relation(fields: [userId], references: [id])
-  userId    String
-
-  @@index([contactId])
-  @@index([companyId])
-  @@index([userId])
-}
-
 model EmailTemplate {
   id      Int    @id @default(autoincrement())
   name    String
@@ -252,6 +300,18 @@ model EmailTemplate {
   @@index([userId])
 }
 
+model Interview {
+  id                Int             @id @default(autoincrement())
+  applicationCard   ApplicationCard @relation(fields: [applicationCardId], references: [id], onDelete: Cascade)
+  applicationCardId Int
+  scheduledTime     DateTime
+  location          String?
+  notes             String?
+  feedback          String?
+
+  @@index([applicationCardId])
+}
+
 model OAuth {
   id         Int    @id @default(autoincrement())
   provider   String
@@ -260,4 +320,32 @@ model OAuth {
   userId     String
 
   @@unique([provider, externalId])
+}
+
+model Document {
+  id               Int               @id @default(autoincrement())
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  applicationCards ApplicationCard[]
+  type             DocumentType
+  url              String?
+  name             String
+  content          String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @default(now()) @updatedAt
+
+  @@index([userId])
+}
+
+model ContactInteraction {
+  id              Int                    @id @default(autoincrement())
+  contact         Contact                @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId       Int
+  type            ContactInteractionType
+  notes           String?
+  interactionTime DateTime
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @default(now()) @updatedAt
+
+  @@index([contactId])
 }
