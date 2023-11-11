@@ -3,8 +3,6 @@ const {
   PayFrequency,
   WorkMode,
   PrismaClient,
-  DocumentType,
-  ContactInteractionType,
   CompanySize,
   CompanyType,
 } = require("@prisma/client");
@@ -14,6 +12,9 @@ const { countrySymbols } = require("./data/countrySymbols");
 const {
   createDocumentsForUser,
 } = require("./seedHelpers/createDocumentsForUser");
+const {
+  createContactInteractions,
+} = require("./seedHelpers/createContactInteractions");
 let alternateCompensation = true;
 
 const getRandomInteger = (min, max) => {
@@ -65,12 +66,6 @@ let applicationStatusIndex = 0;
 const cycleApplicationStatus = () => {
   const statuses = Object.values(ApplicationStatus);
   return statuses[applicationStatusIndex++ % statuses.length];
-};
-
-let contactInteractionIndex = 0;
-const cycleContactInteractionType = () => {
-  const interactionTypes = Object.values(ContactInteractionType);
-  return interactionTypes[contactInteractionIndex++ % interactionTypes.length];
 };
 
 let companySizeIndex = 0;
@@ -309,6 +304,8 @@ async function main() {
           },
         },
       });
+
+      await createContactInteractions(contact.id, prisma);
 
       await prisma.contactAttribute.create({
         data: {
