@@ -23,22 +23,23 @@ const prisma = new PrismaClient();
 
 const NUM_APPLICATION_CARDS = 10;
 
-const randomApplicationStatus = () => {
+let applicationStatusIndex = 0;
+const cycleApplicationStatus = () => {
   const statuses = Object.values(ApplicationStatus);
-  const randomIndex = Math.floor(Math.random() * statuses.length);
-  return statuses[randomIndex];
+  return statuses[applicationStatusIndex++ % statuses.length];
 };
 
-const randomEmailStatus = () => {
+let emailStatusIndex = 0;
+const cycleEmailStatus = () => {
   const statuses = Object.values(EmailStatus);
-  const randomIndex = Math.floor(Math.random() * statuses.length);
+  const randomIndex = Math.floor(emailStatusIndex++ % statuses.length);
   return statuses[randomIndex];
 };
 
-const randomPayDetails = () => {
+let payFrequencyIndex = 0;
+const cyclePayFrequency = () => {
   const frequencies = Object.values(PayFrequency);
-  const randomIndex = Math.floor(Math.random() * frequencies.length);
-  const frequency = frequencies[randomIndex];
+  const frequency = frequencies[payFrequencyIndex++ % frequencies.length];
 
   let amount;
   switch (frequency) {
@@ -67,10 +68,10 @@ const randomPayDetails = () => {
   };
 };
 
+let workModeIndex = 0;
 const randomWorkMode = () => {
   const modes = Object.values(WorkMode);
-  const randomIndex = Math.floor(Math.random() * modes.length);
-  return modes[randomIndex];
+  return modes[workModeIndex++ % modes.length];
 };
 
 const NUM_CONTACTS_PER_COMPANY = 3;
@@ -190,7 +191,7 @@ async function main() {
         data: {
           subject: "Initial Contact",
           body: faker.lorem.sentences(3),
-          status: randomEmailStatus(),
+          status: cycleEmailStatus(),
           contact: {
             connect: {
               id: contact.id,
@@ -242,8 +243,8 @@ async function main() {
       },
     });
 
-    const currentStatus = randomApplicationStatus();
-    const { frequency, amount } = randomPayDetails();
+    const currentStatus = cycleApplicationStatus();
+    const { frequency, amount } = cyclePayFrequency();
 
     const job = await prisma.job.create({
       data: {
