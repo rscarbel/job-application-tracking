@@ -14,7 +14,7 @@ import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { NewApplicationCardFormData } from "../types";
 
-const PLACEHOLDER_USER_ID = 1;
+const PLACEHOLDER_USER_ID = "user1";
 
 const TODAY: string = new Date().toISOString();
 
@@ -25,13 +25,17 @@ type ChangeEvent = {
   };
 };
 
+type ApiResponse = {
+  error?: string;
+};
+
 const defaultFormData: NewApplicationCardFormData = {
-  applicationCardId: undefined,
   boardId: 1,
   company: {
     companyId: undefined,
     name: undefined,
   },
+  jobId: undefined,
   jobTitle: undefined,
   jobDescription: undefined,
   workMode: WorkMode.onsite,
@@ -110,12 +114,11 @@ const CreateCard: React.FC = () => {
     setLoading(true);
     try {
       const result = await createCard(formData);
-      if (result.ok) {
+      const data = result.data as ApiResponse;
+      if (result.response.status === 200) {
         router.push("/board");
       } else {
-        showError(
-          result?.data?.error || "There was a problem with the submission."
-        );
+        showError(data.error || "There was a problem with the submission.");
       }
     } catch (error) {
       showError(error.message);
@@ -128,7 +131,7 @@ const CreateCard: React.FC = () => {
     <>
       <div className="mt-10 mb-10 mx-auto p-10 bg-white rounded-lg shadow-md xs:w-full md:w-1/2 claymorphic-shadow">
         <FormFields
-          {...formData}
+          {...(formData as any)}
           onInputChange={handleInputChange}
           onCountryChange={handleCountryChange}
           onCompanyChange={handleCompanyChange}

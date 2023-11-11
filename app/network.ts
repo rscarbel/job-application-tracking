@@ -1,5 +1,8 @@
 import { reportErrorToServer } from "@/utils/global";
-import { ApplicationCardFrontEndType } from "./types";
+import {
+  ApplicationCardFrontEndType,
+  NewApplicationCardFormData,
+} from "./types";
 
 export const updateCardStatus = async (cardId, newStatus, index) => {
   const response = await fetch("/api/applicationBoard/updateStatus", {
@@ -44,7 +47,7 @@ export const deleteCard = async (cardId: number) => {
   return { response, data };
 };
 
-export const createCard = async (card: ApplicationCardFrontEndType) => {
+export const createCard = async (card: NewApplicationCardFormData) => {
   try {
     const response = await fetch("/api/applicationBoard/createCard", {
       method: "POST",

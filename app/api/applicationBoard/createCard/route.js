@@ -110,7 +110,7 @@ export async function POST(request) {
         client: client,
       });
     });
-    return new Response(null, { status: 200 });
+    return new Response({ error: null }, { status: 200 });
   } catch (error) {
     reportError(error);
 

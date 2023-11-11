@@ -6,25 +6,25 @@ type Company = {
 };
 
 export type NewApplicationCardFormData = {
-  applicationCardId?: string;
+  jobId?: number;
   boardId: number;
   company: Company;
   jobTitle: string;
-  jobDescription: string;
-  workMode: WorkMode;
-  payAmount: number;
-  payFrequency: PayFrequency;
-  currency: string;
-  streetAddress: string;
-  city: string;
-  state: string;
-  country: string;
-  postalCode: string;
-  applicationLink: string;
-  applicationDate: string;
-  positionIndex: number;
-  notes: string;
-  status: ApplicationStatus;
+  jobDescription?: string;
+  workMode?: WorkMode;
+  payAmount?: number;
+  payFrequency?: PayFrequency;
+  currency?: string;
+  streetAddress?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  postalCode?: string;
+  applicationLink?: string;
+  applicationDate?: string;
+  positionIndex?: number;
+  notes?: string;
+  status?: ApplicationStatus;
 };
 
 export type ApplicationCardFrontEndType = {
@@ -33,7 +33,7 @@ export type ApplicationCardFrontEndType = {
   jobId: number;
   company: Company;
   jobTitle: string;
-  description?: string;
+  jobDescription?: string;
   workMode: WorkMode;
   payAmount: number;
   payFrequency: PayFrequency;
