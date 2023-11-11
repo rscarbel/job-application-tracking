@@ -398,7 +398,7 @@ async function main() {
     const randomTags = getRandomTags();
     const tagIds = randomTags.map((tagName) => tagMap[tagName]);
 
-    await prisma.applicationCard.create({
+    const applicationCard = await prisma.applicationCard.create({
       data: {
         applicationDate: faker.date.past({
           years: 1,
@@ -423,6 +423,22 @@ async function main() {
         },
       },
     });
+
+    if (currentStatus !== ApplicationStatus.applied) {
+      const numInterviews = getRandomInteger(1, 2);
+
+      for (let k = 0; k < numInterviews; k++) {
+        await prisma.interview.create({
+          data: {
+            applicationCardId: applicationCard.id,
+            scheduledTime: faker.date.future(),
+            location: faker.location.city(),
+            notes: faker.lorem.sentence(),
+            feedback: faker.lorem.sentences(2),
+          },
+        });
+      }
+    }
 
     statusIndices[currentStatus] += 1;
   }
