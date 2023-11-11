@@ -5,6 +5,7 @@ const {
   PrismaClient,
   CompanySize,
   CompanyType,
+  BenefitType,
 } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
 const { currenciesList } = require("./data/currenciesList");
@@ -22,6 +23,14 @@ const getRandomInteger = (min, max) => {
   max = Math.floor(max);
 
   return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+const generateBenefits = () => {
+  const shuffledBenefitTypes = Object.values(BenefitType).sort(
+    () => 0.5 - Math.random()
+  );
+  const numberOfBenefits = getRandomInteger(0, 10);
+  return shuffledBenefitTypes.slice(0, numberOfBenefits);
 };
 
 const getCountryCode = (country) => {
@@ -60,6 +69,15 @@ const generateCompanyDetails = () => {
     description: faker.lorem.paragraphs(2),
     notes: faker.lorem.sentences(3),
   };
+};
+
+const generateJobResponsibilities = () => {
+  const responsibilities = [];
+  const numberOfResponsibilities = getRandomInteger(0, 10);
+  for (let i = 0; i < numberOfResponsibilities; i++) {
+    responsibilities.push(faker.lorem.sentence());
+  }
+  return responsibilities;
 };
 
 let applicationStatusIndex = 0;
@@ -125,15 +143,6 @@ const cyclePayFrequency = () => {
   alternateCompensation = !alternateCompensation;
 
   const negotiable = faker.datatype.boolean();
-  const benefits = faker.datatype.boolean()
-    ? { health: "Yes", vacation: "2 weeks" }
-    : null;
-  const bonuses = faker.datatype.boolean()
-    ? { annual: getRandomInteger(1000, 5000) }
-    : null;
-  const allowances = faker.datatype.boolean()
-    ? { travel: getRandomInteger(300, 1000) }
-    : null;
 
   return {
     frequency,
@@ -141,9 +150,6 @@ const cyclePayFrequency = () => {
     salaryRangeMin: parseFloat(salaryRangeMin),
     salaryRangeMax: parseFloat(salaryRangeMax),
     negotiable,
-    benefits,
-    bonuses,
-    allowances,
   };
 };
 
@@ -346,16 +352,8 @@ async function main() {
     });
 
     const currentStatus = cycleApplicationStatus();
-    const {
-      frequency,
-      amount,
-      benefits,
-      bonuses,
-      allowances,
-      salaryRangeMin,
-      salaryRangeMax,
-      negotiable,
-    } = cyclePayFrequency();
+    const { frequency, amount, salaryRangeMin, salaryRangeMax, negotiable } =
+      cyclePayFrequency();
 
     const job = await prisma.job.create({
       data: {
@@ -372,14 +370,13 @@ async function main() {
             payAmount: amount,
             payFrequency: frequency,
             currency: getCurrencySymbol(country),
-            benefits: benefits,
-            bonuses: bonuses,
-            allowances: allowances,
             salaryRangeMin: salaryRangeMin,
             salaryRangeMax: salaryRangeMax,
             negotiable: negotiable,
           },
         },
+        benefits: generateBenefits(),
+        responsibilities: generateJobResponsibilities(),
         user: {
           connect: {
             id: user1.id,
