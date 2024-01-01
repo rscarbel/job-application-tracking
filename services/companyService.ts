@@ -80,80 +80,65 @@ export const updateCompany = async ({
   companyDetailsProperties = undefined,
   companyAddressProperties = undefined,
   client = prisma,
-}: {
-  companyId: number;
-  companyName: string;
-  companyDetailsProperties?: CompanyDetailInterface;
-  companyAddressProperties?: AddressInterface;
-  client?: typeof prisma;
 }) => {
   if (!companyId) {
     throw new Error("companyId is required");
   }
 
-  const company = await client.company.findFirst({
-    where: {
-      id: companyId,
-    },
-    include: {
-      addresses: {
-        orderBy: {
-          fromDate: 'desc',
-        },
-        take: 1,
-      },
-      details: true,
-    },
-  });
-
-  if (!company) {
-    throw new Error("Company not found");
-  }
-
-  let updateAddresses = {};
-
-  if (companyAddressProperties) {
-    const lastAddress = company.addresses[0];
-
-    const isDifferentAddress = !lastAddress || Object.entries(companyAddressProperties).some(([key, value]) => {
-      return lastAddress[key] !== value;
+  // Begin a transaction to ensure atomicity of operations
+  return client.$transaction(async (trx) => {
+    const company = await trx.company.findUnique({
+      where: { id: companyId },
+      include: { addresses: { orderBy: { fromDate: 'desc' }, take: 1 } },
     });
 
-    if (isDifferentAddress) {
-      if (lastAddress) {
-        await client.address.update({
-          where: {
-            id: lastAddress.id,
-          },
+    if (!company) {
+      throw new Error("Company not found");
+    }
+
+    // Address update logic
+    if (companyAddressProperties) {
+      const lastAddress = company.addresses[0];
+
+      const hasAddressChanged = lastAddress && (
+        lastAddress.streetAddress !== companyAddressProperties.streetAddress ||
+        lastAddress.streetAddress2 !== companyAddressProperties.streetAddress2 ||
+        lastAddress.city !== companyAddressProperties.city ||
+        lastAddress.state !== companyAddressProperties.state ||
+        lastAddress.country !== companyAddressProperties.country ||
+        lastAddress.postalCode !== companyAddressProperties.postalCode
+      );
+
+      if (hasAddressChanged) {
+        // Update the old address throughDate
+        await trx.address.update({
+          where: { id: lastAddress.id },
+          data: { throughDate: companyAddressProperties.fromDate },
+        });
+
+        // Create a new address
+        await trx.address.create({
           data: {
-            throughDate: companyAddressProperties.fromDate,
+            ...companyAddressProperties,
+            companyId,
           },
         });
       }
-
-      updateAddresses = {
-        create: {
-          ...companyAddressProperties,
-        },
-      };
     }
-  }
 
-  return await client.company.update({
-    where: {
-      id: companyId,
-    },
-    data: {
-      name: companyName,
-      addresses: updateAddresses,
-      details: companyDetailsProperties ? {
-        create: {
-          ...companyDetailsProperties,
-        },
-      } : {},
-    },
+    // Update company details
+    await trx.company.update({
+      where: { id: companyId },
+      data: {
+        name: companyName,
+        details: companyDetailsProperties ? { create: { ...companyDetailsProperties } } : {},
+      },
+    });
+
+    return company;
   });
 };
+
 
 
 /**
