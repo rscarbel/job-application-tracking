@@ -163,7 +163,7 @@ CREATE TABLE "ContactAttribute" (
 );
 
 -- CreateTable
-CREATE TABLE "UserAddress" (
+CREATE TABLE "Address" (
     "id" SERIAL NOT NULL,
     "streetAddress" TEXT,
     "streetAddress2" TEXT,
@@ -175,59 +175,12 @@ CREATE TABLE "UserAddress" (
     "throughDate" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" TEXT NOT NULL,
+    "jobId" INTEGER,
+    "userId" TEXT,
+    "companyId" INTEGER,
+    "contactId" INTEGER,
 
-    CONSTRAINT "UserAddress_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "JobAddress" (
-    "id" SERIAL NOT NULL,
-    "streetAddress" TEXT,
-    "streetAddress2" TEXT,
-    "city" TEXT,
-    "state" TEXT,
-    "country" TEXT DEFAULT 'United States',
-    "postalCode" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "jobId" INTEGER NOT NULL,
-
-    CONSTRAINT "JobAddress_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "CompanyAddress" (
-    "id" SERIAL NOT NULL,
-    "streetAddress" TEXT,
-    "streetAddress2" TEXT,
-    "city" TEXT,
-    "state" TEXT,
-    "country" TEXT DEFAULT 'United States',
-    "postalCode" TEXT,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "companyId" INTEGER NOT NULL,
-
-    CONSTRAINT "CompanyAddress_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "ContactAddress" (
-    "id" SERIAL NOT NULL,
-    "streetAddress" TEXT,
-    "streetAddress2" TEXT,
-    "city" TEXT,
-    "state" TEXT,
-    "country" TEXT DEFAULT 'United States',
-    "postalCode" TEXT,
-    "fromDate" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "throughDate" TIMESTAMP(3),
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "contactId" INTEGER NOT NULL,
-
-    CONSTRAINT "ContactAddress_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Address_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -237,6 +190,8 @@ CREATE TABLE "EmailTemplate" (
     "subject" TEXT NOT NULL,
     "body" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "EmailTemplate_pkey" PRIMARY KEY ("id")
 );
@@ -249,6 +204,8 @@ CREATE TABLE "Interview" (
     "location" TEXT,
     "notes" TEXT,
     "feedback" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Interview_pkey" PRIMARY KEY ("id")
 );
@@ -259,6 +216,8 @@ CREATE TABLE "OAuth" (
     "provider" TEXT NOT NULL,
     "externalId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "OAuth_pkey" PRIMARY KEY ("id")
 );
@@ -354,18 +313,6 @@ CREATE UNIQUE INDEX "Contact_userId_firstName_lastName_email_companyId_key" ON "
 CREATE UNIQUE INDEX "ContactAttribute_name_contactId_key" ON "ContactAttribute"("name", "contactId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "UserAddress_userId_key" ON "UserAddress"("userId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "JobAddress_jobId_key" ON "JobAddress"("jobId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CompanyAddress_companyId_key" ON "CompanyAddress"("companyId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ContactAddress_contactId_key" ON "ContactAddress"("contactId");
-
--- CreateIndex
 CREATE INDEX "EmailTemplate_userId_idx" ON "EmailTemplate"("userId");
 
 -- CreateIndex
@@ -432,16 +379,16 @@ ALTER TABLE "Contact" ADD CONSTRAINT "Contact_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "ContactAttribute" ADD CONSTRAINT "ContactAttribute_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "UserAddress" ADD CONSTRAINT "UserAddress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Address" ADD CONSTRAINT "Address_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "JobAddress" ADD CONSTRAINT "JobAddress_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Address" ADD CONSTRAINT "Address_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "CompanyAddress" ADD CONSTRAINT "CompanyAddress_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Address" ADD CONSTRAINT "Address_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ContactAddress" ADD CONSTRAINT "ContactAddress_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Address" ADD CONSTRAINT "Address_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "EmailTemplate" ADD CONSTRAINT "EmailTemplate_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

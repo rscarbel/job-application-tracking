@@ -119,7 +119,6 @@ enum BenefitType {
   WELLNESS_PROGRAMS
 }
 
-
 model ApplicationCard {
   id                 Int               @id @default(autoincrement())
   applicationDate    DateTime?
@@ -164,7 +163,7 @@ model Job {
   userId           String
   workMode         WorkMode?
   compensation     Compensation?
-  address          JobAddress?
+  addresses        Address[]
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @default(now()) @updatedAt
 
@@ -217,21 +216,21 @@ model User {
   jobs           Job[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @default(now()) @updatedAt
-  addresses      UserAddress[]
+  addresses      Address[]
   documents      Document[]
 }
 
 model Company {
-  id         Int             @id @default(autoincrement())
+  id         Int            @id @default(autoincrement())
   name       String
   contacts   Contact[]
   jobs       Job[]
-  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
   locationId Int?
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @default(now()) @updatedAt
-  address    CompanyAddress?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @default(now()) @updatedAt
+  addresses  Address[]
   details    CompanyDetail?
 
   @@unique([name, userId])
@@ -271,7 +270,7 @@ model Contact {
   notes        String?
   attributes   ContactAttribute[]
   interactions ContactInteraction[]
-  addresses    ContactAddress[]
+  addresses    Address[]
   user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
 
@@ -289,7 +288,7 @@ model ContactAttribute {
   @@unique([name, contactId])
 }
 
-model UserAddress {
+model Address {
   id             Int       @id @default(autoincrement())
   streetAddress  String?
   streetAddress2 String?
@@ -301,61 +300,25 @@ model UserAddress {
   throughDate    DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @default(now()) @updatedAt
-  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId         String    @unique
-}
-
-model JobAddress {
-  id             Int      @id @default(autoincrement())
-  streetAddress  String?
-  streetAddress2 String?
-  city           String?
-  state          String?
-  country        String?  @default("United States")
-  postalCode     String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now()) @updatedAt
-  job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId          Int      @unique
-}
-
-model CompanyAddress {
-  id             Int      @id @default(autoincrement())
-  streetAddress  String?
-  streetAddress2 String?
-  city           String?
-  state          String?
-  country        String?  @default("United States")
-  postalCode     String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @default(now()) @updatedAt
-  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId      Int      @unique
-}
-
-model ContactAddress {
-  id             Int       @id @default(autoincrement())
-  streetAddress  String?
-  streetAddress2 String?
-  city           String?
-  state          String?
-  country        String?   @default("United States")
-  postalCode     String?
-  fromDate       DateTime  @default(now())
-  throughDate    DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now()) @updatedAt
-  contact        Contact   @relation(fields: [contactId], references: [id], onDelete: Cascade)
-  contactId      Int       @unique
+  Job            Job?      @relation(fields: [jobId], references: [id])
+  jobId          Int?
+  User           User?     @relation(fields: [userId], references: [id])
+  userId         String?
+  Company        Company?  @relation(fields: [companyId], references: [id])
+  companyId      Int?
+  Contact        Contact?  @relation(fields: [contactId], references: [id])
+  contactId      Int?
 }
 
 model EmailTemplate {
-  id      Int    @id @default(autoincrement())
-  name    String
-  subject String
-  body    String
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId  String
+  id        Int      @id @default(autoincrement())
+  name      String
+  subject   String
+  body      String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 
   @@unique([name, userId])
   @@index([userId])
@@ -369,16 +332,20 @@ model Interview {
   location          String?
   notes             String?
   feedback          String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @default(now()) @updatedAt
 
   @@index([applicationCardId])
 }
 
 model OAuth {
-  id         Int    @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   provider   String
   externalId String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
   @@unique([provider, externalId])
 }

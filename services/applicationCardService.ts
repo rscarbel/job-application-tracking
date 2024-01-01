@@ -2,6 +2,15 @@ import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/utils/global";
 import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
 
+const defaultAddress = {
+  streetAddress: "",
+  streetAddress2: "",
+  city: "",
+  state: "",
+  country: "",
+  postalCode: "",
+};
+
 export const getFormattedCardData = async ({
   applicationCardId,
   userId,
@@ -24,7 +33,7 @@ export const getFormattedCardData = async ({
       job: {
         include: {
           company: true,
-          address: true,
+          addresses: true,
           compensation: true,
         },
       },
@@ -39,26 +48,30 @@ export const getFormattedCardData = async ({
     throw new Error("Unauthorized");
   }
 
+  const job = applicationCard.job;
+  const compensation = job.compensation;
+  const lastAddress = job.addresses[job.addresses.length - 1] || defaultAddress;
+
   return {
     cardId: applicationCard.id,
     boardId: applicationCard.applicationBoardId,
-    jobId: applicationCard.jobId,
+    jobId: job.id,
     company: {
-      companyId: applicationCard.job.company.id,
-      name: applicationCard.job.company.name,
+      companyId: job.company.id,
+      name: job.company.name,
     },
-    jobTitle: applicationCard.job.title,
-    jobDescription: applicationCard.job.description,
-    workMode: applicationCard.job.workMode,
-    payAmount: applicationCard.job.compensation.payAmount,
-    payFrequency: applicationCard.job.compensation.payFrequency,
-    currency: applicationCard.job.compensation.currency,
-    streetAddress: applicationCard.job?.address?.streetAddress,
-    streetAddress2: applicationCard.job?.address?.streetAddress2,
-    city: applicationCard.job?.address?.city,
-    state: applicationCard.job?.address?.state,
-    country: applicationCard.job?.address?.country,
-    postalCode: applicationCard.job?.address?.postalCode,
+    jobTitle: job.title,
+    jobDescription: job.description,
+    workMode: job.workMode,
+    payAmount: compensation.payAmount,
+    payFrequency: compensation.payFrequency,
+    currency: compensation.currency,
+    streetAddress: lastAddress.streetAddress,
+    streetAddress2: lastAddress.streetAddress2,
+    city: lastAddress.city,
+    state: lastAddress.state,
+    country: lastAddress.country,
+    postalCode: lastAddress.postalCode,
     applicationLink: applicationCard.applicationLink,
     applicationDate: applicationCard.applicationDate,
     status: applicationCard.status,
@@ -83,7 +96,7 @@ export const getFormattedCardsForBoard = async ({
         include: {
           company: true,
           compensation: true,
-          address: true,
+          addresses: true,
         },
       },
     },
@@ -92,20 +105,26 @@ export const getFormattedCardsForBoard = async ({
     },
   });
 
-  return applicationCards.map((card) => ({
+
+  return applicationCards.map((card) => {
+    const job = card.job;
+    const compensation = job.compensation;
+    const lastAddress = job.addresses[job.addresses.length - 1] || defaultAddress;
+  
+    return {
     cardId: card.id,
-    companyName: card.job.company.name,
-    title: card.job.title,
-    workMode: card.job.workMode,
-    payAmount: card.job.compensation.payAmount,
-    payFrequency: card.job.compensation.payFrequency,
-    currency: card.job.compensation.currency,
-    city: card.job?.address?.city,
-    country: card.job?.address?.country,
+    companyName: job.company.name,
+    title: job.title,
+    workMode: job.workMode,
+    payAmount: compensation.payAmount,
+    payFrequency: compensation.payFrequency,
+    currency: compensation.currency,
+    city: lastAddress.city,
+    country: lastAddress.country,
     applicationLink: card.applicationLink,
     applicationDate: prettifyDate(card.applicationDate),
     status: card.status,
-  }));
+  }});
 };
 
 export const incrementCardsAfterIndex = async ({

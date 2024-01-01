@@ -51,6 +51,21 @@ export async function POST(request) {
         country,
       };
 
+      const companyDetailsProperties = {
+        culture: '',
+        desireability: 0,
+        industry: '',
+        size: '',
+        website: '',
+        type: '',
+        history: '',
+        mission: '',
+        vision: '',
+        values: '',
+        description: '',
+        notes: '',
+      };
+
       const applicationBoard = await client.applicationBoard.findFirst({
         where: {
           id: boardId,
@@ -63,6 +78,7 @@ export async function POST(request) {
         userId: user.id,
         client: client,
         addressProperties,
+        companyDetailsProperties
       });
 
       const job = await createOrUpdateJob({

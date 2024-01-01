@@ -171,12 +171,9 @@ const resetDatabase = async () => {
   await prisma.applicationCard.deleteMany();
   await prisma.applicationTag.deleteMany();
   await prisma.job.deleteMany();
-  await prisma.jobAddress.deleteMany();
-  await prisma.userAddress.deleteMany();
-  await prisma.companyAddress.deleteMany();
+  await prisma.address.deleteMany();
   await prisma.compensation.deleteMany();
   await prisma.contact.deleteMany();
-  await prisma.contactAddress.deleteMany();
   await prisma.contactAttribute.deleteMany();
   await prisma.contactInteraction.deleteMany();
   await prisma.emailTemplate.deleteMany();
@@ -258,13 +255,13 @@ async function main() {
             id: user1.id,
           },
         },
-        address: {
+        addresses: {
           create: {
             streetAddress: faker.location.streetAddress(),
             streetAddress2: faker.location.buildingNumber(),
             city: faker.location.city(),
             state: faker.location.state(),
-            country: country,
+            country: faker.location.country(),
           },
         },
       },
@@ -382,13 +379,13 @@ async function main() {
             id: user1.id,
           },
         },
-        address: {
+        addresses: {
           create: {
             streetAddress: faker.location.streetAddress(),
             streetAddress2: faker.location.buildingNumber(),
             city: faker.location.city(),
             state: faker.location.state(),
-            country: country,
+            country: faker.location.country(),
           },
         },
       },
