@@ -4,7 +4,7 @@ import { getFormattedCardsForBoard } from "@/services/applicationCardService";
 import BoardSkeleton from "./boardSkeleton";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
-import { calculateBoardStructure } from "@/app/api/applicationBoard/calculateBoardStructure";
+import { calculateBoardStructure } from "@/app/api/applicationGroup/calculateBoardStructure";
 
 const DynamicTextEditor = dynamic(() => import("./Board"), {
   ssr: false,
@@ -15,7 +15,7 @@ const getCardsForUser = async (email) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return [];
 
-  const board = await prisma.applicationBoard.findFirst({
+  const board = await prisma.applicationGroup.findFirst({
     where: { userId: user.id },
     orderBy: {
       createdAt: "desc",

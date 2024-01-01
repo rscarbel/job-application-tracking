@@ -9,7 +9,7 @@ import { getToken } from "next-auth/jwt";
 export async function POST(request) {
   const {
     status,
-    boardId,
+    groupId,
     jobTitle,
     company,
     payAmount,
@@ -52,23 +52,23 @@ export async function POST(request) {
       };
 
       const companyDetailsProperties = {
-        culture: '',
+        culture: "",
         desireability: 0,
-        industry: '',
-        size: '',
-        website: '',
-        type: '',
-        history: '',
-        mission: '',
-        vision: '',
-        values: '',
-        description: '',
-        notes: '',
+        industry: "",
+        size: "",
+        website: "",
+        type: "",
+        history: "",
+        mission: "",
+        vision: "",
+        values: "",
+        description: "",
+        notes: "",
       };
 
-      const applicationBoard = await client.applicationBoard.findFirst({
+      const applicationGroup = await client.applicationGroup.findFirst({
         where: {
-          id: boardId,
+          id: groupId,
           userId: user.id,
         },
       });
@@ -78,7 +78,7 @@ export async function POST(request) {
         userId: user.id,
         client: client,
         addressProperties,
-        companyDetailsProperties
+        companyDetailsProperties,
       });
 
       const job = await createOrUpdateJob({
@@ -101,9 +101,9 @@ export async function POST(request) {
           applicationDate: applicationDate,
           positionIndex: positionIndex,
           notes: notes,
-          applicationBoard: {
+          applicationGroup: {
             connect: {
-              id: applicationBoard.id,
+              id: applicationGroup.id,
             },
           },
           job: {
@@ -120,7 +120,7 @@ export async function POST(request) {
       });
 
       await incrementCardsAfterIndex({
-        boardId: applicationBoard.id,
+        groupId: applicationGroup.id,
         status: status,
         index: positionIndex,
         client: client,

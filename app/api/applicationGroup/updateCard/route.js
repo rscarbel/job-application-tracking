@@ -12,7 +12,7 @@ import { reportError } from "@/app/api/reportError/reportError";
 export async function POST(request) {
   const {
     cardId,
-    boardId,
+    groupId,
     company,
     jobId,
     jobTitle,
@@ -34,7 +34,7 @@ export async function POST(request) {
 
   const necessaryData = {
     "Application Card": cardId,
-    Board: boardId,
+    Board: groupId,
     "Company Name": company.name,
     "Job Title": jobTitle,
   };
@@ -67,7 +67,7 @@ export async function POST(request) {
         await decrementCardsAfterIndex({
           status: currentCard.status,
           index: indexToDecrement,
-          boardId: boardId,
+          groupId: groupId,
           client: pris,
         });
 
@@ -75,7 +75,7 @@ export async function POST(request) {
         await incrementCardsAfterIndex({
           status: status,
           index: currentIndex,
-          boardId: boardId,
+          groupId: groupId,
           client: pris,
         });
       }
@@ -113,7 +113,7 @@ export async function POST(request) {
         },
       });
     });
-    const formattedCards = await getFormattedCardsForBoard(boardId);
+    const formattedCards = await getFormattedCardsForBoard(groupId);
     const board = calculateBoardStructure(formattedCards);
 
     return new Response(JSON.stringify({ board }), {

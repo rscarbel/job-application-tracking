@@ -163,7 +163,7 @@ const NUM_CONTACTS_PER_COMPANY = 3;
 
 const resetDatabase = async () => {
   await prisma.user.deleteMany();
-  await prisma.applicationBoard.deleteMany();
+  await prisma.applicationGroup.deleteMany();
   await prisma.interview.deleteMany();
   await prisma.document.deleteMany();
   await prisma.company.deleteMany();
@@ -210,7 +210,7 @@ async function main() {
     },
   });
 
-  const board1 = await prisma.applicationBoard.create({
+  const board1 = await prisma.applicationGroup.create({
     data: {
       name: "Initial Board",
       userId: user1.id,
@@ -409,7 +409,7 @@ async function main() {
         notes: faker.lorem.paragraph(),
         status: currentStatus,
         positionIndex: statusIndices[currentStatus],
-        applicationBoard: {
+        applicationGroup: {
           connect: {
             id: board1.id,
           },

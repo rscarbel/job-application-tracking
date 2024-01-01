@@ -1,5 +1,5 @@
 import { reportError } from "@/app/api/reportError/reportError";
-import { createApplicationBoard } from "@/services/applicationBoardService";
+import { createApplicationBoard } from "@/services/applicationGroupService";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
 import unauthorizedResponse from "../../unauthorizedResponse";

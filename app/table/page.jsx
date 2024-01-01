@@ -9,7 +9,7 @@ const getCardsForUser = async (email) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return [];
 
-  const board = await prisma.applicationBoard.findFirst({
+  const board = await prisma.applicationGroup.findFirst({
     where: { userId: user.id },
   });
   if (!board) return [];

@@ -5,7 +5,7 @@ import {
 } from "./types";
 
 export const updateCardStatus = async (cardId, newStatus, index) => {
-  const response = await fetch("/api/applicationBoard/updateStatus", {
+  const response = await fetch("/api/applicationGroup/updateStatus", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export const updateCardStatus = async (cardId, newStatus, index) => {
 };
 
 export const updateCard = async (card: ApplicationCardFrontEndType) => {
-  const response = await fetch("/api/applicationBoard/updateCard", {
+  const response = await fetch("/api/applicationGroup/updateCard", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -35,7 +35,7 @@ export const updateCard = async (card: ApplicationCardFrontEndType) => {
 };
 
 export const deleteCard = async (cardId: number) => {
-  const response = await fetch("/api/applicationBoard/deleteCard", {
+  const response = await fetch("/api/applicationGroup/deleteCard", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export const deleteCard = async (cardId: number) => {
 
 export const createCard = async (card: NewApplicationCardFormData) => {
   try {
-    const response = await fetch("/api/applicationBoard/createCard", {
+    const response = await fetch("/api/applicationGroup/createCard", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -65,7 +65,7 @@ export const createCard = async (card: NewApplicationCardFormData) => {
 
 export const findCompanies = async (userId: String) => {
   const response = await fetch(
-    `/api/applicationBoard/find/companies?userId=${userId}`
+    `/api/applicationGroup/find/companies?userId=${userId}`
   );
   let data;
   try {
@@ -81,15 +81,15 @@ export const findJobTitle = async ({
   userId,
   companyName,
   jobTitle,
-  boardId,
+  groupId,
 }: {
   userId: string;
   companyName: string;
   jobTitle: string;
-  boardId: number;
+  groupId: number;
 }) => {
   const response = await fetch(
-    `/api/applicationBoard/find/jobTitle?userId=${userId}&companyName=${companyName}&jobTitle=${jobTitle}&boardId=${boardId}`
+    `/api/applicationGroup/find/jobTitle?userId=${userId}&companyName=${companyName}&jobTitle=${jobTitle}&groupId=${groupId}`
   );
   let data;
   try {
@@ -103,7 +103,7 @@ export const findJobTitle = async ({
 
 export const findCard = async (cardId: number) => {
   const response = await fetch(
-    `/api/applicationBoard/find/card?cardId=${cardId}`
+    `/api/applicationGroup/find/card?cardId=${cardId}`
   );
   let data;
   try {

@@ -33,7 +33,7 @@ describe("Application Services", () => {
 
     //   expect(data).toBeDefined();
     //   expect(data.cardId).toBe(applicationCardId);
-    //   expect(data.boardId).toBeDefined();
+    //   expect(data.groupId).toBeDefined();
     //   expect(data.jobId).toBeDefined();
     //   expect(data.company).toBeDefined();
     // });

@@ -25,7 +25,7 @@ export const getFormattedCardData = async ({
       id: applicationCardId,
     },
     include: {
-      applicationBoard: {
+      applicationGroup: {
         include: {
           user: true,
         },
@@ -44,7 +44,7 @@ export const getFormattedCardData = async ({
     throw new Error("Application Card not found");
   }
 
-  if (applicationCard.applicationBoard.userId !== userId) {
+  if (applicationCard.applicationGroup.userId !== userId) {
     throw new Error("Unauthorized");
   }
 
@@ -54,7 +54,7 @@ export const getFormattedCardData = async ({
 
   return {
     cardId: applicationCard.id,
-    boardId: applicationCard.applicationBoardId,
+    groupId: applicationCard.applicationGroupId,
     jobId: job.id,
     company: {
       companyId: job.company.id,
@@ -81,15 +81,15 @@ export const getFormattedCardData = async ({
 };
 
 export const getFormattedCardsForBoard = async ({
-  boardId,
+  groupId,
   client = prisma,
 }: {
-  boardId: number;
+  groupId: number;
   client?: typeof prisma;
 }) => {
   const applicationCards = await client.applicationCard.findMany({
     where: {
-      applicationBoardId: boardId,
+      applicationGroupId: groupId,
     },
     include: {
       job: {
@@ -105,42 +105,43 @@ export const getFormattedCardsForBoard = async ({
     },
   });
 
-
   return applicationCards.map((card) => {
     const job = card.job;
     const compensation = job.compensation;
-    const lastAddress = job.addresses[job.addresses.length - 1] || defaultAddress;
-  
+    const lastAddress =
+      job.addresses[job.addresses.length - 1] || defaultAddress;
+
     return {
-    cardId: card.id,
-    companyName: job.company.name,
-    title: job.title,
-    workMode: job.workMode,
-    payAmount: compensation.payAmount,
-    payFrequency: compensation.payFrequency,
-    currency: compensation.currency,
-    city: lastAddress.city,
-    country: lastAddress.country,
-    applicationLink: card.applicationLink,
-    applicationDate: prettifyDate(card.applicationDate),
-    status: card.status,
-  }});
+      cardId: card.id,
+      companyName: job.company.name,
+      title: job.title,
+      workMode: job.workMode,
+      payAmount: compensation.payAmount,
+      payFrequency: compensation.payFrequency,
+      currency: compensation.currency,
+      city: lastAddress.city,
+      country: lastAddress.country,
+      applicationLink: card.applicationLink,
+      applicationDate: prettifyDate(card.applicationDate),
+      status: card.status,
+    };
+  });
 };
 
 export const incrementCardsAfterIndex = async ({
-  boardId,
+  groupId,
   status,
   index,
   client = prisma,
 }: {
-  boardId: number;
+  groupId: number;
   status: ApplicationStatus;
   index: number;
   client?: typeof prisma;
 }) => {
   await client.applicationCard.updateMany({
     where: {
-      applicationBoardId: boardId,
+      applicationGroupId: groupId,
       status: status,
       positionIndex: {
         gte: index,
@@ -155,19 +156,19 @@ export const incrementCardsAfterIndex = async ({
 };
 
 export const decrementCardsAfterIndex = async ({
-  boardId,
+  groupId,
   status,
   index,
   client = prisma,
 }: {
-  boardId: number;
+  groupId: number;
   status: ApplicationStatus;
   index: number;
   client?: typeof prisma;
 }) => {
   await client.applicationCard.updateMany({
     where: {
-      applicationBoardId: boardId,
+      applicationGroupId: groupId,
       status: status,
       positionIndex: {
         gte: index,

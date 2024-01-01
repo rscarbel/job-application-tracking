@@ -12,7 +12,7 @@ const PLACEHOLDER_USER_ID = 1;
 
 const defaultFormData = {
   cardId: undefined,
-  boardId: undefined,
+  groupId: undefined,
   jobId: undefined,
   company: {
     companyId: undefined,
@@ -74,7 +74,7 @@ const EditCardFormModal = ({
       userId: PLACEHOLDER_USER_ID,
       jobTitle: formData.jobTitle,
       companyName: formData.company.name,
-      boardId: formData.boardId,
+      groupId: formData.groupId,
     });
     setExistingJobData(jobData);
   };

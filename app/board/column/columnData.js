@@ -1,10 +1,10 @@
 export const columns = [
-  { id: "applied", title: "Applied", applicationCardIds: [] },
-  { id: "interview", title: "Interview", applicationCardIds: [] },
-  { id: "offer", title: "Offer", applicationCardIds: [] },
-  { id: "rejected", title: "Rejected", applicationCardIds: [] },
-  { id: "passed", title: "Passed", applicationCardIds: [] },
-  { id: "accepted", title: "Accepted", applicationCardIds: [] },
+  { id: "applied", title: "Applied", applicationIds: [] },
+  { id: "interview", title: "Interview", applicationIds: [] },
+  { id: "offer", title: "Offer", applicationIds: [] },
+  { id: "rejected", title: "Rejected", applicationIds: [] },
+  { id: "passed", title: "Passed", applicationIds: [] },
+  { id: "accepted", title: "Accepted", applicationIds: [] },
 ];
 
 export const columnOrder = [

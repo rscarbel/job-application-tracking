@@ -65,7 +65,7 @@ export const truncateText = (
 
 interface Column {
   id: string;
-  applicationCardIds: string[];
+  applicationIds: string[];
 }
 
 interface MoveResult {
@@ -78,11 +78,11 @@ export const handleSameColumnMove = (
   destination: { index: number },
   draggableId: string
 ): MoveResult => {
-  const newTaskIds = Array.from(startColumn.applicationCardIds);
+  const newTaskIds = Array.from(startColumn.applicationIds);
   newTaskIds.splice(source.index, 1);
   newTaskIds.splice(destination.index, 0, draggableId);
   return {
-    [startColumn.id]: { ...startColumn, applicationCardIds: newTaskIds },
+    [startColumn.id]: { ...startColumn, applicationIds: newTaskIds },
   };
 };
 
@@ -93,14 +93,14 @@ export const handleDifferentColumnMove = (
   destination: { index: number },
   draggableId: string
 ): MoveResult => {
-  const newStartTaskIds = Array.from(startColumn.applicationCardIds);
+  const newStartTaskIds = Array.from(startColumn.applicationIds);
   newStartTaskIds.splice(source.index, 1);
 
-  const newEndTaskIds = Array.from(endColumn.applicationCardIds);
+  const newEndTaskIds = Array.from(endColumn.applicationIds);
   newEndTaskIds.splice(destination.index, 0, draggableId);
 
   return {
-    [startColumn.id]: { ...startColumn, applicationCardIds: newStartTaskIds },
-    [endColumn.id]: { ...endColumn, applicationCardIds: newEndTaskIds },
+    [startColumn.id]: { ...startColumn, applicationIds: newStartTaskIds },
+    [endColumn.id]: { ...endColumn, applicationIds: newEndTaskIds },
   };
 };

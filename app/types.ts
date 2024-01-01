@@ -7,7 +7,7 @@ type Company = {
 
 export type NewApplicationCardFormData = {
   jobId?: number;
-  boardId: number;
+  groupId: number;
   company: Company;
   jobTitle: string;
   jobDescription?: string;
@@ -29,7 +29,7 @@ export type NewApplicationCardFormData = {
 
 export type ApplicationCardFrontEndType = {
   cardId: number;
-  boardId: number;
+  groupId: number;
   jobId: number;
   company: Company;
   jobTitle: string;
@@ -50,7 +50,7 @@ export type ApplicationCardFrontEndType = {
 
 export type ApplicationCardType = {
   id: number;
-  boardId: number;
+  groupId: number;
   jobId: number;
   applicationLink: string;
   applicationDate: Date;
@@ -83,7 +83,7 @@ export type ApplicationCardType = {
 
 export interface ApplicationCardInterface {
   cardId: number;
-  boardId: number;
+  groupId: number;
   companyName: string;
   title: string;
   payAmount: number;

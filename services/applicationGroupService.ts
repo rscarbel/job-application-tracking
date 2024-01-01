@@ -9,7 +9,7 @@ export const createApplicationBoard = async ({
   userId: string;
   client?: typeof prisma;
 }) => {
-  const applicationBoard = await client.applicationBoard.create({
+  const applicationGroup = await client.applicationGroup.create({
     data: {
       name,
       userId,
@@ -26,14 +26,14 @@ export const findApplicationBoardByName = async ({
   userId: string;
   client?: typeof prisma;
 }) => {
-  const applicationBoard = await client.applicationBoard.findFirst({
+  const applicationGroup = await client.applicationGroup.findFirst({
     where: {
       name,
       userId,
     },
   });
 
-  return applicationBoard;
+  return applicationGroup;
 };
 
 export const allBoardNames = async ({
@@ -43,7 +43,7 @@ export const allBoardNames = async ({
   userId: string;
   client?: typeof prisma;
 }) => {
-  const boards = await client.applicationBoard.findMany({
+  const boards = await client.applicationGroup.findMany({
     where: {
       userId,
     },
@@ -62,7 +62,7 @@ export const getLatestBoard = async ({
   userId: string;
   client?: typeof prisma;
 }) => {
-  const board = await client.applicationBoard.findFirst({
+  const board = await client.applicationGroup.findFirst({
     where: {
       userId,
     },

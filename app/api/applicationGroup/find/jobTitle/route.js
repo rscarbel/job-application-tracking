@@ -6,7 +6,7 @@ export async function GET(request) {
   const userId = parseInt(searchParams.get("userId"));
   const companyName = searchParams.get("companyName");
   const jobTitle = searchParams.get("jobTitle");
-  const boardId = parseInt(searchParams.get("boardId"));
+  const groupId = parseInt(searchParams.get("groupId"));
 
   if (!userId || isNaN(userId)) {
     return Response.json({
@@ -29,10 +29,10 @@ export async function GET(request) {
     });
   }
 
-  if (!boardId || isNaN(boardId)) {
+  if (!groupId || isNaN(groupId)) {
     return Response.json({
       status: 400,
-      body: { error: "Invalid boardId" },
+      body: { error: "Invalid groupId" },
     });
   }
   try {
@@ -62,8 +62,8 @@ export async function GET(request) {
       await prisma.applicationCard.findFirst({
         where: {
           jobId: job.id,
-          applicationBoardId: {
-            not: boardId,
+          applicationGroupId: {
+            not: groupId,
           },
         },
         orderBy: {
@@ -71,7 +71,7 @@ export async function GET(request) {
         },
         select: {
           applicationDate: true,
-          applicationBoard: {
+          applicationGroup: {
             select: {
               name: true,
             },
@@ -83,7 +83,7 @@ export async function GET(request) {
       await prisma.applicationCard.findFirst({
         where: {
           jobId: job.id,
-          applicationBoardId: boardId,
+          applicationGroupId: groupId,
         },
         orderBy: {
           applicationDate: "desc",
@@ -100,7 +100,7 @@ export async function GET(request) {
       ),
       lastApplicationToJobInOtherBoard: {
         date: prettifyDate(lastApplicationToJobInOtherBoard?.applicationDate),
-        boardName: lastApplicationToJobInOtherBoard?.applicationBoard.name,
+        boardName: lastApplicationToJobInOtherBoard?.applicationGroup.name,
       },
     };
 

@@ -15,10 +15,10 @@ const ColumnRenderer = ({ columnId, columns, applicationCards }) => {
         key={`${columnId}-${doubleColumns[columnId]}-group`}
         column1={column}
         column2={pairedColumn}
-        applicationCards1={column.applicationCardIds.map(
+        applicationCards1={column.applicationIds.map(
           (taskId) => applicationCards[taskId]
         )}
-        applicationCards2={pairedColumn.applicationCardIds.map(
+        applicationCards2={pairedColumn.applicationIds.map(
           (taskId) => applicationCards[taskId]
         )}
       />
@@ -31,7 +31,7 @@ const ColumnRenderer = ({ columnId, columns, applicationCards }) => {
       <SingleColumn
         key={columnId}
         column={column}
-        applicationCards={column.applicationCardIds.map(
+        applicationCards={column.applicationIds.map(
           (taskId) => applicationCards[taskId]
         )}
       />

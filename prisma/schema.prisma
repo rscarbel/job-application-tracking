@@ -119,7 +119,7 @@ enum BenefitType {
   WELLNESS_PROGRAMS
 }
 
-model ApplicationCard {
+model Application {
   id                 Int               @id @default(autoincrement())
   applicationDate    DateTime?
   applicationLink    String?
@@ -130,42 +130,42 @@ model ApplicationCard {
   status             ApplicationStatus @default(applied)
   createdAt          DateTime          @default(now())
   updatedAt          DateTime          @default(now()) @updatedAt
-  applicationBoard   ApplicationBoard  @relation(fields: [applicationBoardId], references: [id], onDelete: Cascade)
-  applicationBoardId Int
+  applicationGroup   ApplicationGroup  @relation(fields: [applicationGroupId], references: [id], onDelete: Cascade)
+  applicationGroupId Int
   documents          Document[]
   interviews         Interview[]
   tags               ApplicationTag[]
 
-  @@index([applicationBoardId])
+  @@index([applicationGroupId])
 }
 
 model ApplicationTag {
-  id           Int               @id @default(autoincrement())
+  id           Int              @id @default(autoincrement())
   name         String
-  board        ApplicationBoard  @relation(fields: [boardId], references: [id], onDelete: Cascade)
-  boardId      Int
-  applications ApplicationCard[]
+  group        ApplicationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  groupId      Int
+  applications Application[]
 
-  @@unique([name, boardId])
-  @@index([boardId])
+  @@unique([name, groupId])
+  @@index([groupId])
 }
 
 model Job {
-  id               Int               @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   title            String
   responsibilities String[]
   benefits         BenefitType[]
   description      String?
-  company          Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId        Int
-  applications     ApplicationCard[]
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  applications     Application[]
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String
-  workMode         WorkMode         @default(onsite)
+  workMode         WorkMode      @default(onsite)
   compensation     Compensation?
   addresses        Address[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @default(now()) @updatedAt
 
   @@unique([title, companyId, userId, workMode])
   @@index([companyId])
@@ -189,35 +189,36 @@ model Compensation {
   @@index([jobId])
 }
 
-model ApplicationBoard {
-  id               Int               @id @default(autoincrement())
-  name             String
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String
-  applicationCards ApplicationCard[]
-  tags             ApplicationTag[]
+model ApplicationGroup {
+  id           Int              @id @default(autoincrement())
+  name         String
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @default(now()) @updatedAt
+  isActive     Boolean          @default(true)
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  applications Application[]
+  tags         ApplicationTag[]
 
   @@unique([name, userId])
 }
 
 model User {
-  id             String             @id @default(uuid())
-  email          String             @unique
-  firstName      String?
-  lastName       String?
-  imageURL       String?
-  oAuth          OAuth[]
-  applications   ApplicationBoard[]
-  companies      Company[]
-  emailTemplates EmailTemplate[]
-  contacts       Contact[]
-  jobs           Job[]
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @default(now()) @updatedAt
-  addresses      Address[]
-  documents      Document[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  firstName         String?
+  lastName          String?
+  imageURL          String?
+  oAuth             OAuth[]
+  applicationGroups ApplicationGroup[]
+  companies         Company[]
+  emailTemplates    EmailTemplate[]
+  contacts          Contact[]
+  jobs              Job[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
+  addresses         Address[]
+  documents         Document[]
 }
 
 model Company {
@@ -330,17 +331,17 @@ model EmailTemplate {
 }
 
 model Interview {
-  id                Int             @id @default(autoincrement())
-  applicationCard   ApplicationCard @relation(fields: [applicationCardId], references: [id], onDelete: Cascade)
-  applicationCardId Int
-  scheduledTime     DateTime
-  location          String?
-  notes             String?
-  feedback          String?
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @default(now()) @updatedAt
+  id            Int         @id @default(autoincrement())
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId Int
+  scheduledTime DateTime
+  location      String?
+  notes         String?
+  feedback      String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now()) @updatedAt
 
-  @@index([applicationCardId])
+  @@index([applicationId])
 }
 
 model OAuth {
@@ -356,16 +357,16 @@ model OAuth {
 }
 
 model Document {
-  id               Int               @id @default(autoincrement())
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String
-  applicationCards ApplicationCard[]
-  type             DocumentType
-  url              String?
-  name             String
-  content          String?
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @default(now()) @updatedAt
+  id           Int           @id @default(autoincrement())
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  applications Application[]
+  type         DocumentType
+  url          String?
+  name         String
+  content      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
 
   @@index([userId])
 }

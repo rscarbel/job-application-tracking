@@ -23,7 +23,7 @@ CREATE TYPE "CompanyType" AS ENUM ('GOVERNMENT_AGENCY', 'NON_PROFIT', 'PRIVATE',
 CREATE TYPE "BenefitType" AS ENUM ('BONUSES_AND_INCENTIVES', 'CASUAL_DRESS_CODE', 'CHILDCARE_ASSISTANCE', 'COMMUTER_BENEFITS', 'COMPANY_CAR_OR_ALLOWANCE', 'COMPANY_DISCOUNTS', 'COMPANY_EVENTS_AND_RETREATS', 'CONFERENCE_ATTENDANCE', 'CULTURAL_LEAVE', 'CUSTOMIZABLE_BENEFITS_PACKAGE', 'DISABILITY_INSURANCE', 'ELDER_CARE_ASSISTANCE', 'EMERGENCY_CHILD_AND_ELDER_CARE', 'EMPLOYEE_ASSISTANCE_PROGRAMS', 'EMPLOYEE_RECOGNITION_PROGRAMS', 'EXTENDED_MATERNITY_AND_PATERNITY_LEAVE', 'FINANCIAL_PLANNING_SERVICES', 'FLEXIBLE_SCHEDULING', 'FLEXIBLE_SPENDING_ACCOUNTS', 'FREE_OR_SUBSIDIZED_MEALS', 'GLOBAL_WORK_OPPORTUNITIES', 'GREEN_COMMUTING_INCENTIVES', 'GYM_MEMBERSHIPS', 'HEALTH_INSURANCE', 'HEALTH_SAVINGS_ACCOUNTS', 'HEALTHCARE_SPECIALIST_ACCESS', 'HOME_OFFICE_STIPEND', 'HOUSING_ASSISTANCE', 'IDENTITY_THEFT_PROTECTION', 'LANGUAGE_LEARNING_ASSISTANCE', 'LEGAL_ASSISTANCE', 'LIFE_INSURANCE', 'MENTAL_HEALTH_ASSISTANCE', 'MENTORSHIP_PROGRAMS', 'MOVING_EXPENSE_REIMBURSEMENT', 'ONSITE_CHILDCARE_FACILITIES', 'PAID_PARENTAL_LEAVE', 'PAID_TIME_OFF', 'PARKING_BENEFITS', 'PET_FRIENDLY_WORKPLACE', 'PET_INSURANCE', 'PROFESSIONAL_MEMBERSHIPS', 'RELOCATION_ASSISTANCE', 'REMOTE_WORK_OPTIONS', 'RETIREMENT_PLANS', 'SABBATICAL_LEAVE', 'SOCIAL_IMPACT_PROJECTS', 'STOCK_OPTIONS', 'STRESS_MANAGEMENT_PROGRAMS', 'SUBSTANCE_ABUSE_ASSISTANCE', 'TECHNOLOGY_ALLOWANCE', 'TEMPORARY_HOUSING_ASSISTANCE', 'TRAINING_AND_DEVELOPMENT', 'TUITION_REIMBURSEMENT', 'VOLUNTEER_TIME_OFF', 'WELLNESS_PROGRAMS');
 
 -- CreateTable
-CREATE TABLE "ApplicationCard" (
+CREATE TABLE "Application" (
     "id" SERIAL NOT NULL,
     "applicationDate" TIMESTAMP(3),
     "applicationLink" TEXT,
@@ -33,16 +33,16 @@ CREATE TABLE "ApplicationCard" (
     "status" "ApplicationStatus" NOT NULL DEFAULT 'applied',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "applicationBoardId" INTEGER NOT NULL,
+    "applicationGroupId" INTEGER NOT NULL,
 
-    CONSTRAINT "ApplicationCard_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Application_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "ApplicationTag" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
-    "boardId" INTEGER NOT NULL,
+    "groupId" INTEGER NOT NULL,
 
     CONSTRAINT "ApplicationTag_pkey" PRIMARY KEY ("id")
 );
@@ -56,7 +56,7 @@ CREATE TABLE "Job" (
     "description" TEXT,
     "companyId" INTEGER NOT NULL,
     "userId" TEXT NOT NULL,
-    "workMode" "WorkMode",
+    "workMode" "WorkMode" NOT NULL DEFAULT 'onsite',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -81,14 +81,15 @@ CREATE TABLE "Compensation" (
 );
 
 -- CreateTable
-CREATE TABLE "ApplicationBoard" (
+CREATE TABLE "ApplicationGroup" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "isActive" BOOLEAN NOT NULL DEFAULT true,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "ApplicationBoard_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "ApplicationGroup_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -199,7 +200,7 @@ CREATE TABLE "EmailTemplate" (
 -- CreateTable
 CREATE TABLE "Interview" (
     "id" SERIAL NOT NULL,
-    "applicationCardId" INTEGER NOT NULL,
+    "applicationId" INTEGER NOT NULL,
     "scheduledTime" TIMESTAMP(3) NOT NULL,
     "location" TEXT,
     "notes" TEXT,
@@ -250,25 +251,25 @@ CREATE TABLE "ContactInteraction" (
 );
 
 -- CreateTable
-CREATE TABLE "_ApplicationCardToDocument" (
+CREATE TABLE "_ApplicationToDocument" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateTable
-CREATE TABLE "_ApplicationCardToApplicationTag" (
+CREATE TABLE "_ApplicationToApplicationTag" (
     "A" INTEGER NOT NULL,
     "B" INTEGER NOT NULL
 );
 
 -- CreateIndex
-CREATE INDEX "ApplicationCard_applicationBoardId_idx" ON "ApplicationCard"("applicationBoardId");
+CREATE INDEX "Application_applicationGroupId_idx" ON "Application"("applicationGroupId");
 
 -- CreateIndex
-CREATE INDEX "ApplicationTag_boardId_idx" ON "ApplicationTag"("boardId");
+CREATE INDEX "ApplicationTag_groupId_idx" ON "ApplicationTag"("groupId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ApplicationTag_name_boardId_key" ON "ApplicationTag"("name", "boardId");
+CREATE UNIQUE INDEX "ApplicationTag_name_groupId_key" ON "ApplicationTag"("name", "groupId");
 
 -- CreateIndex
 CREATE INDEX "Job_companyId_idx" ON "Job"("companyId");
@@ -286,7 +287,7 @@ CREATE UNIQUE INDEX "Compensation_jobId_key" ON "Compensation"("jobId");
 CREATE INDEX "Compensation_jobId_idx" ON "Compensation"("jobId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ApplicationBoard_name_userId_key" ON "ApplicationBoard"("name", "userId");
+CREATE UNIQUE INDEX "ApplicationGroup_name_userId_key" ON "ApplicationGroup"("name", "userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
@@ -331,7 +332,7 @@ CREATE INDEX "EmailTemplate_userId_idx" ON "EmailTemplate"("userId");
 CREATE UNIQUE INDEX "EmailTemplate_name_userId_key" ON "EmailTemplate"("name", "userId");
 
 -- CreateIndex
-CREATE INDEX "Interview_applicationCardId_idx" ON "Interview"("applicationCardId");
+CREATE INDEX "Interview_applicationId_idx" ON "Interview"("applicationId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "OAuth_provider_externalId_key" ON "OAuth"("provider", "externalId");
@@ -343,25 +344,25 @@ CREATE INDEX "Document_userId_idx" ON "Document"("userId");
 CREATE INDEX "ContactInteraction_contactId_idx" ON "ContactInteraction"("contactId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_ApplicationCardToDocument_AB_unique" ON "_ApplicationCardToDocument"("A", "B");
+CREATE UNIQUE INDEX "_ApplicationToDocument_AB_unique" ON "_ApplicationToDocument"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_ApplicationCardToDocument_B_index" ON "_ApplicationCardToDocument"("B");
+CREATE INDEX "_ApplicationToDocument_B_index" ON "_ApplicationToDocument"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_ApplicationCardToApplicationTag_AB_unique" ON "_ApplicationCardToApplicationTag"("A", "B");
+CREATE UNIQUE INDEX "_ApplicationToApplicationTag_AB_unique" ON "_ApplicationToApplicationTag"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_ApplicationCardToApplicationTag_B_index" ON "_ApplicationCardToApplicationTag"("B");
+CREATE INDEX "_ApplicationToApplicationTag_B_index" ON "_ApplicationToApplicationTag"("B");
 
 -- AddForeignKey
-ALTER TABLE "ApplicationCard" ADD CONSTRAINT "ApplicationCard_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Application" ADD CONSTRAINT "Application_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ApplicationCard" ADD CONSTRAINT "ApplicationCard_applicationBoardId_fkey" FOREIGN KEY ("applicationBoardId") REFERENCES "ApplicationBoard"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Application" ADD CONSTRAINT "Application_applicationGroupId_fkey" FOREIGN KEY ("applicationGroupId") REFERENCES "ApplicationGroup"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ApplicationTag" ADD CONSTRAINT "ApplicationTag_boardId_fkey" FOREIGN KEY ("boardId") REFERENCES "ApplicationBoard"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ApplicationTag" ADD CONSTRAINT "ApplicationTag_groupId_fkey" FOREIGN KEY ("groupId") REFERENCES "ApplicationGroup"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Job" ADD CONSTRAINT "Job_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "Company"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -373,7 +374,7 @@ ALTER TABLE "Job" ADD CONSTRAINT "Job_userId_fkey" FOREIGN KEY ("userId") REFERE
 ALTER TABLE "Compensation" ADD CONSTRAINT "Compensation_jobId_fkey" FOREIGN KEY ("jobId") REFERENCES "Job"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "ApplicationBoard" ADD CONSTRAINT "ApplicationBoard_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "ApplicationGroup" ADD CONSTRAINT "ApplicationGroup_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Company" ADD CONSTRAINT "Company_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -406,7 +407,7 @@ ALTER TABLE "Address" ADD CONSTRAINT "Address_contactId_fkey" FOREIGN KEY ("cont
 ALTER TABLE "EmailTemplate" ADD CONSTRAINT "EmailTemplate_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Interview" ADD CONSTRAINT "Interview_applicationCardId_fkey" FOREIGN KEY ("applicationCardId") REFERENCES "ApplicationCard"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Interview" ADD CONSTRAINT "Interview_applicationId_fkey" FOREIGN KEY ("applicationId") REFERENCES "Application"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OAuth" ADD CONSTRAINT "OAuth_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -418,13 +419,13 @@ ALTER TABLE "Document" ADD CONSTRAINT "Document_userId_fkey" FOREIGN KEY ("userI
 ALTER TABLE "ContactInteraction" ADD CONSTRAINT "ContactInteraction_contactId_fkey" FOREIGN KEY ("contactId") REFERENCES "Contact"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ApplicationCardToDocument" ADD CONSTRAINT "_ApplicationCardToDocument_A_fkey" FOREIGN KEY ("A") REFERENCES "ApplicationCard"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ApplicationToDocument" ADD CONSTRAINT "_ApplicationToDocument_A_fkey" FOREIGN KEY ("A") REFERENCES "Application"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ApplicationCardToDocument" ADD CONSTRAINT "_ApplicationCardToDocument_B_fkey" FOREIGN KEY ("B") REFERENCES "Document"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ApplicationToDocument" ADD CONSTRAINT "_ApplicationToDocument_B_fkey" FOREIGN KEY ("B") REFERENCES "Document"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ApplicationCardToApplicationTag" ADD CONSTRAINT "_ApplicationCardToApplicationTag_A_fkey" FOREIGN KEY ("A") REFERENCES "ApplicationCard"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ApplicationToApplicationTag" ADD CONSTRAINT "_ApplicationToApplicationTag_A_fkey" FOREIGN KEY ("A") REFERENCES "Application"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_ApplicationCardToApplicationTag" ADD CONSTRAINT "_ApplicationCardToApplicationTag_B_fkey" FOREIGN KEY ("B") REFERENCES "ApplicationTag"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_ApplicationToApplicationTag" ADD CONSTRAINT "_ApplicationToApplicationTag_B_fkey" FOREIGN KEY ("B") REFERENCES "ApplicationTag"("id") ON DELETE CASCADE ON UPDATE CASCADE;

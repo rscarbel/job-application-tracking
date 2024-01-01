@@ -8,7 +8,7 @@ import { ApplicationCardInterface } from "../../types";
 
 const ApplicationCard: FC<ApplicationCardInterface> = ({
   cardId,
-  boardId,
+  groupId,
   companyName,
   title: jobTitle,
   workMode,
@@ -50,7 +50,7 @@ const ApplicationCard: FC<ApplicationCardInterface> = ({
             const card = await findCard(cardId);
             onEditClick({
               ...card,
-              boardId: 1,
+              groupId: 1,
             });
           }}
         >
