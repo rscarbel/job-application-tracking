@@ -60,10 +60,8 @@ export const createCard = async (card: NewApplicationFormData) => {
   }
 };
 
-export const findCompanies = async (userId: String) => {
-  const response = await fetch(
-    `/api/applicationGroup/find/companies?userId=${userId}`
-  );
+export const findCompanies = async () => {
+  const response = await fetch("/api/applicationGroup/find/companies?");
   let data;
   try {
     const text = await response.text();
@@ -75,18 +73,16 @@ export const findCompanies = async (userId: String) => {
 };
 
 export const findJobTitle = async ({
-  userId,
   companyName,
   jobTitle,
   groupId,
 }: {
-  userId: string;
   companyName: string;
   jobTitle: string;
   groupId: number;
 }) => {
   const response = await fetch(
-    `/api/applicationGroup/find/jobTitle?userId=${userId}&companyName=${companyName}&jobTitle=${jobTitle}&groupId=${groupId}`
+    `/api/applicationGroup/find/jobTitle?companyName=${companyName}&jobTitle=${jobTitle}&groupId=${groupId}`
   );
   let data;
   try {

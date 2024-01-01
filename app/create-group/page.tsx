@@ -2,6 +2,7 @@
 
 import FormFields from "../form/FormFields";
 import { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import { Button } from "primereact/button";
 import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -13,8 +14,6 @@ import { findJobTitle } from "../network";
 import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { NewApplicationFormData } from "../types";
-
-const PLACEHOLDER_USER_ID = "user1";
 
 const TODAY: string = new Date().toISOString();
 
@@ -55,7 +54,16 @@ const defaultFormData: NewApplicationFormData = {
 };
 
 const CreateCard: React.FC = () => {
+  const { status } = useSession();
+
   const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/api/auth/signin");
+    }
+  }, [status, router]);
+
   const [formData, setFormData] =
     useState<NewApplicationFormData>(defaultFormData);
   const [loading, setLoading] = useState<boolean>(false);
@@ -82,7 +90,6 @@ const CreateCard: React.FC = () => {
 
   const checkIfJobExists = async () => {
     const jobData = await findJobTitle({
-      userId: PLACEHOLDER_USER_ID,
       jobTitle: formData.jobTitle,
       companyName: formData.company.name,
       groupId: formData.groupId,

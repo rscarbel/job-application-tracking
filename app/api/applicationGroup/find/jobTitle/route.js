@@ -1,12 +1,23 @@
 import { prettifyDate } from "@/utils/global";
 import prisma from "@/services/globalPrismaClient";
+import { getRequestUser } from "@/services/userService";
+import { getToken } from "next-auth/jwt";
+import unauthenticatedResponse from "@/app/api/unauthenticatedResponse";
+import serverErrorResponse from "@/app/api/serverErrorResponse";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const userId = parseInt(searchParams.get("userId"));
   const companyName = searchParams.get("companyName");
   const jobTitle = searchParams.get("jobTitle");
   const groupId = parseInt(searchParams.get("groupId"));
+
+  const token = await getToken({ req: request });
+  const { sub, provider } = token || { sub: null, provider: null };
+  if (!sub || typeof provider !== "string") return unauthenticatedResponse;
+
+  const user = await getRequestUser({ sub, provider });
+  console.log(user);
+  const userId = user.id;
 
   if (!userId || isNaN(userId)) {
     return Response.json({

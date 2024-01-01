@@ -3,7 +3,7 @@ import { createApplicationBoard } from "@/services/applicationGroupService";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
 import unauthenticatedResponse from "../../unauthenticatedResponse";
-import serverErrorRespionse from "../../serverErrorResponse";
+import serverErrorResponse from "../../serverErrorResponse";
 
 export async function POST(request) {
   const { name } = await request.json();
@@ -30,6 +30,6 @@ export async function POST(request) {
   } catch (error) {
     reportError(error);
 
-    return serverErrorRespionse;
+    return serverErrorResponse;
   }
 }

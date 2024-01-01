@@ -8,8 +8,6 @@ import { getCountryCode, getCurrencySymbol } from "@/utils/global";
 import ReadEditFormFields from "../form/ReadEditFormFields";
 import { findJobTitle } from "../network";
 
-const PLACEHOLDER_USER_ID = 1;
-
 const defaultFormData = {
   applicationId: undefined,
   groupId: undefined,
@@ -71,7 +69,6 @@ const EditCardFormModal = ({
     if (formData.jobTitle === initialJobTitle) return;
 
     const jobData = await findJobTitle({
-      userId: PLACEHOLDER_USER_ID,
       jobTitle: formData.jobTitle,
       companyName: formData.company.name,
       groupId: formData.groupId,

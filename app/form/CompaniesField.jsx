@@ -4,15 +4,13 @@ import React, { useState, useEffect } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { findCompanies } from "../network";
 
-const PLACEHOLDER_USER_ID = 1;
-
 const CompaniesField = ({ selectedCompany, onChange, isDisabled = false }) => {
   const [filteredCompanies, setFilteredCompanies] = useState([]);
   const [companiesList, setCompaniesList] = useState([]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response = await findCompanies(PLACEHOLDER_USER_ID);
+      const response = await findCompanies();
       setCompaniesList(response || []);
     };
     fetchCompanies();

@@ -7,8 +7,6 @@ import { Inplace, InplaceDisplay, InplaceContent } from "primereact/inplace";
 import EditIcon from "./EditIcon";
 import Undo from "./Undo";
 
-const PLACEHOLDER_USER_ID = 1;
-
 const ReadEditCompaniesField = ({
   selectedCompany,
   onChange,
@@ -25,7 +23,7 @@ const ReadEditCompaniesField = ({
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const response = await findCompanies(PLACEHOLDER_USER_ID);
+      const response = await findCompanies();
       setCompaniesList(response || []);
     };
     fetchCompanies();
