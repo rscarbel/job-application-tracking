@@ -2,7 +2,7 @@ import { reportError } from "@/app/api/reportError/reportError";
 import { createApplicationBoard } from "@/services/applicationGroupService";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
-import unauthorizedResponse from "../../unauthorizedResponse";
+import unauthenticatedResponse from "../../unauthenticatedResponse";
 import serverErrorRespionse from "../../serverErrorResponse";
 
 export async function POST(request) {
@@ -18,7 +18,7 @@ export async function POST(request) {
 
   const token = await getToken({ req: request });
   const { sub, provider } = token || { sub: null, provider: null };
-  if (!sub || typeof provider !== "string") return unauthorizedResponse;
+  if (!sub || typeof provider !== "string") return unauthenticatedResponse;
 
   const user = await getRequestUser({ sub, provider });
 

@@ -1,9 +1,10 @@
 import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
+import CredentialsProvider from "next-auth/providers/credentials";
 import prisma from "@/services/globalPrismaClient";
 
-export const options = {
+const options = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -140,3 +141,35 @@ export const options = {
     },
   },
 };
+
+if (process.env.NODE_ENV === "development") {
+  options.providers.push(
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (
+          credentials.username === "admin" &&
+          credentials.password === "admin"
+        ) {
+          // Fetch the user from the database
+          const user = await prisma.user.findUnique({
+            where: {
+              email: "user1@example.com",
+            },
+          });
+
+          if (user) {
+            return user;
+          }
+        }
+        return null;
+      },
+    })
+  );
+}
+
+export default options;
