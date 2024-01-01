@@ -83,9 +83,36 @@ export const createOrUpdateJob = async ({
       userId: userId,
       workMode: workMode,
     },
+    include: {
+      addresses: { orderBy: { fromDate: 'desc' }, take: 1 },
+    },
   });
 
   if (existingJob) {
+    const lastAddress = existingJob.addresses[0];
+    const hasAddressChanged = lastAddress && (
+      lastAddress.streetAddress !== address.streetAddress ||
+      lastAddress.streetAddress2 !== address.streetAddress2 ||
+      lastAddress.city !== address.city ||
+      lastAddress.state !== address.state ||
+      lastAddress.country !== address.country ||
+      lastAddress.postalCode !== address.postalCode
+    );
+
+    if (hasAddressChanged) {
+      await client.address.update({
+        where: { id: lastAddress.id },
+        data: { throughDate: new Date() },
+      });
+
+      await client.address.create({
+        data: {
+          ...address,
+          jobId: existingJob.id,
+        },
+      });
+    }
+
     return client.job.update({
       where: { id: existingJob.id },
       data: {
@@ -93,11 +120,6 @@ export const createOrUpdateJob = async ({
         compensation: {
           update: {
             ...compensation,
-          },
-        },
-        addresses: {
-          create: {
-            ...address,
           },
         },
       },
@@ -147,10 +169,37 @@ export const updateJob = async ({
       userId: job.userId,
       workMode: job.workMode,
     },
+    include: {
+      addresses: { orderBy: { fromDate: 'desc' }, take: 1 },
+    },
   });
 
   if (!existingJob) {
     throw new Error("Job not found");
+  }
+
+  const lastAddress = existingJob.addresses[0];
+  const hasAddressChanged = lastAddress && (
+    lastAddress.streetAddress !== job.address.streetAddress ||
+    lastAddress.streetAddress2 !== job.address.streetAddress2 ||
+    lastAddress.city !== job.address.city ||
+    lastAddress.state !== job.address.state ||
+    lastAddress.country !== job.address.country ||
+    lastAddress.postalCode !== job.address.postalCode
+  );
+
+  if (hasAddressChanged) {
+    await client.address.update({
+      where: { id: lastAddress.id },
+      data: { throughDate: new Date() },
+    });
+
+    await client.address.create({
+      data: {
+        ...job.address,
+        jobId: existingJob.id,
+      },
+    });
   }
 
   return await client.job.update({
@@ -164,11 +213,6 @@ export const updateJob = async ({
           ...job.compensation,
         },
       },
-      addresses: {
-        create: {
-          ...job.address,
-        },
-      },
     },
   });
-}
+};
