@@ -313,6 +313,18 @@ CREATE UNIQUE INDEX "Contact_userId_firstName_lastName_email_companyId_key" ON "
 CREATE UNIQUE INDEX "ContactAttribute_name_contactId_key" ON "ContactAttribute"("name", "contactId");
 
 -- CreateIndex
+CREATE INDEX "Address_jobId_idx" ON "Address"("jobId");
+
+-- CreateIndex
+CREATE INDEX "Address_userId_idx" ON "Address"("userId");
+
+-- CreateIndex
+CREATE INDEX "Address_companyId_idx" ON "Address"("companyId");
+
+-- CreateIndex
+CREATE INDEX "Address_contactId_idx" ON "Address"("contactId");
+
+-- CreateIndex
 CREATE INDEX "EmailTemplate_userId_idx" ON "EmailTemplate"("userId");
 
 -- CreateIndex

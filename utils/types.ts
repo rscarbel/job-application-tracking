@@ -111,14 +111,12 @@ export enum BenefitTypeEnum {
 
 export interface ApplicationCardInterface {
   id: number;
-  applicationDate?: Date | null;
-  applicationLink?: string | null;
+  applicationDate?: Date | undefined;
+  applicationLink?: string | undefined;
   jobId: number;
   positionIndex: number;
-  notes?: string | null;
+  notes?: string | undefined;
   status: ApplicationStatusEnum;
-  createdAt: Date;
-  updatedAt: Date;
   applicationBoardId: number;
   documents: DocumentInterface[];
   interviews: InterviewInterface[];
@@ -133,19 +131,17 @@ export interface ApplicationTagInterface {
 }
 
 export interface JobInterface {
-  id: number;
+  id?: number;
   title: string;
-  responsibilities: string[];
+  responsibilities?: string[];
   benefits: BenefitTypeEnum[];
-  description?: string | null;
+  description?: string | undefined;
   companyId: number;
   userId: string;
-  workMode?: WorkModeEnum | null;
-  compensation?: CompensationInterface | null;
-  addresses: AddressInterface[];
-  createdAt: Date;
-  updatedAt: Date;
-  applications: ApplicationCardInterface[];
+  workMode: WorkModeEnum;
+  compensation: CompensationInterface;
+  address?: AddressInterface | undefined;
+  applications?: ApplicationCardInterface[];
 }
 
 export interface CompensationInterface {
@@ -153,39 +149,33 @@ export interface CompensationInterface {
   payAmount: number;
   payFrequency: PayFrequencyEnum;
   currency: string;
-  salaryRangeMin?: number | null;
-  salaryRangeMax?: number | null;
+  salaryRangeMin?: number | undefined;
+  salaryRangeMax?: number | undefined;
   hoursWeek: number;
   negotiable: boolean;
-  createdAt: Date;
-  updatedAt: Date;
   jobId: number;
 }
 
 export interface ApplicationBoardInterface {
   id: number;
   name: string;
-  createdAt: Date;
-  updatedAt: Date;
   userId: string;
   applicationCards: ApplicationCardInterface[];
   tags: ApplicationTagInterface[];
 }
 
-export interface User {
+export interface UserInterface {
   id: string;
   email: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  imageURL?: string | null;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  imageURL?: string | undefined;
   oAuth: OAuthInterface[];
   applications: ApplicationBoardInterface[];
   companies: CompanyInterface[];
   emailTemplates: EmailTemplateInterface[];
   contacts: ContactInterface[];
   jobs: JobInterface[];
-  createdAt: Date;
-  updatedAt: Date;
   addresses: AddressInterface[];
   documents: DocumentInterface[];
 }
@@ -194,10 +184,8 @@ export interface CompanyInterface {
   id: number;
   name: string;
   userId: string;
-  createdAt: Date;
-  updatedAt: Date;
   addresses: AddressInterface[];
-  details: CompanyDetailInterface | null;
+  details: CompanyDetailInterface | undefined;
   jobs: JobInterface[];
   contacts: ContactInterface[];
 }
@@ -205,30 +193,28 @@ export interface CompanyInterface {
 export interface CompanyDetailInterface {
   id: number;
   companyId: number;
-  culture?: string | null;
-  desireability?: number | null;
-  industry?: string | null;
-  size?: CompanySizeEnum | null;
-  website?: string | null;
-  type?: CompanyTypeEnum | null;
-  history?: string | null;
-  mission?: string | null;
-  vision?: string | null;
-  values?: string | null;
-  description?: string | null;
-  notes?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  culture?: string | undefined;
+  desireability?: number | undefined;
+  industry?: string | undefined;
+  size?: CompanySizeEnum | undefined;
+  website?: string | undefined;
+  type?: CompanyTypeEnum | undefined;
+  history?: string | undefined;
+  mission?: string | undefined;
+  vision?: string | undefined;
+  values?: string | undefined;
+  description?: string | undefined;
+  notes?: string | undefined;
 }
 
 export interface ContactInterface {
   id: number;
   firstName: string;
   lastName: string;
-  phone?: string | null;
-  email?: string | null;
-  companyId?: number | null;
-  notes?: string | null;
+  phone?: string | undefined;
+  email?: string | undefined;
+  companyId?: number | undefined;
+  notes?: string | undefined;
   attributes: ContactAttributeInterface[];
   interactions: ContactInteractionInterface[];
   addresses: AddressInterface[];
@@ -244,20 +230,18 @@ export interface ContactAttributeInterface {
 
 export interface AddressInterface {
   id: number;
-  streetAddress?: string | null;
-  streetAddress2?: string | null;
-  city?: string | null;
-  state?: string | null;
-  country?: string | null;
-  postalCode?: string | null;
+  streetAddress?: string | undefined;
+  streetAddress2?: string | undefined;
+  city?: string | undefined;
+  state?: string | undefined;
+  country?: string | undefined;
+  postalCode?: string | undefined;
   fromDate: Date;
-  throughDate?: Date | null;
-  createdAt: Date;
-  updatedAt: Date;
-  jobId?: number | null;
-  userId?: string | null;
-  companyId?: number | null;
-  contactId?: number | null;
+  throughDate?: Date | undefined;
+  jobId?: number | undefined;
+  userId?: string | undefined;
+  companyId?: number | undefined;
+  contactId?: number | undefined;
 }
 
 export interface EmailTemplateInterface {
@@ -266,8 +250,6 @@ export interface EmailTemplateInterface {
   subject: string;
   body: string;
   userId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface InterviewInterface {
@@ -275,34 +257,28 @@ export interface InterviewInterface {
   applicationCard: ApplicationCardInterface;
   applicationCardId: number;
   scheduledTime: Date;
-  location?: string | null;
-  notes?: string | null;
-  feedback?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  location?: string | undefined;
+  notes?: string | undefined;
+  feedback?: string | undefined;
 }
 
 export interface OAuthInterface {
   id: number;
   provider: string;
   externalId: string;
-  user: User;
+  user: UserInterface;
   userId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
 export interface DocumentInterface {
   id: number;
-  user: User;
+  user: UserInterface;
   userId: string;
   applicationCards: ApplicationCardInterface[];
   type: DocumentTypeEnum;
-  url?: string | null;
+  url?: string | undefined;
   name: string;
-  content?: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+  content?: string | undefined;
 }
 
 export interface ContactInteractionInterface {
@@ -310,8 +286,6 @@ export interface ContactInteractionInterface {
   contact: ContactInterface;
   contactId: number;
   type: ContactInteractionTypeEnum;
-  notes?: string | null;
+  notes?: string | undefined;
   interactionTime: Date;
-  createdAt: Date;
-  updatedAt: Date;
 }

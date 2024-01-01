@@ -161,7 +161,7 @@ model Job {
   applications     ApplicationCard[]
   user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String
-  workMode         WorkMode?
+  workMode         WorkMode         @default(onsite)
   compensation     Compensation?
   addresses        Address[]
   createdAt        DateTime          @default(now())
@@ -308,6 +308,11 @@ model Address {
   companyId      Int?
   Contact        Contact?  @relation(fields: [contactId], references: [id])
   contactId      Int?
+
+  @@index([jobId])
+  @@index([userId])
+  @@index([companyId])
+  @@index([contactId])
 }
 
 model EmailTemplate {
