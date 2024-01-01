@@ -1,17 +1,14 @@
 import { reportErrorToServer } from "@/utils/global";
-import {
-  ApplicationCardFrontEndType,
-  NewApplicationCardFormData,
-} from "./types";
+import { ApplicationFrontEndType, NewApplicationFormData } from "./types";
 
-export const updateCardStatus = async (cardId, newStatus, index) => {
+export const updateCardStatus = async (applicationId, newStatus, index) => {
   const response = await fetch("/api/applicationGroup/updateStatus", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      id: cardId,
+      id: applicationId,
       status: newStatus,
       newPositionIndex: index,
     }),
@@ -21,7 +18,7 @@ export const updateCardStatus = async (cardId, newStatus, index) => {
   return { response, data };
 };
 
-export const updateCard = async (card: ApplicationCardFrontEndType) => {
+export const updateCard = async (card: ApplicationFrontEndType) => {
   const response = await fetch("/api/applicationGroup/updateCard", {
     method: "POST",
     headers: {
@@ -34,20 +31,20 @@ export const updateCard = async (card: ApplicationCardFrontEndType) => {
   return { response, data };
 };
 
-export const deleteCard = async (cardId: number) => {
+export const deleteCard = async (applicationId: number) => {
   const response = await fetch("/api/applicationGroup/deleteCard", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ id: cardId }),
+    body: JSON.stringify({ id: applicationId }),
   });
 
   const data = await response.json();
   return { response, data };
 };
 
-export const createCard = async (card: NewApplicationCardFormData) => {
+export const createCard = async (card: NewApplicationFormData) => {
   try {
     const response = await fetch("/api/applicationGroup/createCard", {
       method: "POST",
@@ -101,9 +98,9 @@ export const findJobTitle = async ({
   return data?.body || null;
 };
 
-export const findCard = async (cardId: number) => {
+export const findCard = async (applicationId: number) => {
   const response = await fetch(
-    `/api/applicationGroup/find/card?cardId=${cardId}`
+    `/api/applicationGroup/find/card?applicationId=${applicationId}`
   );
   let data;
   try {

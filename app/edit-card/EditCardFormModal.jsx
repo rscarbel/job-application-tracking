@@ -11,7 +11,7 @@ import { findJobTitle } from "../network";
 const PLACEHOLDER_USER_ID = 1;
 
 const defaultFormData = {
-  cardId: undefined,
+  applicationId: undefined,
   groupId: undefined,
   jobId: undefined,
   company: {
@@ -140,7 +140,7 @@ const EditCardFormModal = ({
       header: "Delete Confirmation",
       icon: "pi pi-info-circle",
       acceptClassName: "p-button-danger",
-      accept: () => onDelete(cardData.cardId),
+      accept: () => onDelete(cardData.applicationId),
     });
   };
 

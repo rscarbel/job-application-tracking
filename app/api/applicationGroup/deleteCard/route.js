@@ -3,14 +3,14 @@ import {
   decrementCardsAfterIndex,
   deleteCard,
   getFormattedCardsForBoard,
-} from "@/services/applicationCardService";
+} from "@/services/applicationService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 
 export async function POST(request) {
   const { id } = await request.json();
 
-  const cardToDelete = await prisma.applicationCard.findUnique({
+  const cardToDelete = await prisma.application.findUnique({
     where: { id: id },
     include: {
       job: true,

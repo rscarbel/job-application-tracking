@@ -4,10 +4,10 @@ import { useEditCard } from "./EditCardContext";
 import { formatCurrency } from "@/utils/global";
 import { findCard } from "../../network";
 import { getStatusColor, humanizedPayFrequency } from "../utils";
-import { ApplicationCardInterface } from "../../types";
+import { ApplicationInterface } from "../../types";
 
-const ApplicationCard: FC<ApplicationCardInterface> = ({
-  cardId,
+const Application: FC<ApplicationInterface> = ({
+  applicationId,
   groupId,
   companyName,
   title: jobTitle,
@@ -39,7 +39,7 @@ const ApplicationCard: FC<ApplicationCardInterface> = ({
   const { onEditClick } = useEditCard();
 
   return (
-    <Draggable draggableId={String(cardId)} index={index}>
+    <Draggable draggableId={String(applicationId)} index={index}>
       {(provided) => (
         <div
           ref={provided.innerRef}
@@ -47,7 +47,7 @@ const ApplicationCard: FC<ApplicationCardInterface> = ({
           {...provided.dragHandleProps}
           className={cardStyles.base}
           onClick={async () => {
-            const card = await findCard(cardId);
+            const card = await findCard(applicationId);
             onEditClick({
               ...card,
               groupId: 1,
@@ -81,4 +81,4 @@ const ApplicationCard: FC<ApplicationCardInterface> = ({
   );
 };
 
-export default ApplicationCard;
+export default Application;

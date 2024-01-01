@@ -1,7 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
-import { getFormattedCardsForBoard } from "@/services/applicationCardService";
+import { getFormattedCardsForBoard } from "@/services/applicationService";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 

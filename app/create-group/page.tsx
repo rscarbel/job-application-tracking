@@ -12,7 +12,7 @@ import "primeicons/primeicons.css";
 import { findJobTitle } from "../network";
 import { ApplicationStatus, PayFrequency, WorkMode } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { NewApplicationCardFormData } from "../types";
+import { NewApplicationFormData } from "../types";
 
 const PLACEHOLDER_USER_ID = "user1";
 
@@ -29,7 +29,7 @@ type ApiResponse = {
   error?: string;
 };
 
-const defaultFormData: NewApplicationCardFormData = {
+const defaultFormData: NewApplicationFormData = {
   groupId: 1,
   company: {
     companyId: undefined,
@@ -57,7 +57,7 @@ const defaultFormData: NewApplicationCardFormData = {
 const CreateCard: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] =
-    useState<NewApplicationCardFormData>(defaultFormData);
+    useState<NewApplicationFormData>(defaultFormData);
   const [loading, setLoading] = useState<boolean>(false);
   const [existingJobData, setExistingJobData] = useState<any>(null);
 

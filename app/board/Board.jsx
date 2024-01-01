@@ -25,9 +25,9 @@ const Board = ({ board }) => {
   const toast = useRef();
   const saveTimeoutRef = useRef();
 
-  const { columns, applicationCards, columnOrder } = boardData;
+  const { columns, applications, columnOrder } = boardData;
 
-  const numberOfCards = Object.keys(applicationCards || {}).length || 0;
+  const numberOfCards = Object.keys(applications || {}).length || 0;
 
   if (!numberOfCards) return <NoCards />;
 
@@ -107,9 +107,9 @@ const Board = ({ board }) => {
     }
   };
 
-  const handleDelete = async (cardId) => {
+  const handleDelete = async (applicationId) => {
     try {
-      const { response, data } = await deleteCard(cardId);
+      const { response, data } = await deleteCard(applicationId);
       const board = data.board;
       setBoardData(board);
       showDeleteSuccess();
@@ -152,7 +152,7 @@ const Board = ({ board }) => {
       columns: { ...prevData.columns, ...updatedColumns },
     }));
 
-    const cardId = draggableId;
+    const applicationId = draggableId;
     const newStatus = destination.droppableId;
     const index = destination.index;
 
@@ -164,7 +164,7 @@ const Board = ({ board }) => {
     saveTimeoutRef.current = setTimeout(async () => {
       try {
         const { response, data } = await updateCardStatus(
-          cardId,
+          applicationId,
           newStatus,
           index
         );
@@ -226,7 +226,7 @@ const Board = ({ board }) => {
               key={columnId}
               columnId={columnId}
               columns={columns}
-              applicationCards={applicationCards}
+              applications={applications}
             />
           ))}
         </div>

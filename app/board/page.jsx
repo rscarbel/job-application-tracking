@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import prisma from "@/services/globalPrismaClient";
-import { getFormattedCardsForBoard } from "@/services/applicationCardService";
+import { getFormattedCardsForBoard } from "@/services/applicationService";
 import BoardSkeleton from "./boardSkeleton";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";

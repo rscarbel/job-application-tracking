@@ -109,7 +109,7 @@ export enum BenefitTypeEnum {
   WellnessPrograms = "WELLNESS_PROGRAMS",
 }
 
-export interface ApplicationCardInterface {
+export interface ApplicationInterface {
   id: number;
   applicationDate?: Date | undefined;
   applicationLink?: string | undefined;
@@ -127,7 +127,7 @@ export interface ApplicationTagInterface {
   id: number;
   name: string;
   groupId: number;
-  applications: ApplicationCardInterface[];
+  applications: ApplicationInterface[];
 }
 
 export interface JobInterface {
@@ -141,7 +141,7 @@ export interface JobInterface {
   workMode: WorkModeEnum;
   compensation: CompensationInterface;
   address?: AddressInterface | undefined;
-  applications?: ApplicationCardInterface[];
+  applications?: ApplicationInterface[];
 }
 
 export interface CompensationInterface {
@@ -160,7 +160,7 @@ export interface ApplicationBoardInterface {
   id: number;
   name: string;
   userId: string;
-  applicationCards: ApplicationCardInterface[];
+  applications: ApplicationInterface[];
   tags: ApplicationTagInterface[];
 }
 
@@ -254,8 +254,8 @@ export interface EmailTemplateInterface {
 
 export interface InterviewInterface {
   id: number;
-  applicationCard: ApplicationCardInterface;
-  applicationCardId: number;
+  application: ApplicationInterface;
+  applicationId: number;
   scheduledTime: Date;
   location?: string | undefined;
   notes?: string | undefined;
@@ -274,7 +274,7 @@ export interface DocumentInterface {
   id: number;
   user: UserInterface;
   userId: string;
-  applicationCards: ApplicationCardInterface[];
+  applications: ApplicationInterface[];
   type: DocumentTypeEnum;
   url?: string | undefined;
   name: string;

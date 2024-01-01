@@ -1,4 +1,4 @@
-import { getFormattedCardData } from "@/services/applicationCardService";
+import { getFormattedCardData } from "@/services/applicationService";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
 
@@ -7,19 +7,19 @@ export async function GET(request) {
   const { sub, provider } = token || { sub: null, provider: null };
   const { searchParams } = new URL(request.url);
 
-  const cardId = parseInt(searchParams.get("cardId"));
+  const applicationId = parseInt(searchParams.get("applicationId"));
 
-  if (!cardId) {
+  if (!applicationId) {
     return Response.json({
       status: 400,
-      body: { error: "Invalid cardId" },
+      body: { error: "Invalid applicationId" },
     });
   }
 
   const user = await getRequestUser({ sub, provider });
 
   const card = await getFormattedCardData({
-    applicationCardId: cardId,
+    applicationId: applicationId,
     userId: user?.id,
   });
 

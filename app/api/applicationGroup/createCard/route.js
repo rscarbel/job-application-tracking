@@ -1,7 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { findOrCreateCompany } from "@/services/companyService";
 import { createOrUpdateJob } from "@/services/jobService";
-import { incrementCardsAfterIndex } from "@/services/applicationCardService";
+import { incrementCardsAfterIndex } from "@/services/applicationService";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
@@ -94,7 +94,7 @@ export async function POST(request) {
         client: client,
       });
 
-      await client.applicationCard.create({
+      await client.application.create({
         data: {
           status: status,
           applicationLink: applicationLink,

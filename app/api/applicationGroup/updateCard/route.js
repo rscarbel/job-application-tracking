@@ -3,7 +3,7 @@ import {
   decrementCardsAfterIndex,
   incrementCardsAfterIndex,
   getFormattedCardsForBoard,
-} from "@/services/applicationCardService";
+} from "@/services/applicationService";
 import { updateCompany } from "@/services/companyService";
 import { updateJob } from "@/services/jobService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
@@ -11,7 +11,7 @@ import { reportError } from "@/app/api/reportError/reportError";
 
 export async function POST(request) {
   const {
-    cardId,
+    applicationId,
     groupId,
     company,
     jobId,
@@ -33,7 +33,7 @@ export async function POST(request) {
   } = await request.json();
 
   const necessaryData = {
-    "Application Card": cardId,
+    "Application Card": applicationId,
     Board: groupId,
     "Company Name": company.name,
     "Job Title": jobTitle,
@@ -52,8 +52,8 @@ export async function POST(request) {
     );
   }
 
-  const currentCard = await prisma.applicationCard.findUnique({
-    where: { id: cardId },
+  const currentCard = await prisma.application.findUnique({
+    where: { id: applicationId },
   });
 
   try {
@@ -102,8 +102,8 @@ export async function POST(request) {
         client: pris,
       });
 
-      await pris.applicationCard.update({
-        where: { id: cardId },
+      await pris.application.update({
+        where: { id: applicationId },
         data: {
           applicationLink: applicationLink,
           applicationDate: applicationDate,

@@ -12,17 +12,17 @@ const defaultAddress = {
 };
 
 export const getFormattedCardData = async ({
-  applicationCardId,
+  applicationId,
   userId,
   client = prisma,
 }: {
-  applicationCardId: number;
+  applicationId: number;
   userId: string;
   client?: typeof prisma;
 }) => {
-  const applicationCard = await client.applicationCard.findUnique({
+  const application = await client.application.findUnique({
     where: {
-      id: applicationCardId,
+      id: applicationId,
     },
     include: {
       applicationGroup: {
@@ -40,21 +40,21 @@ export const getFormattedCardData = async ({
     },
   });
 
-  if (!applicationCard) {
+  if (!application) {
     throw new Error("Application Card not found");
   }
 
-  if (applicationCard.applicationGroup.userId !== userId) {
+  if (application.applicationGroup.userId !== userId) {
     throw new Error("Unauthorized");
   }
 
-  const job = applicationCard.job;
+  const job = application.job;
   const compensation = job.compensation;
   const lastAddress = job.addresses[job.addresses.length - 1] || defaultAddress;
 
   return {
-    cardId: applicationCard.id,
-    groupId: applicationCard.applicationGroupId,
+    applicationId: application.id,
+    groupId: application.applicationGroupId,
     jobId: job.id,
     company: {
       companyId: job.company.id,
@@ -72,11 +72,11 @@ export const getFormattedCardData = async ({
     state: lastAddress.state,
     country: lastAddress.country,
     postalCode: lastAddress.postalCode,
-    applicationLink: applicationCard.applicationLink,
-    applicationDate: applicationCard.applicationDate,
-    status: applicationCard.status,
-    positionIndex: applicationCard.positionIndex,
-    notes: applicationCard.notes,
+    applicationLink: application.applicationLink,
+    applicationDate: application.applicationDate,
+    status: application.status,
+    positionIndex: application.positionIndex,
+    notes: application.notes,
   };
 };
 
@@ -87,7 +87,7 @@ export const getFormattedCardsForBoard = async ({
   groupId: number;
   client?: typeof prisma;
 }) => {
-  const applicationCards = await client.applicationCard.findMany({
+  const applications = await client.application.findMany({
     where: {
       applicationGroupId: groupId,
     },
@@ -105,14 +105,14 @@ export const getFormattedCardsForBoard = async ({
     },
   });
 
-  return applicationCards.map((card) => {
+  return applications.map((card) => {
     const job = card.job;
     const compensation = job.compensation;
     const lastAddress =
       job.addresses[job.addresses.length - 1] || defaultAddress;
 
     return {
-      cardId: card.id,
+      applicationId: card.id,
       companyName: job.company.name,
       title: job.title,
       workMode: job.workMode,
@@ -139,7 +139,7 @@ export const incrementCardsAfterIndex = async ({
   index: number;
   client?: typeof prisma;
 }) => {
-  await client.applicationCard.updateMany({
+  await client.application.updateMany({
     where: {
       applicationGroupId: groupId,
       status: status,
@@ -166,7 +166,7 @@ export const decrementCardsAfterIndex = async ({
   index: number;
   client?: typeof prisma;
 }) => {
-  await client.applicationCard.updateMany({
+  await client.application.updateMany({
     where: {
       applicationGroupId: groupId,
       status: status,
@@ -183,15 +183,15 @@ export const decrementCardsAfterIndex = async ({
 };
 
 export const deleteCard = async ({
-  cardId,
+  applicationId,
   client = prisma,
 }: {
-  cardId: number;
+  applicationId: number;
   client?: typeof prisma;
 }) => {
-  const cardToDelete = await client.applicationCard.findUnique({
+  const cardToDelete = await client.application.findUnique({
     where: {
-      id: cardId,
+      id: applicationId,
     },
     include: {
       job: true,
@@ -204,11 +204,11 @@ export const deleteCard = async ({
     throw new Error("Card not found");
   }
 
-  await client.applicationCard.delete({
-    where: { id: cardId },
+  await client.application.delete({
+    where: { id: applicationId },
   });
 
-  const otherApplicationsForJob = await client.applicationCard.findFirst({
+  const otherApplicationsForJob = await client.application.findFirst({
     where: {
       jobId: job.id,
     },
@@ -223,11 +223,11 @@ export const deleteCard = async ({
   }
 };
 
-export const linkJob = async (applicationCard, jobId) => {
+export const linkJob = async (application, jobId) => {
   try {
-    // Update the jobId for the applicationCard in the database
-    await prisma.applicationCard.update({
-      where: { id: applicationCard.id },
+    // Update the jobId for the application in the database
+    await prisma.application.update({
+      where: { id: application.id },
       data: { jobId: jobId },
     });
 
@@ -242,7 +242,7 @@ export const linkJob = async (applicationCard, jobId) => {
   } catch (error) {
     // Log the error for debugging or monitoring purposes
     console.error(
-      `Error linking job with ID ${jobId} to application card with ID ${applicationCard.id}:`,
+      `Error linking job with ID ${jobId} to application card with ID ${application.id}:`,
       error.message
     );
 

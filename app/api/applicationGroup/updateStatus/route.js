@@ -4,7 +4,7 @@ import { reportError } from "@/app/api/reportError/reportError";
 export async function POST(request) {
   const { id, status, newPositionIndex } = await request.json();
 
-  const currentCard = await prisma.applicationCard.findUnique({
+  const currentCard = await prisma.application.findUnique({
     where: { id: parseInt(id) },
   });
   let updatedCard;
@@ -15,7 +15,7 @@ export async function POST(request) {
         // Moved within the same column
         if (currentCard.positionIndex < newPositionIndex) {
           // Moved down
-          await pris.applicationCard.updateMany({
+          await pris.application.updateMany({
             where: {
               status: status,
               positionIndex: {
@@ -31,7 +31,7 @@ export async function POST(request) {
           });
         } else if (currentCard.positionIndex > newPositionIndex) {
           // Moved up
-          await pris.applicationCard.updateMany({
+          await pris.application.updateMany({
             where: {
               status: status,
               positionIndex: {
@@ -49,7 +49,7 @@ export async function POST(request) {
       } else {
         // Moved to a new column
         // Decrease position indices in the old column
-        await pris.applicationCard.updateMany({
+        await pris.application.updateMany({
           where: {
             status: currentCard.status,
             positionIndex: {
@@ -64,7 +64,7 @@ export async function POST(request) {
         });
 
         // Increase position indices in the new column
-        await pris.applicationCard.updateMany({
+        await pris.application.updateMany({
           where: {
             status: status,
             positionIndex: {
@@ -79,7 +79,7 @@ export async function POST(request) {
         });
       }
 
-      updatedCard = await pris.applicationCard.update({
+      updatedCard = await pris.application.update({
         where: { id: parseInt(id) },
         data: { status: status, positionIndex: newPositionIndex },
       });

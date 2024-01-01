@@ -1,20 +1,20 @@
-export const calculateBoardStructure = (applicationCards) => {
+export const calculateBoardStructure = (applications) => {
   const generatedColumns = columns.reduce((acc, column) => {
-    const columnApplicationCards = applicationCards.filter(
-      (applicationCard) => applicationCard.status === column.id
+    const columnApplications = applications.filter(
+      (application) => application.status === column.id
     );
     acc[column.id] = {
       ...column,
-      applicationIds: columnApplicationCards.map(
-        (applicationCard) => applicationCard.cardId
+      applicationIds: columnApplications.map(
+        (application) => application.applicationId
       ),
     };
     return acc;
   }, {});
 
   return {
-    applicationCards: applicationCards.reduce((acc, card) => {
-      acc[card.cardId] = card;
+    applications: applications.reduce((acc, card) => {
+      acc[card.applicationId] = card;
       return acc;
     }, {}),
     columns: generatedColumns,

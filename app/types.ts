@@ -5,7 +5,7 @@ type Company = {
   name: string;
 };
 
-export type NewApplicationCardFormData = {
+export type NewApplicationFormData = {
   jobId?: number;
   groupId: number;
   company: Company;
@@ -27,8 +27,8 @@ export type NewApplicationCardFormData = {
   status?: ApplicationStatus;
 };
 
-export type ApplicationCardFrontEndType = {
-  cardId: number;
+export type ApplicationFrontEndType = {
+  applicationId: number;
   groupId: number;
   jobId: number;
   company: Company;
@@ -48,7 +48,7 @@ export type ApplicationCardFrontEndType = {
   status: ApplicationStatus;
 };
 
-export type ApplicationCardType = {
+export type ApplicationType = {
   id: number;
   groupId: number;
   jobId: number;
@@ -81,8 +81,8 @@ export type ApplicationCardType = {
   };
 };
 
-export interface ApplicationCardInterface {
-  cardId: number;
+export interface ApplicationInterface {
+  applicationId: number;
   groupId: number;
   companyName: string;
   title: string;

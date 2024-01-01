@@ -1,7 +1,7 @@
 import SingleColumn from "./SingleColumn";
 import DoubleColumn from "./DoubleColumn";
 
-const ColumnRenderer = ({ columnId, columns, applicationCards }) => {
+const ColumnRenderer = ({ columnId, columns, applications }) => {
   const doubleColumns = {
     offer: "accepted",
     rejected: "passed",
@@ -15,11 +15,11 @@ const ColumnRenderer = ({ columnId, columns, applicationCards }) => {
         key={`${columnId}-${doubleColumns[columnId]}-group`}
         column1={column}
         column2={pairedColumn}
-        applicationCards1={column.applicationIds.map(
-          (taskId) => applicationCards[taskId]
+        applications1={column.applicationIds.map(
+          (taskId) => applications[taskId]
         )}
-        applicationCards2={pairedColumn.applicationIds.map(
-          (taskId) => applicationCards[taskId]
+        applications2={pairedColumn.applicationIds.map(
+          (taskId) => applications[taskId]
         )}
       />
     );
@@ -31,8 +31,8 @@ const ColumnRenderer = ({ columnId, columns, applicationCards }) => {
       <SingleColumn
         key={columnId}
         column={column}
-        applicationCards={column.applicationIds.map(
-          (taskId) => applicationCards[taskId]
+        applications={column.applicationIds.map(
+          (taskId) => applications[taskId]
         )}
       />
     );

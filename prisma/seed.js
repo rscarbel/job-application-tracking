@@ -168,7 +168,7 @@ const resetDatabase = async () => {
   await prisma.document.deleteMany();
   await prisma.company.deleteMany();
   await prisma.companyDetail.deleteMany();
-  await prisma.applicationCard.deleteMany();
+  await prisma.application.deleteMany();
   await prisma.applicationTag.deleteMany();
   await prisma.job.deleteMany();
   await prisma.address.deleteMany();
@@ -394,7 +394,7 @@ async function main() {
     const randomTags = getRandomTags();
     const tagIds = randomTags.map((tagName) => tagMap[tagName]);
 
-    const applicationCard = await prisma.applicationCard.create({
+    const application = await prisma.application.create({
       data: {
         applicationDate: faker.date.past({
           years: 1,
@@ -426,7 +426,7 @@ async function main() {
       for (let k = 0; k < numInterviews; k++) {
         await prisma.interview.create({
           data: {
-            applicationCardId: applicationCard.id,
+            applicationId: application.id,
             scheduledTime: faker.date.future(),
             location: faker.location.city(),
             notes: faker.lorem.sentence(),

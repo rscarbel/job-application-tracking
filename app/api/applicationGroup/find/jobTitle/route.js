@@ -58,8 +58,8 @@ export async function GET(request) {
       },
     });
 
-    const lastApplicationToJobInOtherBoard =
-      await prisma.applicationCard.findFirst({
+    const lastApplicationToJobInOtherBoard = await prisma.application.findFirst(
+      {
         where: {
           jobId: job.id,
           applicationGroupId: {
@@ -77,21 +77,21 @@ export async function GET(request) {
             },
           },
         },
-      });
+      }
+    );
 
-    const lastApplicationToJobInThisBoard =
-      await prisma.applicationCard.findFirst({
-        where: {
-          jobId: job.id,
-          applicationGroupId: groupId,
-        },
-        orderBy: {
-          applicationDate: "desc",
-        },
-        select: {
-          applicationDate: true,
-        },
-      });
+    const lastApplicationToJobInThisBoard = await prisma.application.findFirst({
+      where: {
+        jobId: job.id,
+        applicationGroupId: groupId,
+      },
+      orderBy: {
+        applicationDate: "desc",
+      },
+      select: {
+        applicationDate: true,
+      },
+    });
 
     const payload = {
       jobTitle: jobTitle,
