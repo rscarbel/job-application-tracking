@@ -210,9 +210,9 @@ async function main() {
     },
   });
 
-  const board1 = await prisma.applicationGroup.create({
+  const group1 = await prisma.applicationGroup.create({
     data: {
-      name: "Initial Board",
+      name: "Initial group",
       userId: user1.id,
     },
   });
@@ -222,9 +222,9 @@ async function main() {
       return await prisma.applicationTag.create({
         data: {
           name: tag,
-          board: {
+          group: {
             connect: {
-              id: board1.id,
+              id: group1.id,
             },
           },
         },
@@ -411,7 +411,7 @@ async function main() {
         positionIndex: statusIndices[currentStatus],
         applicationGroup: {
           connect: {
-            id: board1.id,
+            id: group1.id,
           },
         },
         tags: {

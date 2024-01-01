@@ -6,7 +6,7 @@ import { findCard } from "../../network";
 import { getStatusColor, humanizedPayFrequency } from "../utils";
 import { ApplicationInterface } from "../../types";
 
-const Application: FC<ApplicationInterface> = ({
+const ApplicationCard: FC<ApplicationInterface> = ({
   applicationId,
   groupId,
   companyName,
@@ -81,4 +81,4 @@ const Application: FC<ApplicationInterface> = ({
   );
 };
 
-export default Application;
+export default ApplicationCard;

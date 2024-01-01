@@ -1,5 +1,5 @@
 import { ScrollTop } from "primereact/scrolltop";
-import Application from "../card/Application";
+import ApplicationCard from "../card/ApplicationCard";
 import { Droppable } from "@hello-pangea/dnd";
 
 const SingleColumn = ({ column, applications, isHalfSizeOnly = false }) => {
@@ -15,7 +15,7 @@ const SingleColumn = ({ column, applications, isHalfSizeOnly = false }) => {
             className={`bg-white rounded p-6 ${maxColumnHeight} overflow-y-auto concave-container-shadow`}
           >
             {applications.map((application, index) => (
-              <Application
+              <ApplicationCard
                 key={String(application.applicationId)}
                 {...application}
                 index={index}
