@@ -2,6 +2,9 @@ import dynamic from "next/dynamic";
 import prisma from "@/services/globalPrismaClient";
 import { getFormattedCardsForBoard } from "@/services/applicationService";
 import BoardSkeleton from "./boardSkeleton";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
+import options from "../api/auth/[...nextauth]/options";
 import "primereact/resources/themes/viva-light/theme.css";
 import "primeicons/primeicons.css";
 import { calculateBoardStructure } from "@/app/api/applicationGroup/calculateBoardStructure";
@@ -30,7 +33,15 @@ const getCardsForUser = async (email) => {
 };
 
 const Job = async () => {
-  const board = await getCardsForUser("user1@example.com");
+  const session = await getServerSession(options);
+
+  if (!session) {
+    redirect("/api/auth/signin");
+    return;
+  }
+  const userEmail = session.user.email;
+
+  const board = await getCardsForUser(userEmail);
 
   return <DynamicTextEditor board={board} />;
 };
