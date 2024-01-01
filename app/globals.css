@@ -10,6 +10,49 @@
   @tailwind utilities;
 }
 
+:root {
+  --color-gray: "#CFE2EB";
+  --color-green: "#8FD1CF";
+  --color-red: "#FFAF98";
+  --color-slate-dark: "#507B8E";
+  --color-slate-light: "#F4FFFF";
+  --color-slate-medium: "#B6C8D4";
+  --color-slate-semi-dark: "#89ADBD";
+  --color-yellow: "#FCD68E";
+}
+
+.gray {
+  color: var(--color-gray);
+}
+
+.green {
+  color: var(--color-green);
+}
+
+.red {
+  color: var(--color-red);
+}
+
+.slate-dark {
+  color: var(--color-slate-dark);
+}
+
+.slate-light {
+  color: var(--color-slate-light);
+}
+
+.slate-medium {
+  color: var(--color-slate-medium);
+}
+
+.slate-semi-dark {
+  color: var(--color-slate-semi-dark);
+}
+
+.yellow {
+  color: var(--color-yellow);
+}
+
 .claymorphic-shadow {
   box-shadow: 12px 12px 40px 0px rgba(170, 170, 170, 0.5), inset -4px -4px 8px 0px rgba(112, 112, 112, 0.6), inset 0px 6px 14px 0px rgb(255, 255, 255);
   backdrop-filter: blur(10px);
