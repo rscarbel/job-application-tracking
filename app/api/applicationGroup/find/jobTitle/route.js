@@ -16,7 +16,6 @@ export async function GET(request) {
   if (!sub || typeof provider !== "string") return unauthenticatedResponse;
 
   const user = await getRequestUser({ sub, provider });
-  console.log(user);
   const userId = user.id;
 
   if (!userId || isNaN(userId)) {

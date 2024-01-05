@@ -11,6 +11,8 @@ const CompaniesField = ({ selectedCompany, onChange, isDisabled = false }) => {
   useEffect(() => {
     const fetchCompanies = async () => {
       const response = await findCompanies();
+      if (response.error) return;
+
       setCompaniesList(response || []);
     };
     fetchCompanies();

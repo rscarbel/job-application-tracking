@@ -61,7 +61,7 @@ export const createCard = async (card: NewApplicationFormData) => {
 };
 
 export const findCompanies = async () => {
-  const response = await fetch("/api/applicationGroup/find/companies?");
+  const response = await fetch("/api/applicationGroup/find/companies");
   let data;
   try {
     const text = await response.text();
