@@ -228,7 +228,6 @@ model Company {
   jobs       Job[]
   user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     String
-  locationId Int?
   createdAt  DateTime       @default(now())
   updatedAt  DateTime       @default(now()) @updatedAt
   addresses  Address[]
