@@ -1,3 +1,5 @@
+Hi there! For details on how to get set up and any other dev questions, please reference the [GitHub wiki](https://github.com/rscarbel/job-application-tracking/wiki)!
+
 <img width="1359" alt="Screenshot 2023-11-07 at 11 10 14 PM" src="https://github.com/rscarbel/job-application-tracking/assets/40727301/425285c2-1fdf-4750-801b-9053b8c3b9be">
 
 <img width="1143" alt="Screenshot 2023-11-07 at 11 11 20 PM" src="https://github.com/rscarbel/job-application-tracking/assets/40727301/bd9f691b-20b9-4717-8918-fbc583716288">
