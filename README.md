@@ -11,3 +11,5 @@
 <img width="1257" alt="Screenshot 2023-11-07 at 11 12 39 PM" src="https://github.com/rscarbel/job-application-tracking/assets/40727301/56a97c5f-9515-49f5-9d7a-2a70f8dbcea7">
 
 <img width="905" alt="Screenshot 2023-11-07 at 11 12 58 PM" src="https://github.com/rscarbel/job-application-tracking/assets/40727301/d6a190ad-8c64-4be3-b677-d7b9e732cf41">
+
+![Job-Application-Tracking](https://github.com/rscarbel/job-application-tracking/assets/40727301/cf293de8-4f1c-4c8d-aaef-8cb2d148f1fc)
