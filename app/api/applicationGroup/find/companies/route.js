@@ -10,7 +10,6 @@ export async function GET(request) {
   if (!sub || typeof provider !== "string") return unauthenticatedResponse;
 
   const user = await getRequestUser({ sub, provider });
-  console.log(user);
   const userId = user.id;
 
   if (!userId || isNaN(parseInt(userId))) {
@@ -22,7 +21,7 @@ export async function GET(request) {
 
   const companies = await prisma.company.findMany({
     where: {
-      userId: parseInt(userId),
+      userId,
     },
     select: {
       name: true,

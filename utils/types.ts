@@ -145,15 +145,15 @@ export interface JobInterface {
 }
 
 export interface CompensationInterface {
-  id: number;
+  id?: number;
   payAmount: number;
   payFrequency: PayFrequencyEnum;
   currency: string;
   salaryRangeMin?: number | undefined;
   salaryRangeMax?: number | undefined;
-  hoursWeek: number;
-  negotiable: boolean;
-  jobId: number;
+  hoursWeek?: number;
+  negotiable?: boolean;
+  jobId?: number;
 }
 
 export interface ApplicationBoardInterface {
