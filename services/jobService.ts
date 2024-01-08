@@ -203,6 +203,10 @@ export const updateJob = async ({
       id: existingJob.id,
     },
     data: {
+      title: job.title,
+      responsibilities: job.responsibilities,
+      companyId: job.companyId,
+      workMode: job.workMode,
       description: job.description,
       compensation: {
         update: {

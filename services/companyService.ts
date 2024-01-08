@@ -86,57 +86,55 @@ export const updateCompany = async ({
   }
 
   // Begin a transaction to ensure atomicity of operations
-  return client.$transaction(async (trx) => {
-    const company = await trx.company.findUnique({
-      where: { id: companyId },
-      include: { addresses: { orderBy: { fromDate: 'desc' }, take: 1 } },
-    });
-
-    if (!company) {
-      throw new Error("Company not found");
-    }
-
-    // Address update logic
-    if (companyAddressProperties) {
-      const lastAddress = company.addresses[0];
-
-      const hasAddressChanged = lastAddress && (
-        lastAddress.streetAddress !== companyAddressProperties.streetAddress ||
-        lastAddress.streetAddress2 !== companyAddressProperties.streetAddress2 ||
-        lastAddress.city !== companyAddressProperties.city ||
-        lastAddress.state !== companyAddressProperties.state ||
-        lastAddress.country !== companyAddressProperties.country ||
-        lastAddress.postalCode !== companyAddressProperties.postalCode
-      );
-
-      if (hasAddressChanged) {
-        // Update the old address throughDate
-        await trx.address.update({
-          where: { id: lastAddress.id },
-          data: { throughDate: companyAddressProperties.fromDate },
-        });
-
-        // Create a new address
-        await trx.address.create({
-          data: {
-            ...companyAddressProperties,
-            companyId,
-          },
-        });
-      }
-    }
-
-    // Update company details
-    await trx.company.update({
-      where: { id: companyId },
-      data: {
-        name: companyName,
-        details: companyDetailsProperties ? { create: { ...companyDetailsProperties } } : {},
-      },
-    });
-
-    return company;
+  const company = await client.company.findUnique({
+    where: { id: companyId },
+    include: { addresses: { orderBy: { fromDate: 'desc' }, take: 1 } },
   });
+
+  if (!company) {
+    throw new Error("Company not found");
+  }
+
+  // Address update logic
+  if (companyAddressProperties) {
+    const lastAddress = company.addresses[0];
+
+    const hasAddressChanged = lastAddress && (
+      lastAddress.streetAddress !== companyAddressProperties.streetAddress ||
+      lastAddress.streetAddress2 !== companyAddressProperties.streetAddress2 ||
+      lastAddress.city !== companyAddressProperties.city ||
+      lastAddress.state !== companyAddressProperties.state ||
+      lastAddress.country !== companyAddressProperties.country ||
+      lastAddress.postalCode !== companyAddressProperties.postalCode
+    );
+
+    if (hasAddressChanged) {
+      // Update the old address throughDate
+      await client.address.update({
+        where: { id: lastAddress.id },
+        data: { throughDate: companyAddressProperties.fromDate },
+      });
+
+      // Create a new address
+      await client.address.create({
+        data: {
+          ...companyAddressProperties,
+          companyId,
+        },
+      });
+    }
+  }
+
+  // Update company details
+  await client.company.update({
+    where: { id: companyId },
+    data: {
+      name: companyName,
+      details: companyDetailsProperties ? { create: { ...companyDetailsProperties } } : {},
+    },
+  });
+
+  return company;
 };
 
 
