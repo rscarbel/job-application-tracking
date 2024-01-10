@@ -1,6 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/utils/global";
 import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
+import { TransactionClient } from "@/utils/types";
 
 const defaultAddress = {
   streetAddress: "",
@@ -18,7 +19,7 @@ export const getFormattedCardData = async ({
 }: {
   applicationId: number;
   userId: string;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const application = await client.application.findUnique({
     where: {
@@ -85,7 +86,7 @@ export const getFormattedCardsForBoard = async ({
   client = prisma,
 }: {
   groupId: number;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const applications = await client.application.findMany({
     where: {
@@ -137,7 +138,7 @@ export const incrementCardsAfterIndex = async ({
   groupId: number;
   status: ApplicationStatus;
   index: number;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   await client.application.updateMany({
     where: {
@@ -164,7 +165,7 @@ export const decrementCardsAfterIndex = async ({
   groupId: number;
   status: ApplicationStatus;
   index: number;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   await client.application.updateMany({
     where: {
@@ -187,7 +188,7 @@ export const deleteCard = async ({
   client = prisma,
 }: {
   applicationId: number;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const cardToDelete = await client.application.findUnique({
     where: {

@@ -30,6 +30,6 @@ export async function POST(request) {
   } catch (error) {
     reportError(error);
 
-    return serverErrorResponse;
+    return serverErrorResponse();
   }
 }

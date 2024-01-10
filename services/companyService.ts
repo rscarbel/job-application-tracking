@@ -1,5 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
-import { CompanyDetailInterface, AddressInterface } from "@/utils/types";
+import { CompanyDetailInterface, AddressInterface, TransactionClient } from "@/utils/types";
+
 
 
 /**
@@ -22,7 +23,7 @@ export const findOrCreateCompany = async ({
   userId: string;
   addressProperties: AddressInterface;
   companyDetailsProperties: CompanyDetailInterface;
-  client?: typeof prisma;
+  client?: TransactionClient;
 }) => {
   const company = await client.company.findFirst({
     where: {
