@@ -5,8 +5,12 @@ import { incrementCardsAfterIndex } from "@/services/applicationService";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
+import { CreateCardRequest } from "./interface";
+import serverErrorResponse from "@/app/api/serverErrorResponse";
 
 export async function POST(request) {
+  const requestData = await request.json();
+  const createCardRequest: CreateCardRequest = requestData;
   const {
     status,
     groupId,
@@ -27,10 +31,12 @@ export async function POST(request) {
     applicationDate,
     positionIndex,
     notes,
-  } = await request.json();
+  } = createCardRequest;
+
   const token = await getToken({ req: request });
   const { sub, provider } = token || { sub: null, provider: null };
-  if (!sub || !provider)
+
+  if (typeof sub != "string" || typeof provider != "string")
     return new Response(
       JSON.stringify({
         error: "You must login before creating a new application",
@@ -52,18 +58,18 @@ export async function POST(request) {
       };
 
       const companyDetailsProperties = {
-        culture: "",
-        desireability: 0,
-        industry: "",
-        size: "",
-        website: "",
-        type: "",
-        history: "",
-        mission: "",
-        vision: "",
-        values: "",
-        description: "",
-        notes: "",
+        culture: undefined,
+        desireability: undefined,
+        industry: undefined,
+        size: undefined,
+        website: undefined,
+        type: undefined,
+        history: undefined,
+        mission: undefined,
+        vision: undefined,
+        values: undefined,
+        description: undefined,
+        notes: undefined,
       };
 
       const applicationGroup = await client.applicationGroup.findFirst({
@@ -82,15 +88,19 @@ export async function POST(request) {
       });
 
       const job = await createOrUpdateJob({
-        jobTitle: jobTitle,
-        userId: user.id,
-        companyId: newCompany.id,
-        jobDescription: jobDescription,
-        workMode: workMode,
-        payAmount: payAmount,
-        payFrequency: payFrequency,
-        currency: currency,
-        addressProperties,
+        job: {
+          title: jobTitle,
+          userId: user.id,
+          companyId: newCompany.id,
+          description: jobDescription,
+          workMode: workMode,
+          compensation: {
+            payAmount: payAmount,
+            payFrequency: payFrequency,
+            currency: currency,
+          },
+          address: addressProperties,
+        },
         client: client,
       });
 
@@ -111,11 +121,6 @@ export async function POST(request) {
               id: job.id,
             },
           },
-          user: {
-            connect: {
-              id: user.id,
-            },
-          },
         },
       });
 
@@ -126,7 +131,7 @@ export async function POST(request) {
         client: client,
       });
     });
-    return new Response({ error: null }, { status: 200 });
+    return new Response(JSON.stringify({ error: null }), { status: 200 });
   } catch (error) {
     reportError(error);
 
