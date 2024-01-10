@@ -1,4 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
+import { TransactionClient } from "@/utils/types";
+
 
 export const getRequestUser = async ({
   sub,
@@ -7,7 +9,7 @@ export const getRequestUser = async ({
 }: {
   sub: string;
   provider: string;
-  client?: typeof prisma;
+  client?: TransactionClient;
 }) => {
   if (!sub || !provider) return null;
 

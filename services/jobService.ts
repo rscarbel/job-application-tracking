@@ -1,5 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
-import { JobInterface } from "@/utils/types";
+import { JobInterface, TransactionClient } from "@/utils/types";
 import { areAddressessIdentical } from "@/utils/data";
 
 export const findOrCreateJob = async ({
@@ -7,7 +7,7 @@ export const findOrCreateJob = async ({
   client = prisma,
 }: {
   job: JobInterface;
-  client?: typeof prisma;
+  client?: typeof prisma | TransactionClient;
 }) => {
   const existingJob = job.id
     ? await client.job.findUnique({
@@ -74,7 +74,7 @@ export const createOrUpdateJob = async ({
   client = prisma,
 }: {
   job: JobInterface;
-  client?: typeof prisma;
+  client?: typeof prisma | TransactionClient;
 }) => {
   const existingJob = await client.job.findUnique({
     where: {
@@ -153,7 +153,7 @@ export const updateJob = async ({
   client = prisma,
 }: {
   job: JobInterface;
-  client?: typeof prisma;
+  client?: typeof prisma | TransactionClient;
 }) => {
   const existingJob = job.id
     ? await client.job.findUnique({
