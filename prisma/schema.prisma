@@ -14,6 +14,12 @@ enum WorkMode {
   hybrid
 }
 
+enum CompanyDesireability {
+  high
+  medium
+  low
+}
+
 enum ApplicationStatus {
   applied
   interview
@@ -204,58 +210,74 @@ model ApplicationGroup {
 }
 
 model User {
-  id                String             @id @default(uuid())
-  email             String             @unique
-  firstName         String?
-  lastName          String?
-  imageURL          String?
-  oAuth             OAuth[]
-  applicationGroups ApplicationGroup[]
-  companies         Company[]
-  emailTemplates    EmailTemplate[]
-  contacts          Contact[]
-  jobs              Job[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @default(now()) @updatedAt
-  addresses         Address[]
-  documents         Document[]
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  firstName          String?
+  lastName           String?
+  imageURL           String?
+  oAuth              OAuth[]
+  applicationGroups  ApplicationGroup[]
+  companies          Company[]
+  companyPreferences CompanyPreference[]
+  emailTemplates     EmailTemplate[]
+  contacts           Contact[]
+  jobs               Job[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @default(now()) @updatedAt
+  addresses          Address[]
+  documents          Document[]
 }
 
 model Company {
-  id         Int            @id @default(autoincrement())
-  name       String
-  contacts   Contact[]
-  jobs       Job[]
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @default(now()) @updatedAt
-  addresses  Address[]
-  details    CompanyDetail?
+  id                 Int                 @id @default(autoincrement())
+  name               String
+  contacts           Contact[]
+  jobs               Job[]
+  user               User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @default(now()) @updatedAt
+  addresses          Address[]
+  details            CompanyDetail?
+  companyPreferences CompanyPreference[]
 
   @@unique([name, userId])
   @@index([userId])
 }
 
 model CompanyDetail {
-  id            Int          @id @default(autoincrement())
-  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId     Int          @unique
-  culture       String?
-  desireability Int?
-  industry      String?
-  size          CompanySize?
-  website       String?
-  type          CompanyType?
-  history       String?
-  mission       String?
-  vision        String?
-  values        String?
-  description   String?
-  notes         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now()) @updatedAt
+  id          Int          @id @default(autoincrement())
+  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   Int          @unique
+  culture     String?
+  industry    String?
+  size        CompanySize?
+  website     String?
+  type        CompanyType?
+  history     String?
+  mission     String?
+  vision      String?
+  values      String?
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
 
+  @@index([companyId])
+}
+
+model CompanyPreference {
+  id            Int                   @id @default(autoincrement())
+  desireability CompanyDesireability?
+  notes         String?
+  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  company       Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId     Int
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @default(now()) @updatedAt
+
+  @@unique([userId, companyId])
+  @@index([userId])
   @@index([companyId])
 }
 
