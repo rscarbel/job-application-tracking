@@ -1,5 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
-import { JobInterface, TransactionClient } from "@/utils/types";
+import { JobInterface, TransactionClient } from "@/utils/databaseTypes";
 import { areAddressessIdentical } from "@/utils/data";
 
 export const findOrCreateJob = async ({

@@ -3,7 +3,7 @@ import {
   WorkModeEnum,
   PayFrequencyEnum,
   ApplicationStatusEnum,
-} from "@/utils/types";
+} from "@/utils/databaseTypes";
 
 export interface CreateCardRequest {
   status: ApplicationStatusEnum;

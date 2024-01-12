@@ -1,7 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/utils/global";
 import { ApplicationStatus } from "@prisma/client";
-import { TransactionClient } from "@/utils/types";
+import { TransactionClient } from "@/utils/databaseTypes";
 
 const defaultAddress = {
   streetAddress: "",

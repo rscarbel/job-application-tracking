@@ -1,5 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
-import { TransactionClient } from "@/utils/types";
+import { TransactionClient } from "@/utils/databaseTypes";
 
 export const createApplicationBoard = async ({
   name,
