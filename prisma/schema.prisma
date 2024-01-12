@@ -239,7 +239,7 @@ model Company {
   updatedAt          DateTime            @default(now()) @updatedAt
   addresses          Address[]
   details            CompanyDetail?
-  companyPreferences CompanyPreference[]
+  companyPreference CompanyPreference?
 
   @@unique([name, userId])
   @@index([userId])
