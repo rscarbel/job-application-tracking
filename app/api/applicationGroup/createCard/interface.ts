@@ -3,26 +3,28 @@ import {
   WorkModeEnum,
   PayFrequencyEnum,
   ApplicationStatusEnum,
+  CompanyDesireabilityEnum,
 } from "@/utils/databaseTypes";
 
 export interface CreateCardRequest {
-  status: ApplicationStatusEnum;
-  groupId: number;
-  jobTitle: string;
+  applicationDate: string;
+  applicationLink: string;
+  city: string;
   company: CompanyInterface;
+  country: string;
+  currency: string;
+  desireability: CompanyDesireabilityEnum;
+  groupId: number;
+  jobDescription: string;
+  jobTitle: string;
+  notes: string;
   payAmount: number;
   payFrequency: PayFrequencyEnum;
-  jobDescription: string;
-  currency: string;
+  positionIndex: number;
+  postalCode: string;
+  state: string;
+  status: ApplicationStatusEnum;
   streetAddress: string;
   streetAddress2: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
-  applicationLink: string;
   workMode: WorkModeEnum;
-  applicationDate: string;
-  positionIndex: number;
-  notes: string;
 }

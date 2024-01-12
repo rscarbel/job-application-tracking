@@ -3,6 +3,7 @@ import {
   TransactionClient,
   CompanyDetailInterface,
   AddressInterface,
+  CompanyPreferenceInterface,
 } from "@/utils/databaseTypes";
 
 /**
@@ -19,12 +20,14 @@ export const findOrCreateCompany = async ({
   userId,
   addressProperties,
   companyDetailsProperties,
+  companyPreferencesProperties,
   client = prisma,
 }: {
   companyName: string;
   userId: string;
   addressProperties: AddressInterface;
   companyDetailsProperties: CompanyDetailInterface;
+  companyPreferencesProperties: CompanyPreferenceInterface;
   client?: TransactionClient | typeof prisma;
 }) => {
   const company = await client.company.findFirst({
@@ -46,6 +49,10 @@ export const findOrCreateCompany = async ({
     data: { ...companyDetailsProperties },
   });
 
+  const newCompanyPreferences = await client.companyPreference.create({
+    data: { ...companyPreferencesProperties },
+  });
+
   return await client.company.create({
     data: {
       name: companyName,
@@ -64,6 +71,11 @@ export const findOrCreateCompany = async ({
           id: newCompanyDetails.id,
         },
       },
+      preferences: {
+        connect: {
+          id: newCompanyPreferences.id,
+        },
+      },
     },
   });
 };
@@ -80,14 +92,17 @@ export const findOrCreateCompany = async ({
 export const updateCompany = async ({
   companyId,
   companyName,
-  companyDetailsProperties = undefined,
-  addressProperties = undefined,
+  companyDetailsProperties,
+  companyPreferencesProperties,
+  addressProperties,
   client = prisma,
 }: {
   companyId: number;
   companyName: string;
   addressProperties?: AddressInterface;
+  companyPreferencesProperties: CompanyPreferenceInterface;
   companyDetailsProperties?: CompanyDetailInterface;
+
   client?: TransactionClient | typeof prisma;
 }) => {
   if (!companyId) {
@@ -139,9 +154,8 @@ export const updateCompany = async ({
     where: { id: companyId },
     data: {
       name: companyName,
-      details: companyDetailsProperties
-        ? { create: { ...companyDetailsProperties } }
-        : {},
+      details: companyDetailsProperties,
+      preferences: companyPreferencesProperties,
     },
   });
 

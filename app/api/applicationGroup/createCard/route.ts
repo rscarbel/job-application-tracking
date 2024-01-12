@@ -12,25 +12,26 @@ export async function POST(request) {
   const requestData = await request.json();
   const createCardRequest: CreateCardRequest = requestData;
   const {
-    status,
-    groupId,
-    jobTitle,
+    applicationDate,
+    applicationLink,
+    city,
     company,
+    country,
+    currency,
+    desireability,
+    groupId,
+    jobDescription,
+    jobTitle,
+    notes,
     payAmount,
     payFrequency,
-    jobDescription,
-    currency,
+    positionIndex,
+    postalCode,
+    state,
+    status,
     streetAddress,
     streetAddress2,
-    city,
-    state,
-    postalCode,
-    country,
-    applicationLink,
     workMode,
-    applicationDate,
-    positionIndex,
-    notes,
   } = createCardRequest;
 
   const token = await getToken({ req: request });
@@ -59,7 +60,6 @@ export async function POST(request) {
 
       const companyDetailsProperties = {
         culture: undefined,
-        desireability: undefined,
         industry: undefined,
         size: undefined,
         website: undefined,
@@ -69,6 +69,10 @@ export async function POST(request) {
         vision: undefined,
         values: undefined,
         description: undefined,
+      };
+
+      const companyPreferencesProperties = {
+        desireability,
         notes: undefined,
       };
 
@@ -85,6 +89,7 @@ export async function POST(request) {
         client: client,
         addressProperties,
         companyDetailsProperties,
+        companyPreferencesProperties,
       });
 
       const job = await createOrUpdateJob({
