@@ -223,33 +223,3 @@ export const deleteCard = async ({
     });
   }
 };
-
-export const linkJob = async (application, jobId) => {
-  try {
-    // Update the jobId for the application in the database
-    await prisma.application.update({
-      where: { id: application.id },
-      data: { jobId: jobId },
-    });
-
-    // Fetch the linked Job
-    const linkedJob = await prisma.job.findUnique({ where: { id: jobId } });
-
-    if (!linkedJob) {
-      throw new Error("Failed to link the job: Job not found");
-    }
-
-    return linkedJob;
-  } catch (error) {
-    // Log the error for debugging or monitoring purposes
-    console.error(
-      `Error linking job with ID ${jobId} to application card with ID ${application.id}:`,
-      error.message
-    );
-
-    // Re-throw the error for the caller to handle or return a general error
-    throw new Error(
-      "Failed to link the job due to an internal error. Please try again later."
-    );
-  }
-};
