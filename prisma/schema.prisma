@@ -218,7 +218,6 @@ model User {
   oAuth              OAuth[]
   applicationGroups  ApplicationGroup[]
   companies          Company[]
-  companyPreferences CompanyPreference[]
   emailTemplates     EmailTemplate[]
   contacts           Contact[]
   jobs               Job[]
@@ -269,15 +268,11 @@ model CompanyPreference {
   id            Int                   @id @default(autoincrement())
   desireability CompanyDesireability?
   notes         String?
-  user          User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId        String
   company       Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId     Int
+  companyId     Int                   @unique
   createdAt     DateTime              @default(now())
   updatedAt     DateTime              @default(now()) @updatedAt
 
-  @@unique([userId, companyId])
-  @@index([userId])
   @@index([companyId])
 }
 
