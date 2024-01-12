@@ -1,6 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/utils/global";
-import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
+import { ApplicationStatus } from "@prisma/client";
 import { TransactionClient } from "@/utils/types";
 
 const defaultAddress = {

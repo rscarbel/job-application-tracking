@@ -1,4 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
+import { TransactionClient } from "@/utils/types";
 
 export const createApplicationBoard = async ({
   name,
@@ -7,7 +8,7 @@ export const createApplicationBoard = async ({
 }: {
   name: string;
   userId: string;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const applicationGroup = await client.applicationGroup.create({
     data: {
@@ -24,7 +25,7 @@ export const findApplicationBoardByName = async ({
 }: {
   name: string;
   userId: string;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const applicationGroup = await client.applicationGroup.findFirst({
     where: {
@@ -41,7 +42,7 @@ export const allBoardNames = async ({
   client = prisma,
 }: {
   userId: string;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const boards = await client.applicationGroup.findMany({
     where: {
@@ -60,7 +61,7 @@ export const getLatestBoard = async ({
   client = prisma,
 }: {
   userId: string;
-  client?: typeof prisma;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const board = await client.applicationGroup.findFirst({
     where: {

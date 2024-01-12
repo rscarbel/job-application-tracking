@@ -1,14 +1,13 @@
 import prisma from "@/services/globalPrismaClient";
-import { CompanyDetailInterface, AddressInterface, TransactionClient } from "@/utils/types";
-
-
+import { CompanyDetail, Address } from "@prisma/client";
+import { TransactionClient } from "@/utils/types";
 
 /**
  * Finds or creates a company with the given details.
  * @param {string} companyName - The name of the company.
  * @param {string} userId - The ID of the user associated with the company.
- * @param {AddressInterface} addressProperties - The properties for the company's address.
- * @param {CompanyDetailInterface} companyDetailsProperties - The properties for the company's details.
+ * @param {Address} addressProperties - The properties for the company's address.
+ * @param {CompanyDetail} companyDetailsProperties - The properties for the company's details.
  * @param {typeof prisma} client - Prisma client instance, defaults to global instance.
  * @returns The found or created company.
  */
@@ -21,9 +20,9 @@ export const findOrCreateCompany = async ({
 }: {
   companyName: string;
   userId: string;
-  addressProperties: AddressInterface;
-  companyDetailsProperties: CompanyDetailInterface;
-  client?: TransactionClient;
+  addressProperties: Address;
+  companyDetailsProperties: CompanyDetail;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const company = await client.company.findFirst({
     where: {
@@ -70,8 +69,8 @@ export const findOrCreateCompany = async ({
  * Updates the details and address of an existing company.
  * @param {number} companyId - The ID of the company to update.
  * @param {string} companyName - The new name of the company.
- * @param {CompanyDetailInterface} companyDetailsProperties - The new details of the company.
- * @param {AddressInterface} companyAddressProperties - The new address of the company.
+ * @param {CompanyDetail} companyDetailsProperties - The new details of the company.
+ * @param {Address} addressProperties - The new address of the company.
  * @param {typeof prisma} client - Prisma client instance, defaults to global instance.
  * @returns The updated company.
  */
@@ -79,8 +78,14 @@ export const updateCompany = async ({
   companyId,
   companyName,
   companyDetailsProperties = undefined,
-  companyAddressProperties = undefined,
+  addressProperties = undefined,
   client = prisma,
+}: {
+  companyId: number;
+  companyName: string;
+  addressProperties: Address;
+  companyDetailsProperties: CompanyDetail;
+  client?: TransactionClient | typeof prisma;
 }) => {
   if (!companyId) {
     throw new Error("companyId is required");
@@ -89,7 +94,7 @@ export const updateCompany = async ({
   // Begin a transaction to ensure atomicity of operations
   const company = await client.company.findUnique({
     where: { id: companyId },
-    include: { addresses: { orderBy: { fromDate: 'desc' }, take: 1 } },
+    include: { addresses: { orderBy: { fromDate: "desc" }, take: 1 } },
   });
 
   if (!company) {
@@ -97,29 +102,29 @@ export const updateCompany = async ({
   }
 
   // Address update logic
-  if (companyAddressProperties) {
+  if (addressProperties) {
     const lastAddress = company.addresses[0];
 
-    const hasAddressChanged = lastAddress && (
-      lastAddress.streetAddress !== companyAddressProperties.streetAddress ||
-      lastAddress.streetAddress2 !== companyAddressProperties.streetAddress2 ||
-      lastAddress.city !== companyAddressProperties.city ||
-      lastAddress.state !== companyAddressProperties.state ||
-      lastAddress.country !== companyAddressProperties.country ||
-      lastAddress.postalCode !== companyAddressProperties.postalCode
-    );
+    const hasAddressChanged =
+      lastAddress &&
+      (lastAddress.streetAddress !== addressProperties.streetAddress ||
+        lastAddress.streetAddress2 !== addressProperties.streetAddress2 ||
+        lastAddress.city !== addressProperties.city ||
+        lastAddress.state !== addressProperties.state ||
+        lastAddress.country !== addressProperties.country ||
+        lastAddress.postalCode !== addressProperties.postalCode);
 
     if (hasAddressChanged) {
       // Update the old address throughDate
       await client.address.update({
         where: { id: lastAddress.id },
-        data: { throughDate: companyAddressProperties.fromDate },
+        data: { throughDate: addressProperties.fromDate },
       });
 
       // Create a new address
       await client.address.create({
         data: {
-          ...companyAddressProperties,
+          ...addressProperties,
           companyId,
         },
       });
@@ -131,22 +136,22 @@ export const updateCompany = async ({
     where: { id: companyId },
     data: {
       name: companyName,
-      details: companyDetailsProperties ? { create: { ...companyDetailsProperties } } : {},
+      details: companyDetailsProperties
+        ? { create: { ...companyDetailsProperties } }
+        : {},
     },
   });
 
   return company;
 };
 
-
-
 /**
  * Creates or updates a company based on the presence of companyId.
  * @param {number} companyId - The ID of the company (optional).
  * @param {string} userId - The ID of the user associated with the company.
  * @param {string} companyName - The name of the company.
- * @param {CompanyDetailInterface} companyDetailsProperties - The properties for the company's details.
- * @param {AddressInterface} companyAddressProperties - The properties for the company's address.
+ * @param {CompanyDetail} companyDetailsProperties - The properties for the company's details.
+ * @param {Address} addressProperties - The properties for the company's address.
  * @param {typeof prisma} client - Prisma client instance, defaults to global instance.
  * @returns The created or updated company.
  */
@@ -155,19 +160,21 @@ export const createOrUpdateCompany = async ({
   userId,
   companyName,
   companyDetailsProperties,
-  companyAddressProperties,
+  addressProperties,
   client = prisma,
 }: {
   companyId?: number;
   userId: string;
   companyName: string;
-  companyDetailsProperties?: CompanyDetailInterface;
-  companyAddressProperties?: AddressInterface;
-  client?: typeof prisma;
+  companyDetailsProperties?: CompanyDetail;
+  addressProperties?: Address;
+  client?: TransactionClient | typeof prisma;
 }) => {
   if (companyId) {
     return await updateCompany({
       companyId,
+      companyDetailsProperties,
+      addressProperties,
       companyName,
       client,
     });
@@ -176,7 +183,7 @@ export const createOrUpdateCompany = async ({
       companyName,
       userId,
       client,
-      addressProperties: companyAddressProperties,
+      addressProperties: addressProperties,
       companyDetailsProperties,
     });
   }

@@ -7,7 +7,7 @@ export const findOrCreateJob = async ({
   client = prisma,
 }: {
   job: JobInterface;
-  client?: typeof prisma | TransactionClient;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const existingJob = job.id
     ? await client.job.findUnique({
@@ -74,7 +74,7 @@ export const createOrUpdateJob = async ({
   client = prisma,
 }: {
   job: JobInterface;
-  client?: typeof prisma | TransactionClient;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const existingJob = await client.job.findUnique({
     where: {
@@ -153,7 +153,7 @@ export const updateJob = async ({
   client = prisma,
 }: {
   job: JobInterface;
-  client?: typeof prisma | TransactionClient;
+  client?: TransactionClient | typeof prisma;
 }) => {
   const existingJob = job.id
     ? await client.job.findUnique({
