@@ -7,14 +7,22 @@ import {
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import serverErrorResponse from "../../serverErrorResponse";
+import { getRequestUser } from "@/services/userService";
+import { ExtendedNextApiRequest } from "@/app/api/ExtendedNextApiRequest";
 
-export async function POST(request) {
+export async function POST(request: ExtendedNextApiRequest) {
+  const user = await getRequestUser(request);
   const { id } = await request.json();
 
   const cardToDelete = await prisma.application.findUnique({
     where: { id: id },
     include: {
       job: true,
+      applicationGroup: {
+        select: {
+          userId: true,
+        },
+      },
     },
   });
 
@@ -25,6 +33,10 @@ export async function POST(request) {
       }),
       { status: 404 }
     );
+  }
+
+  if (cardToDelete.applicationGroup.userId !== user.id) {
+    serverErrorResponse("Unauthorized", 401);
   }
 
   const indexToDecrement = cardToDelete.positionIndex + 1;
@@ -49,7 +61,7 @@ export async function POST(request) {
       status: 200,
     });
   } catch (error) {
-    reportError(error);
+    reportError(error, user);
     return serverErrorResponse();
   }
 }

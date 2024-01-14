@@ -7,6 +7,5 @@ export interface UserReportInterface {
 
 export interface ReportErrorObjectInterface {
   message: string;
-  stack?: string;
-  user?: UserReportInterface;
+  stack: string;
 }

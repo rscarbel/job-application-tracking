@@ -1,5 +1,17 @@
 import Bugsnag from "@bugsnag/js";
-import { ReportErrorObjectInterface } from "./ErrorReportInterface";
+import {
+  ReportErrorObjectInterface,
+  UserReportInterface,
+} from "./ErrorReportInterface";
+
+const MISSING_ERROR_MESSAGE = "An unknown error occurred";
+const MISSING_ERROR_STACK = "No stack trace available";
+const MISSING_USER = {
+  id: "unknown",
+  email: "unknown",
+  firstName: "unknown",
+  lastName: "unknown",
+};
 
 if (process.env.NODE_ENV !== "development") {
   Bugsnag.start({
@@ -12,37 +24,26 @@ if (process.env.NODE_ENV !== "development") {
  *
  * @param errorObject - The error object containing message, stack, and user details.
  */
-export const reportError = (errorObject: ReportErrorObjectInterface): void => {
-  console.error(errorObject.message);
+export const reportError = (
+  error: ReportErrorObjectInterface,
+  user: UserReportInterface
+): void => {
+  console.error(error.message);
   if (process.env.NODE_ENV === "development") return;
 
+  const userWithErrors = user || MISSING_USER;
+  const { id, email, firstName, lastName } = userWithErrors;
+
   try {
-    const defaultErrorMessage = "An unknown error occurred";
-    const defaultErrorStack = "No stack trace available";
+    Bugsnag.setUser(id, email, `${firstName} ${lastName}`);
 
-    if (errorObject.user) {
-      const {
-        id = "unknown",
-        email = "unknown",
-        firstName,
-        lastName,
-      } = errorObject.user;
-      const userFullName =
-        [firstName, lastName].filter(Boolean).join(" ") || "Anonymous User";
-
-      Bugsnag.setUser(id, email, userFullName);
-    }
-
-    Bugsnag.notify(
-      new Error(errorObject.message || defaultErrorMessage),
-      (event) => {
-        event.addMetadata("info", {
-          message: errorObject.message || defaultErrorMessage,
-          stack: errorObject.stack || defaultErrorStack,
-          user: errorObject.user || "unknown",
-        });
-      }
-    );
+    Bugsnag.notify(new Error(error?.message), (event) => {
+      event.addMetadata("info", {
+        message: error.message || MISSING_ERROR_MESSAGE,
+        stack: error.stack || MISSING_ERROR_STACK,
+        user: userWithErrors,
+      });
+    });
   } catch (error) {
     console.error("Failed to report to Bugsnag:", error);
     throw new Error("Failed to report error");

@@ -10,8 +10,9 @@ import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import serverErrorResponse from "../../serverErrorResponse";
+import { ExtendedNextApiRequest } from "../../ExtendedNextApiRequest";
 
-export async function POST(request) {
+export async function POST(request: ExtendedNextApiRequest) {
   const {
     applicationId,
     groupId,
@@ -33,6 +34,8 @@ export async function POST(request) {
     notes,
     status,
   } = await request.json();
+
+  console.log(company);
 
   const necessaryData = {
     "Application Card": applicationId,
@@ -131,7 +134,7 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error(error.stack);
-    reportError(error);
+    reportError(error, user);
     return serverErrorResponse(error.message, 500);
   }
 }
