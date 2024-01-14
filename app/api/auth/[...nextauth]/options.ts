@@ -2,55 +2,89 @@ import GoogleProvider from "next-auth/providers/google";
 import GitHubProvider from "next-auth/providers/github";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import CredentialsProvider from "next-auth/providers/credentials";
+import type { OAuthConfig } from "next-auth/providers/oauth";
+import type { CredentialsConfig } from "next-auth/providers/credentials";
 import prisma from "@/services/globalPrismaClient";
 
+const providers: Array<OAuthConfig<any> | CredentialsConfig<any>> = [
+  GoogleProvider({
+    clientId: process.env.GOOGLE_CLIENT_ID || "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    profile(profile) {
+      return {
+        id: profile.sub,
+        email: profile.email,
+        firstName: profile.given_name,
+        lastName: profile.family_name,
+        imageUrl: profile.picture,
+      };
+    },
+  }),
+  LinkedInProvider({
+    clientId: process.env.LINKEDIN_CLIENT_ID || "",
+    clientSecret: process.env.LINKEDIN_CLIENT_SECRET || "",
+    authorization: {
+      params: { scope: "openid profile email" },
+    },
+    issuer: "https://www.linkedin.com",
+    jwks_endpoint: "https://www.linkedin.com/oauth/openid/jwks",
+    profile(profile, tokens) {
+      return {
+        id: profile.sub,
+        email: profile.email,
+        firstName: profile.given_name,
+        lastName: profile.family_name,
+        imageUrl: profile.picture,
+      };
+    },
+  }),
+  GitHubProvider({
+    clientId: process.env.GITHUB_CLIENT_ID || "",
+    clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
+    profile(profile) {
+      return {
+        id: String(profile.id),
+        email: profile.email,
+        firstName: profile.name.split(" ")[0],
+        lastName: profile.name.split(" ").slice(1).join(" "),
+        imageUrl: profile.avatar_url,
+      };
+    },
+  }),
+];
+
+if (process.env.NODE_ENV === "development") {
+  providers.push(
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (
+          credentials.username === "admin" &&
+          credentials.password === "admin"
+        ) {
+          // Fetch the user from the database
+          const user = await prisma.user.findUnique({
+            where: {
+              email: "user1@example.com",
+            },
+          });
+
+          if (user) {
+            return user;
+          }
+        }
+        return null;
+      },
+    })
+  );
+}
+
 const options = {
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      profile(profile) {
-        return {
-          id: profile.sub,
-          email: profile.email,
-          firstName: profile.given_name,
-          lastName: profile.family_name,
-          imageUrl: profile.picture,
-        };
-      },
-    }),
-    LinkedInProvider({
-      clientId: process.env.LINKEDIN_CLIENT_ID || "",
-      clientSecret: process.env.LINKEDIN_CLIENT_SECRET || "",
-      authorization: {
-        params: { scope: "openid profile email" },
-      },
-      issuer: "https://www.linkedin.com",
-      jwks_endpoint: "https://www.linkedin.com/oauth/openid/jwks",
-      profile(profile, tokens) {
-        return {
-          id: profile.sub,
-          email: profile.email,
-          firstName: profile.given_name,
-          lastName: profile.family_name,
-          imageUrl: profile.picture,
-        };
-      },
-    }),
-    GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID || "",
-      clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-      profile(profile) {
-        return {
-          id: profile.id,
-          email: profile.email,
-          firstName: profile.name.split(" ")[0],
-          lastName: profile.name.split(" ").slice(1).join(" "),
-          imageUrl: profile.avatar_url,
-        };
-      },
-    }),
-  ],
+  providers,
   session: { strategy: "jwt" },
   events: {
     async signIn(message) {},
@@ -141,35 +175,5 @@ const options = {
     },
   },
 };
-
-if (process.env.NODE_ENV === "development") {
-  options.providers.push(
-    CredentialsProvider({
-      name: "Credentials",
-      credentials: {
-        username: { label: "Username", type: "text" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (
-          credentials.username === "admin" &&
-          credentials.password === "admin"
-        ) {
-          // Fetch the user from the database
-          const user = await prisma.user.findUnique({
-            where: {
-              email: "user1@example.com",
-            },
-          });
-
-          if (user) {
-            return user;
-          }
-        }
-        return null;
-      },
-    })
-  );
-}
 
 export default options;
