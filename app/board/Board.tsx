@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { FunctionComponent, useState, useRef, useEffect } from "react";
+import { BoardStructureInterface } from "../api/applicationGroup/BoardStructureInterface";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { handleDifferentColumnMove, handleSameColumnMove } from "./utils";
 import { Toast } from "primereact/toast";
@@ -16,14 +17,18 @@ const SAVING_LIFE = 10000000;
 const MILLISECONDS_IN_A_SECOND = 1000;
 const DELAY_FACTOR = 5;
 
-const Board = ({ board }) => {
-  const [boardData, setBoardData] = useState(board);
+interface BoardProps {
+  board: BoardStructureInterface;
+}
+
+const Board: FunctionComponent<BoardProps> = ({ board }) => {
+  const [boardData, setBoardData] = useState<BoardStructureInterface>(board);
   const [lastSavedBoardData, setLastSavedBoardData] = useState(board);
   const [isModalVisible, setModalVisible] = useState(false);
   const [editingCard, setEditingCard] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
-  const toast = useRef();
-  const saveTimeoutRef = useRef();
+  const toast = useRef<Toast>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { columns, applications, columnOrder } = boardData;
 
@@ -35,7 +40,9 @@ const Board = ({ board }) => {
   const saveDelayMilliseconds = numberOfCards * DELAY_FACTOR;
 
   const showSuccess = () => {
-    toast.current?.show({
+    if (!toast.current) return;
+
+    toast.current.show({
       severity: "success",
       summary: "Saved",
       detail: `Status updated`,
@@ -45,9 +52,9 @@ const Board = ({ board }) => {
 
   const showSaving = () => {
     const isAShortTime = saveDelayMilliseconds <= MILLISECONDS_IN_A_SECOND;
-    if (isSaving || isAShortTime) return;
+    if (isSaving || isAShortTime || !toast.current) return;
 
-    toast.current?.show({
+    toast.current.show({
       severity: "info",
       summary: (
         <div className="flex items-center justify-start">
@@ -68,7 +75,9 @@ const Board = ({ board }) => {
   };
 
   const showError = (errorMessage) => {
-    toast.current?.show({
+    if (!toast.current) return;
+
+    toast.current.show({
       severity: "error",
       summary: "Error",
       detail: errorMessage,
@@ -77,7 +86,9 @@ const Board = ({ board }) => {
   };
 
   const showDeleteSuccess = () => {
-    toast.current?.show({
+    if (!toast.current) return;
+
+    toast.current.show({
       severity: "warn",
       summary: "Application deleted",
       life: MILLISECONDS_FOR_MESSAGES,
@@ -159,6 +170,7 @@ const Board = ({ board }) => {
     showSaving();
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
     }
 
     saveTimeoutRef.current = setTimeout(async () => {
@@ -169,7 +181,10 @@ const Board = ({ board }) => {
           index
         );
 
-        toast.current?.clear();
+        if (toast.current) {
+          toast.current.clear();
+        }
+
         setIsSaving(false);
 
         if (!response.ok) {
@@ -183,7 +198,9 @@ const Board = ({ board }) => {
           });
         }
       } catch (error) {
-        toast.current?.clear();
+        if (toast.current) {
+          toast.current.clear();
+        }
         setIsSaving(false);
         showError(error.message);
         setBoardData(lastSavedBoardData);
