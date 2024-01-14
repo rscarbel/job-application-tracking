@@ -1,8 +1,9 @@
 import { getFormattedCardData } from "@/services/applicationService";
 import { getRequestUser } from "@/services/userService";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
+import { ExtendedNextApiRequest } from "@/app/api/ExtendedNextApiRequest";
 
-export async function GET(request) {
+export async function GET(request: ExtendedNextApiRequest) {
   const { searchParams } = new URL(request.url);
   const applicationId = parseInt(searchParams.get("applicationId"));
 

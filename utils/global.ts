@@ -1,6 +1,5 @@
 import countrySymbols from "@/lib/data/countrySymbols";
 import currenciesList from "@/lib/data/currenciesList";
-import { UserReportInterface } from "@/app/api/reportError/ErrorReportInterface";
 
 export const STYLE_CLASSES = {
   FORM_BASIC_INPUT:
@@ -52,13 +51,11 @@ interface ErrorInterface {
 }
 
 export const reportErrorToServer = async (
-  error: ErrorInterface,
-  userInfo: UserReportInterface = null
+  error: ErrorInterface
 ): Promise<void> => {
   const errorInfo = {
     message: error.message,
     stack: error.stack,
-    user: userInfo,
   };
 
   await fetch("/api/reportError", {

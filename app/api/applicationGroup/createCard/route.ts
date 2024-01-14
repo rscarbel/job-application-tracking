@@ -6,9 +6,10 @@ import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import { CreateCardRequest } from "./interface";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
+import { ExtendedNextApiRequest } from "@/app/api/ExtendedNextApiRequest";
 
-export async function POST(request) {
-  const requestData = await request.json();
+export async function POST(request: ExtendedNextApiRequest) {
+  const requestData = await request.body.json();
   const createCardRequest: CreateCardRequest = requestData;
   const {
     applicationDate,
@@ -106,7 +107,7 @@ export async function POST(request) {
     });
     return new Response(JSON.stringify({ error: null }), { status: 200 });
   } catch (error) {
-    reportError(error);
+    reportError(error, user);
     return serverErrorResponse(error.message, 500);
   }
 }

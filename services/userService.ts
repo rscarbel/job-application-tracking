@@ -7,8 +7,19 @@ export const getRequestUser = async (
   request: NextApiRequest
 ): Promise<User | null> => {
   const token = await getToken({ req: request });
+
   const { sub, provider } = token || { sub: null, provider: null };
   if (!sub || typeof provider !== "string") return null;
+
+  if (provider === "credentials") {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: token.email,
+      },
+    });
+
+    return user;
+  }
 
   const authRecord = await prisma.oAuth.findUnique({
     where: {
