@@ -184,15 +184,15 @@ export const decrementCardsAfterIndex = async ({
 };
 
 export const deleteCard = async ({
-  applicationId,
+  id,
   client = prisma,
 }: {
-  applicationId: number;
+  id: number;
   client?: TransactionClient | typeof prisma;
 }) => {
   const cardToDelete = await client.application.findUnique({
     where: {
-      id: applicationId,
+      id,
     },
     include: {
       job: true,
@@ -206,7 +206,7 @@ export const deleteCard = async ({
   }
 
   await client.application.delete({
-    where: { id: applicationId },
+    where: { id },
   });
 
   const otherApplicationsForJob = await client.application.findFirst({
