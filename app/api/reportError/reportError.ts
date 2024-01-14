@@ -1,4 +1,5 @@
 import Bugsnag from "@bugsnag/js";
+import { ReportErrorObjectInterface } from "./ErrorReportInterface";
 
 if (process.env.NODE_ENV !== "development") {
   Bugsnag.start({
@@ -6,25 +7,12 @@ if (process.env.NODE_ENV !== "development") {
   });
 }
 
-interface User {
-  id?: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string;
-}
-
-interface ErrorObject {
-  message: string;
-  stack?: string;
-  user?: User;
-}
-
 /**
  * Helper function to report events.
  *
  * @param errorObject - The error object containing message, stack, and user details.
  */
-export const reportError = (errorObject: ErrorObject): void => {
+export const reportError = (errorObject: ReportErrorObjectInterface): void => {
   console.error(errorObject.message);
   if (process.env.NODE_ENV === "development") return;
 
