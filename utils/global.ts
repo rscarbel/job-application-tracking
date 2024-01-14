@@ -1,5 +1,6 @@
 import countrySymbols from "@/lib/data/countrySymbols";
 import currenciesList from "@/lib/data/currenciesList";
+import { UserReportInterface } from "@/app/api/reportError/ErrorReportInterface";
 
 export const STYLE_CLASSES = {
   FORM_BASIC_INPUT:
@@ -10,29 +11,33 @@ export const STYLE_CLASSES = {
     "w-full p-2 opacity-50 cursor-not-allowed bg-gray-700 hover:bg-gray-600 text-white rounded",
 };
 
-export const getCountryCode = (country) => {
+export const getCountryCode = (country: string): string => {
   const countrySymbol = countrySymbols[country];
   return countrySymbol || "US";
 };
 
-export const getCurrencySymbol = (country) => {
+export const getCurrencySymbol = (country: string): string => {
   const countryCode = getCountryCode(country);
   return currenciesList[countryCode] || "USD";
 };
 
-export const formatCurrency = (payAmount, country, currencySymbol) => {
+export const formatCurrency = (
+  payAmount: number,
+  country: string,
+  currencySymbol: string
+): string => {
   if (!payAmount) return "";
 
-  const amount = (payAmount || 0).toFixed(2);
+  const amount = payAmount.toFixed(2);
   const locale = `en-${getCountryCode(country)}`;
 
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currencySymbol,
-  }).format(amount);
+  }).format(parseFloat(amount));
 };
 
-export const prettifyDate = (date) => {
+export const prettifyDate = (date: string): string => {
   try {
     const dateObj = new Date(date);
     return new Intl.DateTimeFormat("en-US").format(dateObj) || "";
@@ -41,10 +46,18 @@ export const prettifyDate = (date) => {
   }
 };
 
-export const reportErrorToServer = async (error, userInfo = null) => {
+interface ErrorInterface {
+  message: string;
+  stack: string;
+}
+
+export const reportErrorToServer = async (
+  error: ErrorInterface,
+  userInfo: UserReportInterface = null
+): Promise<void> => {
   const errorInfo = {
-    message: error?.message,
-    stack: error?.stack,
+    message: error.message,
+    stack: error.stack,
     user: userInfo,
   };
 
