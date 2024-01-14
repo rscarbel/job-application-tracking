@@ -57,5 +57,6 @@ export const reportError = (errorObject: ErrorObject): void => {
     );
   } catch (error) {
     console.error("Failed to report to Bugsnag:", error);
+    throw new Error("Failed to report error");
   }
 };
