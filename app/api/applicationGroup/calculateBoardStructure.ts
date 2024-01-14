@@ -1,4 +1,9 @@
-export const calculateBoardStructure = (applications) => {
+import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
+import { BoardStructureInterface } from "./BoardStructureInterface";
+
+export const calculateBoardStructure = (
+  applications: FormattedCardForBoardInterface[]
+): BoardStructureInterface => {
   const generatedColumns = columns.reduce((acc, column) => {
     const columnApplications = applications.filter(
       (application) => application.status === column.id

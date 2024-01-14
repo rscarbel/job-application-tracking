@@ -2,6 +2,10 @@ import prisma from "@/services/globalPrismaClient";
 import { prettifyDate } from "@/utils/global";
 import { ApplicationStatus } from "@prisma/client";
 import { TransactionClient } from "@/utils/databaseTypes";
+import {
+  IndividualFormattedCardInterface,
+  FormattedCardForBoardInterface,
+} from "./FormattedCardInterface";
 
 const defaultAddress = {
   streetAddress: "",
@@ -20,7 +24,7 @@ export const getFormattedCardData = async ({
   applicationId: number;
   userId: string;
   client?: TransactionClient | typeof prisma;
-}) => {
+}): Promise<IndividualFormattedCardInterface> => {
   const application = await client.application.findUnique({
     where: {
       id: applicationId,
@@ -87,7 +91,7 @@ export const getFormattedCardsForBoard = async ({
 }: {
   groupId: number;
   client?: TransactionClient | typeof prisma;
-}) => {
+}): Promise<FormattedCardForBoardInterface[]> => {
   const applications = await client.application.findMany({
     where: {
       applicationGroupId: groupId,
