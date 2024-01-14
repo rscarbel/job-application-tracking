@@ -6,9 +6,8 @@ import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import { CreateCardRequest } from "./interface";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
-import { ExtendedNextApiRequest } from "@/app/api/ExtendedNextApiRequest";
 
-export async function POST(request: ExtendedNextApiRequest) {
+export async function POST(request) {
   const requestData = await request.body.json();
   const createCardRequest: CreateCardRequest = requestData;
   const {

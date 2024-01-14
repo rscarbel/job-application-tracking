@@ -8,9 +8,8 @@ import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import serverErrorResponse from "../../serverErrorResponse";
 import { getRequestUser } from "@/services/userService";
-import { ExtendedNextApiRequest } from "@/app/api/ExtendedNextApiRequest";
 
-export async function POST(request: ExtendedNextApiRequest) {
+export async function POST(request) {
   const user = await getRequestUser(request);
   const { id } = await request.json();
 
