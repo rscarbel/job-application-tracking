@@ -1,7 +1,18 @@
+import React, { FC, MouseEvent } from "react";
 import { MAX_CHARACTERS, truncateText } from "../utils";
 
-const Description = ({ description, isExpanded, toggle }) => {
-  const handleClick = (e) => {
+interface DescriptionProps {
+  description: string;
+  isExpanded: boolean;
+  toggle: () => void;
+}
+
+const Description: FC<DescriptionProps> = ({
+  description,
+  isExpanded,
+  toggle,
+}) => {
+  const handleClick = (e: MouseEvent<HTMLSpanElement>) => {
     e.stopPropagation();
     toggle();
   };
@@ -17,4 +28,5 @@ const Description = ({ description, isExpanded, toggle }) => {
     </div>
   );
 };
+
 export default Description;
