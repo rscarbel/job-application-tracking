@@ -12,11 +12,8 @@ export async function GET(request) {
   const user = await getRequestUser({ sub, provider });
   const userId = user.id;
 
-  if (!userId || isNaN(parseInt(userId))) {
-    return Response.json({
-      status: 400,
-      body: { error: "Invalid userId" },
-    });
+  if (!userId) {
+    return serverErrorResponse("The request user does not exist", 404);
   }
 
   const companies = await prisma.company.findMany({
