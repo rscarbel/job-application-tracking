@@ -1,12 +1,36 @@
 import prisma from "@/services/globalPrismaClient";
+import { getRequestUser } from "@/services/userService";
+import { getToken } from "next-auth/jwt";
 import { reportError } from "@/app/api/reportError/reportError";
+import serverErrorResponse from "../../serverErrorResponse";
+import unauthenticatedResponse from "../../unauthenticatedResponse";
 
 export async function POST(request) {
   const { id, status, newPositionIndex } = await request.json();
 
+  const token = await getToken({ req: request });
+  const { sub, provider } = token || { sub: null, provider: null };
+  if (!sub || typeof provider !== "string") return unauthenticatedResponse;
+
+  const user = await getRequestUser({ sub, provider });
+  if (!user) return serverErrorResponse("The request user does not exist", 404);
+
   const currentCard = await prisma.application.findUnique({
     where: { id: parseInt(id) },
+    include: {
+      applicationGroup: {
+        include: {
+          user: true,
+        },
+      },
+    },
   });
+
+  if (!currentCard) return serverErrorResponse("The card does not exist", 404);
+  if (currentCard.applicationGroup.userId !== user.id) {
+    return serverErrorResponse("Unauthorized", 401);
+  }
+
   let updatedCard;
   try {
     await prisma.$transaction(async (pris) => {
@@ -90,12 +114,6 @@ export async function POST(request) {
     });
   } catch (error) {
     reportError(error);
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-        cards: null,
-      }),
-      { status: 500 }
-    );
+    return serverErrorResponse(error.message, 500);
   }
 }
