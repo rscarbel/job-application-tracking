@@ -1,4 +1,8 @@
-export const columns = [
+export const columns: {
+  id: string;
+  title: string;
+  applicationIds: number[];
+}[] = [
   { id: "applied", title: "Applied", applicationIds: [] },
   { id: "interview", title: "Interview", applicationIds: [] },
   { id: "offer", title: "Offer", applicationIds: [] },
@@ -7,7 +11,7 @@ export const columns = [
   { id: "accepted", title: "Accepted", applicationIds: [] },
 ];
 
-export const columnOrder = [
+export const columnOrder: string[] = [
   "applied",
   "interview",
   "offer",
