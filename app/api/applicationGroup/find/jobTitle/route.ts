@@ -18,33 +18,13 @@ export async function GET(request) {
   const user = await getRequestUser({ sub, provider });
   const userId = user.id;
 
-  if (!userId || isNaN(userId)) {
-    return Response.json({
-      status: 400,
-      body: { error: "Invalid userId" },
-    });
-  }
+  if (!userId)
+    return serverErrorResponse("The request user does not exist", 404);
+  if (!companyName) return serverErrorResponse("Invalid companyName", 400);
+  if (!jobTitle) return serverErrorResponse("Invalid jobTitle", 400);
+  if (!groupId || isNaN(groupId))
+    return serverErrorResponse("Invalid groupId", 400);
 
-  if (!companyName) {
-    return Response.json({
-      status: 400,
-      body: { error: "Invalid userId" },
-    });
-  }
-
-  if (!jobTitle) {
-    return Response.json({
-      status: 400,
-      body: { error: "Invalid jobTitle" },
-    });
-  }
-
-  if (!groupId || isNaN(groupId)) {
-    return Response.json({
-      status: 400,
-      body: { error: "Invalid groupId" },
-    });
-  }
   try {
     const company = await prisma.company.findFirst({
       where: {
