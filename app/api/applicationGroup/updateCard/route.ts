@@ -10,6 +10,7 @@ import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import { getToken } from "next-auth/jwt";
+import serverErrorResponse from "../../serverErrorResponse";
 
 export async function POST(request) {
   const {
@@ -45,24 +46,18 @@ export async function POST(request) {
     (key) => !necessaryData[key]
   );
 
-  if (dataMissing.length) {
-    return new Response(
-      JSON.stringify({
-        error: `Request is missing ${dataMissing.join(", ")}`,
-      }),
-      { status: 400 }
+  if (dataMissing.length)
+    return serverErrorResponse(
+      `Request is missing ${dataMissing.join(", ")}`,
+      400
     );
-  }
 
   const token = await getToken({ req: request });
   const { sub, provider } = token || { sub: null, provider: null };
-  if (!sub || !provider)
-    return new Response(
-      JSON.stringify({
-        error: "You must login before updating this card",
-      }),
-      { status: 403 }
-    );
+
+  if (typeof sub !== "string" || typeof provider !== "string") {
+    return serverErrorResponse("The request user does not exist", 404);
+  }
 
   const user = await getRequestUser({ sub, provider });
 
@@ -145,12 +140,6 @@ export async function POST(request) {
   } catch (error) {
     console.error(error.stack);
     reportError(error);
-
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-      }),
-      { status: 500 }
-    );
+    return serverErrorResponse(error.message, 500);
   }
 }
