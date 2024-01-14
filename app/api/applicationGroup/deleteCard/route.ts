@@ -6,6 +6,7 @@ import {
 } from "@/services/applicationService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
+import serverErrorResponse from "../../serverErrorResponse";
 
 export async function POST(request) {
   const { id } = await request.json();
@@ -37,9 +38,11 @@ export async function POST(request) {
         groupId: applicationGroupId,
         client: pris,
       });
-      await deleteCard(parseInt(id), pris);
+      await deleteCard({ id: parseInt(id), client: pris });
     });
-    const formattedCards = await getFormattedCardsForBoard(applicationGroupId);
+    const formattedCards = await getFormattedCardsForBoard({
+      groupId: applicationGroupId,
+    });
     const board = calculateBoardStructure(formattedCards);
 
     return new Response(JSON.stringify({ board }), {
@@ -47,11 +50,6 @@ export async function POST(request) {
     });
   } catch (error) {
     reportError(error);
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-      }),
-      { status: 500 }
-    );
+    return serverErrorResponse();
   }
 }
