@@ -1,8 +1,21 @@
+import { FunctionComponent } from "react";
+import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
+import { BoardStructureInterface } from "@/app/api/applicationGroup/BoardStructureInterface";
 import SingleColumn from "./SingleColumn";
 import DoubleColumn from "./DoubleColumn";
 
-const ColumnRenderer = ({ columnId, columns, applications }) => {
-  const doubleColumns = {
+interface ColumnRendererProps {
+  columnId: string;
+  columns: BoardStructureInterface["columns"];
+  applications: { [key: string]: FormattedCardForBoardInterface };
+}
+
+const ColumnRenderer: FunctionComponent<ColumnRendererProps> = ({
+  columnId,
+  columns,
+  applications,
+}) => {
+  const doubleColumns: { [key: string]: string } = {
     offer: "accepted",
     rejected: "passed",
   };
@@ -16,10 +29,10 @@ const ColumnRenderer = ({ columnId, columns, applications }) => {
         column1={column}
         column2={pairedColumn}
         applications1={column.applicationIds.map(
-          (taskId) => applications[taskId]
+          (taskId: string) => applications[taskId]
         )}
         applications2={pairedColumn.applicationIds.map(
-          (taskId) => applications[taskId]
+          (taskId: string) => applications[taskId]
         )}
       />
     );
@@ -32,7 +45,7 @@ const ColumnRenderer = ({ columnId, columns, applications }) => {
         key={columnId}
         column={column}
         applications={column.applicationIds.map(
-          (taskId) => applications[taskId]
+          (taskId: string) => applications[taskId]
         )}
       />
     );
