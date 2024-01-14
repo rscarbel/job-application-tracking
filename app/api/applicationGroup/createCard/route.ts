@@ -4,7 +4,6 @@ import { createOrUpdateJob } from "@/services/jobService";
 import { incrementCardsAfterIndex } from "@/services/applicationService";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
-import { getToken } from "next-auth/jwt";
 import { CreateCardRequest } from "./interface";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
 
@@ -34,21 +33,11 @@ export async function POST(request) {
     workMode,
   } = createCardRequest;
 
-  const token = await getToken({ req: request });
-  const { sub, provider } = token || { sub: null, provider: null };
-
-  if (typeof sub != "string" || typeof provider != "string")
-    return new Response(
-      JSON.stringify({
-        error: "You must login before creating a new application",
-      }),
-      { status: 403 }
-    );
+  const user = await getRequestUser(request);
+  if (!user) return serverErrorResponse("User not found", 404);
 
   try {
     await prisma.$transaction(async (client) => {
-      const user = await getRequestUser({ sub, provider });
-
       const addressProperties = {
         streetAddress,
         streetAddress2,
@@ -56,24 +45,6 @@ export async function POST(request) {
         state,
         postalCode,
         country,
-      };
-
-      const companyDetailsProperties = {
-        culture: undefined,
-        industry: undefined,
-        size: undefined,
-        website: undefined,
-        type: undefined,
-        history: undefined,
-        mission: undefined,
-        vision: undefined,
-        values: undefined,
-        description: undefined,
-      };
-
-      const companyPreferencesProperties = {
-        desireability,
-        notes: undefined,
       };
 
       const applicationGroup = await client.applicationGroup.findFirst({
@@ -87,9 +58,6 @@ export async function POST(request) {
         companyName: company.name,
         userId: user.id,
         client: client,
-        addressProperties,
-        companyDetailsProperties,
-        companyPreferencesProperties,
       });
 
       const job = await createOrUpdateJob({
@@ -139,12 +107,6 @@ export async function POST(request) {
     return new Response(JSON.stringify({ error: null }), { status: 200 });
   } catch (error) {
     reportError(error);
-
-    return new Response(
-      JSON.stringify({
-        error: error.message,
-      }),
-      { status: 500 }
-    );
+    return serverErrorResponse(error.message, 500);
   }
 }

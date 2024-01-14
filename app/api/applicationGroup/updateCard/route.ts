@@ -9,7 +9,6 @@ import { updateJob } from "@/services/jobService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
-import { getToken } from "next-auth/jwt";
 import serverErrorResponse from "../../serverErrorResponse";
 
 export async function POST(request) {
@@ -52,14 +51,7 @@ export async function POST(request) {
       400
     );
 
-  const token = await getToken({ req: request });
-  const { sub, provider } = token || { sub: null, provider: null };
-
-  if (typeof sub !== "string" || typeof provider !== "string") {
-    return serverErrorResponse("The request user does not exist", 404);
-  }
-
-  const user = await getRequestUser({ sub, provider });
+  const user = await getRequestUser(request);
 
   const currentCard = await prisma.application.findUnique({
     where: { id: applicationId },
