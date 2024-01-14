@@ -9,6 +9,12 @@ export type TransactionClient = Omit<
   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;
 
+export enum CompanyDesireabilityEnum {
+  Low = "low",
+  Medium = "medium",
+  High = "high",
+}
+
 export enum WorkModeEnum {
   Onsite = "onsite",
   Remote = "remote",
@@ -205,7 +211,6 @@ export interface CompanyDetailInterface {
   id?: number;
   companyId?: number;
   culture?: string;
-  desireability?: number;
   industry?: string;
   size?: CompanySizeEnum;
   website?: string;
@@ -215,6 +220,12 @@ export interface CompanyDetailInterface {
   vision?: string;
   values?: string;
   description?: string;
+}
+
+export interface CompanyPreferenceInterface {
+  id?: number;
+  companyId?: number;
+  desireability?: CompanyDesireabilityEnum;
   notes?: string;
 }
 

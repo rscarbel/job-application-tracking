@@ -14,6 +14,12 @@ enum WorkMode {
   hybrid
 }
 
+enum CompanyDesireability {
+  high
+  medium
+  low
+}
+
 enum ApplicationStatus {
   applied
   interview
@@ -222,39 +228,50 @@ model User {
 }
 
 model Company {
-  id         Int            @id @default(autoincrement())
-  name       String
-  contacts   Contact[]
-  jobs       Job[]
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId     String
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @default(now()) @updatedAt
-  addresses  Address[]
-  details    CompanyDetail?
+  id          Int                @id @default(autoincrement())
+  name        String
+  contacts    Contact[]
+  jobs        Job[]
+  user        User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @default(now()) @updatedAt
+  addresses   Address[]
+  details     CompanyDetail?
+  preferences CompanyPreference?
 
   @@unique([name, userId])
   @@index([userId])
 }
 
 model CompanyDetail {
-  id            Int          @id @default(autoincrement())
-  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId     Int          @unique
-  culture       String?
-  desireability Int?
-  industry      String?
-  size          CompanySize?
-  website       String?
-  type          CompanyType?
-  history       String?
-  mission       String?
-  vision        String?
-  values        String?
-  description   String?
+  id          Int          @id @default(autoincrement())
+  company     Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId   Int          @unique
+  culture     String?
+  industry    String?
+  size        CompanySize?
+  website     String?
+  type        CompanyType?
+  history     String?
+  mission     String?
+  vision      String?
+  values      String?
+  description String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+
+  @@index([companyId])
+}
+
+model CompanyPreference {
+  id            Int                   @id @default(autoincrement())
+  desireability CompanyDesireability?
   notes         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now()) @updatedAt
+  company       Company               @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId     Int                   @unique
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @default(now()) @updatedAt
 
   @@index([companyId])
 }

@@ -6,6 +6,7 @@ const {
   CompanySize,
   CompanyType,
   BenefitType,
+  CompanyDesireability,
 } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
 const { currenciesList } = require("./data/currenciesList");
@@ -54,10 +55,15 @@ const getRandomTags = () => {
   return shuffledTags.slice(0, numberOfTags);
 };
 
+const getRandomDesireability = () => {
+  const desireabilityValues = Object.values(CompanyDesireability).push(null);
+  const randomIndex = getRandomInteger(0, desireabilityValues.length - 1);
+  return desireabilityValues[randomIndex];
+};
+
 const generateCompanyDetails = () => {
   return {
     culture: faker.company.buzzVerb(),
-    desireability: getRandomInteger(1, 10),
     industry: faker.company.buzzNoun(),
     size: cycleCompanySize(),
     website: faker.internet.url(),
@@ -67,7 +73,6 @@ const generateCompanyDetails = () => {
     vision: faker.lorem.sentence(),
     values: faker.lorem.words(5),
     description: faker.lorem.paragraphs(2),
-    notes: faker.lorem.sentences(3),
   };
 };
 
@@ -246,6 +251,7 @@ async function main() {
 
   for (let i = 0; i < NUM_APPLICATION_CARDS; i++) {
     const country = faker.location.country();
+    const companyDetails = generateCompanyDetails();
     const company = await prisma.company.create({
       data: {
         name: faker.company.name(),
@@ -263,18 +269,17 @@ async function main() {
             country: faker.location.country(),
           },
         },
-      },
-    });
-
-    const companyDetails = generateCompanyDetails();
-    await prisma.companyDetail.create({
-      data: {
-        company: {
-          connect: {
-            id: company.id,
+        details: {
+          create: {
+            ...companyDetails,
           },
         },
-        ...companyDetails,
+        companyPreference: {
+          create: {
+            desireability: getRandomDesireability(),
+            notes: faker.lorem.sentences(3),
+          },
+        },
       },
     });
 
