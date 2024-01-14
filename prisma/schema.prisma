@@ -210,35 +210,35 @@ model ApplicationGroup {
 }
 
 model User {
-  id                 String              @id @default(uuid())
-  email              String              @unique
-  firstName          String?
-  lastName           String?
-  imageURL           String?
-  oAuth              OAuth[]
-  applicationGroups  ApplicationGroup[]
-  companies          Company[]
-  emailTemplates     EmailTemplate[]
-  contacts           Contact[]
-  jobs               Job[]
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @default(now()) @updatedAt
-  addresses          Address[]
-  documents          Document[]
+  id                String             @id @default(uuid())
+  email             String             @unique
+  firstName         String?
+  lastName          String?
+  imageURL          String?
+  oAuth             OAuth[]
+  applicationGroups ApplicationGroup[]
+  companies         Company[]
+  emailTemplates    EmailTemplate[]
+  contacts          Contact[]
+  jobs              Job[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
+  addresses         Address[]
+  documents         Document[]
 }
 
 model Company {
-  id                 Int                 @id @default(autoincrement())
-  name               String
-  contacts           Contact[]
-  jobs               Job[]
-  user               User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId             String?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @default(now()) @updatedAt
-  addresses          Address[]
-  details            CompanyDetail?
-  companyPreference CompanyPreference?
+  id          Int                @id @default(autoincrement())
+  name        String
+  contacts    Contact[]
+  jobs        Job[]
+  user        User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @default(now()) @updatedAt
+  addresses   Address[]
+  details     CompanyDetail?
+  preferences CompanyPreference?
 
   @@unique([name, userId])
   @@index([userId])
