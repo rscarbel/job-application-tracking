@@ -1,6 +1,7 @@
 import { reportError } from "./reportError";
+import serverErrorResponse from "../serverErrorResponse";
 
-export async function POST(request) {
+export async function POST(request: Request): Promise<Response> {
   try {
     const { error } = await request.json();
 
@@ -14,11 +15,6 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("Failed to report to Bugsnag:", error);
-    return new Response(JSON.stringify({ error: "Failed to report error" }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return serverErrorResponse("Failed to report error", 500);
   }
 }
