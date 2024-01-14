@@ -1,6 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient, AddressInterface } from "@/utils/databaseTypes";
-import { CompanyDetail, CompanyPreference } from "@prisma/client";
 
 /**
  * Finds or creates a company with the given details.

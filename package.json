@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.8.10",
-    "@types/react": "^18.2.36",
+    "@types/react": "^18.2.47",
     "@types/react-dom": "^18.2.14",
     "autoprefixer": "^10.0.1",
     "bun-types": "^1.0.10",

@@ -1,9 +1,8 @@
 import { reportError } from "./reportError";
 import serverErrorResponse from "../serverErrorResponse";
 import { getRequestUser } from "@/services/userService";
-import { NextApiRequest } from "next";
 
-export async function POST(request: NextApiRequest): Promise<Response> {
+export async function POST(request): Promise<Response> {
   try {
     const { error } = await request.body.json();
     const user = await getRequestUser(request);

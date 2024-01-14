@@ -1,4 +1,4 @@
-import { AddressInterface } from "./types";
+import { AddressInterface } from "./databaseTypes";
 
 export const areAddressessIdentical = (
   address1?: AddressInterface | null,

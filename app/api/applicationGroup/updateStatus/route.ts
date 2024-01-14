@@ -2,15 +2,15 @@ import prisma from "@/services/globalPrismaClient";
 import { getRequestUser } from "@/services/userService";
 import { reportError } from "@/app/api/reportError/reportError";
 import serverErrorResponse from "../../serverErrorResponse";
-import { ExtendedNextApiRequest } from "@/app/api/ExtendedNextApiRequest";
+import { ApplicationStatusEnum } from "@/utils/databaseTypes";
 
 interface RequestBody {
   id: string;
-  status: string;
+  status: ApplicationStatusEnum;
   newPositionIndex: number;
 }
 
-export async function POST(request: ExtendedNextApiRequest) {
+export async function POST(request) {
   const { id, status, newPositionIndex }: RequestBody = await request.json();
   const user = await getRequestUser(request);
   if (!user) return serverErrorResponse("The request user does not exist", 404);

@@ -10,9 +10,8 @@ import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import serverErrorResponse from "../../serverErrorResponse";
-import { ExtendedNextApiRequest } from "../../ExtendedNextApiRequest";
 
-export async function POST(request: ExtendedNextApiRequest) {
+export async function POST(request) {
   const {
     applicationId,
     groupId,
