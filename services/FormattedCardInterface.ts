@@ -25,23 +25,6 @@ export interface IndividualFormattedCardInterface {
   notes: string;
 }
 
-/**
- {
-      applicationId: card.id,
-      companyName: job.company.name,
-      title: job.title,
-      workMode: job.workMode,
-      payAmount: compensation.payAmount,
-      payFrequency: compensation.payFrequency,
-      currency: compensation.currency,
-      city: lastAddress.city,
-      country: lastAddress.country,
-      applicationLink: card.applicationLink,
-      applicationDate: prettifyDate(card.applicationDate),
-      status: card.status,
-    };
- */
-
 export interface FormattedCardForBoardInterface {
   applicationId: number;
   companyName: string;
