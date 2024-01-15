@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { FunctionComponent, useState, useRef, useEffect } from "react";
+import { BoardStructureInterface } from "../api/applicationGroup/BoardStructureInterface";
 import { DragDropContext } from "@hello-pangea/dnd";
 import { handleDifferentColumnMove, handleSameColumnMove } from "./utils";
 import { Toast } from "primereact/toast";
@@ -10,20 +11,27 @@ import ColumnRenderer from "./column/ColumnRenderer";
 import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
 import NoCards from "./NoCards";
+import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterface";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
-const SAVING_LIFE = 10000000;
+const SAVING_LIFE = 10_000_000;
 const MILLISECONDS_IN_A_SECOND = 1000;
 const DELAY_FACTOR = 5;
 
-const Board = ({ board }) => {
-  const [boardData, setBoardData] = useState(board);
-  const [lastSavedBoardData, setLastSavedBoardData] = useState(board);
+interface BoardProps {
+  board: BoardStructureInterface;
+}
+
+const Board: FunctionComponent<BoardProps> = ({ board }) => {
+  const [boardData, setBoardData] = useState<BoardStructureInterface>(board);
+  const [lastSavedBoardData, setLastSavedBoardData] =
+    useState<BoardStructureInterface>(board);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [editingCard, setEditingCard] = useState(null);
+  const [editingCard, setEditingCard] =
+    useState<IndividualFormattedCardInterface | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const toast = useRef();
-  const saveTimeoutRef = useRef();
+  const toast = useRef<Toast>(null);
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const { columns, applications, columnOrder } = boardData;
 
@@ -35,7 +43,9 @@ const Board = ({ board }) => {
   const saveDelayMilliseconds = numberOfCards * DELAY_FACTOR;
 
   const showSuccess = () => {
-    toast.current?.show({
+    if (!toast.current) return;
+
+    toast.current.show({
       severity: "success",
       summary: "Saved",
       detail: `Status updated`,
@@ -45,9 +55,9 @@ const Board = ({ board }) => {
 
   const showSaving = () => {
     const isAShortTime = saveDelayMilliseconds <= MILLISECONDS_IN_A_SECOND;
-    if (isSaving || isAShortTime) return;
+    if (isSaving || isAShortTime || !toast.current) return;
 
-    toast.current?.show({
+    toast.current.show({
       severity: "info",
       summary: (
         <div className="flex items-center justify-start">
@@ -68,7 +78,9 @@ const Board = ({ board }) => {
   };
 
   const showError = (errorMessage) => {
-    toast.current?.show({
+    if (!toast.current) return;
+
+    toast.current.show({
       severity: "error",
       summary: "Error",
       detail: errorMessage,
@@ -77,14 +89,16 @@ const Board = ({ board }) => {
   };
 
   const showDeleteSuccess = () => {
-    toast.current?.show({
+    if (!toast.current) return;
+
+    toast.current.show({
       severity: "warn",
       summary: "Application deleted",
       life: MILLISECONDS_FOR_MESSAGES,
     });
   };
 
-  const handleEditClick = (cardData) => {
+  const handleEditClick = (cardData: IndividualFormattedCardInterface) => {
     setEditingCard(cardData);
     setModalVisible(true);
   };
@@ -99,8 +113,10 @@ const Board = ({ board }) => {
         setBoardData(board);
         showSuccess();
       }
-    } catch (error) {
-      showError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showError(error.message);
+      }
     } finally {
       setEditingCard(null);
       setModalVisible(false);
@@ -116,8 +132,10 @@ const Board = ({ board }) => {
       if (!response.ok) {
         showError(data.error);
       }
-    } catch (error) {
-      showError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showError(error.message);
+      }
     } finally {
       setEditingCard(null);
       setModalVisible(false);
@@ -159,6 +177,7 @@ const Board = ({ board }) => {
     showSaving();
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
+      saveTimeoutRef.current = null;
     }
 
     saveTimeoutRef.current = setTimeout(async () => {
@@ -169,7 +188,10 @@ const Board = ({ board }) => {
           index
         );
 
-        toast.current?.clear();
+        if (toast.current) {
+          toast.current.clear();
+        }
+
         setIsSaving(false);
 
         if (!response.ok) {
@@ -182,10 +204,14 @@ const Board = ({ board }) => {
             columns: { ...boardData.columns, ...updatedColumns },
           });
         }
-      } catch (error) {
-        toast.current?.clear();
+      } catch (error: unknown) {
+        if (toast.current) {
+          toast.current.clear();
+        }
         setIsSaving(false);
-        showError(error.message);
+        if (error instanceof Error) {
+          showError(error.message);
+        }
         setBoardData(lastSavedBoardData);
       }
     }, saveDelayMilliseconds);
