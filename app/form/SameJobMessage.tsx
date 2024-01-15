@@ -1,12 +1,20 @@
 import { Tooltip } from "primereact/tooltip";
 
+interface SameJobMessageProps {
+  previousApplicationDateOnThisBoard: string;
+  companyName: string;
+  previousBoardName: string;
+  jobTitle: string;
+  previousBoardDate: string;
+}
+
 const SameJobMessage = ({
   previousApplicationDateOnThisBoard,
   companyName,
   previousBoardName,
   jobTitle,
   previousBoardDate,
-}) => {
+}: SameJobMessageProps) => {
   if (previousApplicationDateOnThisBoard) {
     return (
       <div className="ml-2">
@@ -17,6 +25,7 @@ const SameJobMessage = ({
         ></span>
         <Tooltip
           target=".pi.pi-exclamation-triangle"
+          // @ts-ignore - Typescript rejects the tooltipOptions prop for some reason
           tooltipOptions={{ position: "top" }}
         />
       </div>
@@ -33,6 +42,7 @@ const SameJobMessage = ({
         </div>
         <Tooltip
           target=".pi.pi-info-circle"
+          // @ts-ignore - Typescript rejects the tooltipOptions prop for some reason
           tooltipOptions={{ position: "top" }}
         />
       </div>
