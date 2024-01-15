@@ -1,12 +1,20 @@
 import { createContext, useContext } from "react";
 import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterface";
 
-export const EditCardContext = createContext({
-  onEditClick: (cardData: IndividualFormattedCardInterface) => {},
+interface EditCardContextInterface {
+  onEditClick: (cardData: IndividualFormattedCardInterface | null) => void;
+  editingCardData: IndividualFormattedCardInterface | null;
+  setEditingCardData: (data: IndividualFormattedCardInterface) => void;
+  isModalVisible: boolean;
+  setModalVisible: (visible: boolean) => void;
+}
+
+export const EditCardContext = createContext<EditCardContextInterface>({
+  onEditClick: (cardData) => {},
   editingCardData: null,
-  setEditingCardData: (data: IndividualFormattedCardInterface) => {},
+  setEditingCardData: (data) => {},
   isModalVisible: false,
-  setModalVisible: (visible: boolean) => {},
+  setModalVisible: (visible) => {},
 });
 
 export const useEditCard = () => {

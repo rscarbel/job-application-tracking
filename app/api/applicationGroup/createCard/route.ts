@@ -55,6 +55,10 @@ export async function POST(request: ApiRequest) {
         },
       });
 
+      if (!applicationGroup) {
+        throw new Error("Application Group not found");
+      }
+
       const newCompany = await findOrCreateCompany({
         companyName: company.name,
         userId: user.id,

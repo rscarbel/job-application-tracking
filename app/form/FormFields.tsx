@@ -44,7 +44,7 @@ interface FormFieldsProps {
   onCountryChange: (name: string) => void;
   onCompanyChange: (name: string, companyId: number) => void;
   onJobBlur: () => void;
-  existingJobData: ExistingJobDataInterface;
+  existingJobData: ExistingJobDataInterface | null;
   countrySymbol: string;
   currencySymbol: string;
   isDisabled?: boolean;
@@ -287,6 +287,7 @@ const FormFields = ({
           name="applicationDate"
           className="mt-1 w-full shadow-sm border-gray-300 rounded  focus:border-blue-500 focus:ring focus:ring-blue-200"
           value={new Date(applicationDate)}
+          // @ts-ignore - PrimeReact types are not up to date
           onChange={(e: { target: { name: string; value: Date } }) => {
             onInputChange(e.target.name, e.target.value);
           }}

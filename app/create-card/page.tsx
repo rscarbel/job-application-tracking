@@ -24,10 +24,6 @@ type ChangeEvent = {
   };
 };
 
-type ApiResponse = {
-  error?: string;
-};
-
 type Company = {
   companyId: number;
   name: string;
@@ -37,10 +33,10 @@ const defaultFormData: NewApplicationFormData = {
   groupId: 1,
   company: {
     companyId: undefined,
-    name: undefined,
+    name: "",
   },
   jobId: undefined,
-  jobTitle: undefined,
+  jobTitle: "",
   jobDescription: undefined,
   workMode: WorkMode.onsite,
   payAmount: 0,
@@ -118,19 +114,19 @@ const CreateCard: React.FC = () => {
     }));
   };
 
-  const countrySymbol = getCountryCode(formData.country);
-  const currencySymbol = getCurrencySymbol(formData.country);
+  const countrySymbol = getCountryCode(formData.country || "United States");
+  const currencySymbol = getCurrencySymbol(formData.country || "United States");
 
   const handleFormSubmission = async (e: Event) => {
     e.preventDefault();
     setLoading(true);
     try {
       const result = await createCard(formData);
-      const data = result.data as ApiResponse;
-      if (result.response.status === 200) {
+      const data = result?.data;
+      if (result?.response.status === 200) {
         router.push("/board");
       } else {
-        showError(data.error || "There was a problem with the submission.");
+        showError(data?.error || "There was a problem with the submission.");
       }
     } catch (error) {
       showError(error.message);

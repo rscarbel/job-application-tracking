@@ -1,8 +1,10 @@
 import Bugsnag from "@bugsnag/js";
-import {
-  ReportErrorObjectInterface,
-  UserReportInterface,
-} from "./ErrorReportInterface";
+import { User } from "@prisma/client";
+
+interface ReportErrorObjectInterface {
+  message: string;
+  stack: string;
+}
 
 const MISSING_ERROR_MESSAGE = "An unknown error occurred";
 const MISSING_ERROR_STACK = "No stack trace available";
@@ -26,7 +28,7 @@ if (process.env.NODE_ENV !== "development") {
  */
 export const reportError = (
   error: ReportErrorObjectInterface,
-  user: UserReportInterface
+  user: User | null
 ): void => {
   console.error(error.message);
   if (process.env.NODE_ENV === "development") return;

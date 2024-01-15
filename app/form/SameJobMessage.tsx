@@ -1,11 +1,11 @@
 import { Tooltip } from "primereact/tooltip";
 
 interface SameJobMessageProps {
-  previousApplicationDateOnThisBoard: string;
-  companyName: string;
-  previousBoardName: string;
-  jobTitle: string;
-  previousBoardDate: string;
+  previousApplicationDateOnThisBoard?: string;
+  companyName?: string;
+  previousBoardName?: string;
+  jobTitle?: string;
+  previousBoardDate?: string;
 }
 
 const SameJobMessage = ({

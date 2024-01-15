@@ -1,8 +1,9 @@
 import { AddressInterface } from "./databaseTypes";
+import { Address } from "@prisma/client";
 
 export const areAddressessIdentical = (
-  address1?: AddressInterface | null,
-  address2?: AddressInterface | null
+  address1?: AddressInterface | Address | null,
+  address2?: AddressInterface | Address | null
 ) => {
   if (!address1 || !address2) return false;
 

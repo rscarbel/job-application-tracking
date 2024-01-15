@@ -8,7 +8,7 @@ export async function GET(request: ApiRequest) {
   const { searchParams } = new URL(request.url);
   const companyName = searchParams.get("companyName");
   const jobTitle = searchParams.get("jobTitle");
-  const groupId = parseInt(searchParams.get("groupId"));
+  const groupId = searchParams.get("groupId");
 
   const user = await getRequestUser(request);
   const userId = user?.id;
@@ -17,8 +17,7 @@ export async function GET(request: ApiRequest) {
     return serverErrorResponse("The request user does not exist", 404);
   if (!companyName) return serverErrorResponse("Invalid companyName", 400);
   if (!jobTitle) return serverErrorResponse("Invalid jobTitle", 400);
-  if (!groupId || isNaN(groupId))
-    return serverErrorResponse("Invalid groupId", 400);
+  if (!groupId) return serverErrorResponse("Invalid groupId", 400);
 
   try {
     const company = await prisma.company.findFirst({
@@ -30,6 +29,8 @@ export async function GET(request: ApiRequest) {
         id: true,
       },
     });
+
+    if (!company) return serverErrorResponse("Company not found", 404);
 
     const job = await prisma.job.findFirst({
       where: {
@@ -43,12 +44,14 @@ export async function GET(request: ApiRequest) {
       },
     });
 
+    if (!job) return serverErrorResponse("Job not found", 404);
+
     const lastApplicationToJobInOtherBoard = await prisma.application.findFirst(
       {
         where: {
           jobId: job.id,
           applicationGroupId: {
-            not: groupId,
+            not: parseInt(groupId),
           },
         },
         orderBy: {
@@ -68,7 +71,7 @@ export async function GET(request: ApiRequest) {
     const lastApplicationToJobInThisBoard = await prisma.application.findFirst({
       where: {
         jobId: job.id,
-        applicationGroupId: groupId,
+        applicationGroupId: parseInt(groupId),
       },
       orderBy: {
         applicationDate: "desc",
@@ -80,11 +83,10 @@ export async function GET(request: ApiRequest) {
 
     const payload = {
       jobTitle: jobTitle,
-      lastApplicationToJobInThisBoard: prettifyDate(
-        lastApplicationToJobInThisBoard?.applicationDate
-      ),
+      lastApplicationToJobInThisBoard:
+        lastApplicationToJobInThisBoard?.applicationDate,
       lastApplicationToJobInOtherBoard: {
-        date: prettifyDate(lastApplicationToJobInOtherBoard?.applicationDate),
+        date: lastApplicationToJobInOtherBoard?.applicationDate,
         boardName: lastApplicationToJobInOtherBoard?.applicationGroup.name,
       },
     };

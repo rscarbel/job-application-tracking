@@ -127,7 +127,7 @@ enum BenefitType {
 
 model Application {
   id                 Int               @id @default(autoincrement())
-  applicationDate    DateTime?
+  applicationDate    DateTime          @default(now())
   applicationLink    String?
   job                Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
   jobId              Int
