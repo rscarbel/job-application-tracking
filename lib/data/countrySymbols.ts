@@ -1,4 +1,8 @@
-const countrySymbols = {
+interface CountrySymbolsInterface {
+  [key: string]: string;
+}
+
+const countrySymbols: CountrySymbolsInterface = {
   Afghanistan: "AF",
   "land Islands": "AX",
   Albania: "AL",

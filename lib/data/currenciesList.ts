@@ -1,4 +1,8 @@
-const currenciesList = {
+interface CurrencyInterface {
+  [key: string]: string;
+}
+
+const currenciesList: CurrencyInterface = {
   AD: "EUR",
   AE: "AED",
   AF: "AFN",

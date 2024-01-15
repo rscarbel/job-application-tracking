@@ -6,8 +6,9 @@ import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import { CreateCardRequest } from "./interface";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
+import { ApiRequest } from "@/utils/ApiRequestType";
 
-export async function POST(request) {
+export async function POST(request: ApiRequest) {
   const requestData = await request.body.json();
   const createCardRequest: CreateCardRequest = requestData;
   const {

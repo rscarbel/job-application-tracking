@@ -5,6 +5,34 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import type { OAuthConfig } from "next-auth/providers/oauth";
 import type { CredentialsConfig } from "next-auth/providers/credentials";
 import prisma from "@/services/globalPrismaClient";
+import { Session } from "next-auth";
+
+interface OAuthAccount {
+  providerAccountId: string;
+  provider: string;
+}
+
+interface User {
+  id: number;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imageUrl: string;
+  oAuth: OAuthAccount[];
+}
+
+interface Profile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  imageUrl: string;
+}
+
+interface Token {
+  uid: number;
+  provider: string;
+}
 
 const providers: Array<OAuthConfig<any> | CredentialsConfig<any>> = [
   GoogleProvider({
@@ -87,14 +115,22 @@ const options = {
   providers,
   session: { strategy: "jwt" },
   events: {
-    async signIn(message) {},
-    async signOut(message) {},
-    async createUser(message) {},
-    async updateUser(message) {},
-    async linkAccount(message) {},
+    async signIn(message: string) {},
+    async signOut(message: string) {},
+    async createUser(message: string) {},
+    async updateUser(message: string) {},
+    async linkAccount(message: string) {},
   },
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({
+      user,
+      account,
+      profile,
+    }: {
+      user: User;
+      account: OAuthAccount;
+      profile: Profile;
+    }) {
       const email = user.email;
 
       if (!email) {
@@ -153,20 +189,26 @@ const options = {
       }
       return true;
     },
-    async redirect({ url, baseUrl }) {
+    async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       if (url.startsWith(baseUrl)) {
         return url;
       }
       return baseUrl;
     },
-    async session({ session, user }) {
-      if (user) {
-        session.user.id = user.id;
-        session.user.roles = user.roles;
-      }
+    async session({ session, user }: { session: Session; user: User }) {
       return session;
     },
-    async jwt({ token, user, account, profile }) {
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+    }: {
+      token: Token;
+      user: User;
+      account: OAuthAccount;
+      profile: Profile;
+    }) {
       if (user) {
         token.uid = user.id;
         token.provider = account.provider;

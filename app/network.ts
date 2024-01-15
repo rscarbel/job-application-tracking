@@ -1,7 +1,12 @@
 import { reportErrorToServer } from "@/utils/global";
 import { ApplicationFrontEndType, NewApplicationFormData } from "./types";
+import { ApplicationStatus } from "@prisma/client";
 
-export const updateCardStatus = async (applicationId, newStatus, index) => {
+export const updateCardStatus = async (
+  applicationId: number,
+  newStatus: ApplicationStatus,
+  index: number
+) => {
   const response = await fetch("/api/applicationGroup/updateStatus", {
     method: "POST",
     headers: {

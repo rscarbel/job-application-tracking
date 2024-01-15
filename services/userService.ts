@@ -1,8 +1,11 @@
 import prisma from "@/services/globalPrismaClient";
 import { getToken } from "next-auth/jwt";
 import { User } from "@prisma/client";
+import { ApiRequest } from "@/utils/ApiRequestType";
 
-export const getRequestUser = async (request): Promise<User | null> => {
+export const getRequestUser = async (
+  request: ApiRequest
+): Promise<User | null> => {
   const token = await getToken({ req: request });
 
   const { sub, provider } = token || { sub: null, provider: null };

@@ -6,33 +6,53 @@ import {
 import { ApplicationStatus } from "@prisma/client";
 import { columnOrder } from "./BoardStructureInterface";
 
+interface ColumnInterface {
+  id: ApplicationStatus;
+  title: ColumnNameEnum;
+  applicationIds: string[];
+}
+
+interface GeneratedColumnsInterface {
+  [key: string]: ColumnInterface;
+}
+
+interface GeneratedApplicationsInterface {
+  [key: string]: FormattedCardForBoardInterface;
+}
+
 export const calculateBoardStructure = (
   applications: FormattedCardForBoardInterface[]
 ): BoardStructureInterface => {
-  const generatedColumns = columns.reduce((acc, column) => {
-    const columnApplications = applications.filter(
-      (application) => application.status === column.id
-    );
-    acc[column.id] = {
-      ...column,
-      applicationIds: columnApplications.map(
-        (application) => application.applicationId
-      ),
-    };
-    return acc;
-  }, {});
+  const generatedColumns = columns.reduce<GeneratedColumnsInterface>(
+    (acc, column) => {
+      const columnApplications = applications.filter(
+        (application) => application.status === column.id
+      );
+      acc[column.id] = {
+        ...column,
+        applicationIds: columnApplications.map((application) =>
+          application.applicationId.toString()
+        ),
+      };
+      return acc;
+    },
+    {}
+  );
 
   return {
-    applications: applications.reduce((acc, card) => {
-      acc[card.applicationId] = card;
-      return acc;
-    }, {}),
+    applications: applications.reduce<GeneratedApplicationsInterface>(
+      (acc, card) => {
+        acc[card.applicationId.toString()] = card;
+        return acc;
+      },
+      {}
+    ),
     columns: generatedColumns,
     columnOrder: columnOrder,
   };
 };
 
-const columns = [
+const columns: ColumnInterface[] = [
   {
     id: ApplicationStatus.applied,
     title: ColumnNameEnum.Applied,

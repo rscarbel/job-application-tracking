@@ -287,7 +287,7 @@ const FormFields = ({
           name="applicationDate"
           className="mt-1 w-full shadow-sm border-gray-300 rounded  focus:border-blue-500 focus:ring focus:ring-blue-200"
           value={new Date(applicationDate)}
-          onChange={(e) => {
+          onChange={(e: { target: { name: string; value: Date } }) => {
             onInputChange(e.target.name, e.target.value);
           }}
           dateFormat="mm/dd/yy"

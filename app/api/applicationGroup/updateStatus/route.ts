@@ -3,15 +3,17 @@ import { getRequestUser } from "@/services/userService";
 import { reportError } from "@/app/api/reportError/reportError";
 import serverErrorResponse from "../../serverErrorResponse";
 import { ApplicationStatus } from "@prisma/client";
+import { ApiRequest } from "@/utils/ApiRequestType";
 
-interface RequestBody {
+interface UpdateStatusRequest {
   id: string;
   status: ApplicationStatus;
   newPositionIndex: number;
 }
 
-export async function POST(request) {
-  const { id, status, newPositionIndex }: RequestBody = await request.json();
+export async function POST(request: ApiRequest) {
+  const { id, status, newPositionIndex }: UpdateStatusRequest =
+    await request.json();
   const user = await getRequestUser(request);
   if (!user) return serverErrorResponse("The request user does not exist", 404);
 
