@@ -1,8 +1,23 @@
+import React from "react";
 import { ScrollTop } from "primereact/scrolltop";
 import ApplicationCard from "../card/ApplicationCard";
 import { Droppable } from "@hello-pangea/dnd";
+import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
+import { mapColumnNameToApplicationStatus } from "./mapColumnNameToApplicationStatus";
+import { ColumnNameEnum } from "@/app/api/applicationGroup/BoardStructureInterface";
+import { ApplicationStatusEnum } from "@/utils/databaseTypes";
 
-const SingleColumn = ({ column, applications, isHalfSizeOnly = false }) => {
+interface SingleColumnProps {
+  column: { id: ApplicationStatusEnum; title: ColumnNameEnum };
+  applications: FormattedCardForBoardInterface[];
+  isHalfSizeOnly?: boolean;
+}
+
+const SingleColumn: React.FC<SingleColumnProps> = ({
+  column,
+  applications,
+  isHalfSizeOnly = false,
+}) => {
   const maxColumnHeight = isHalfSizeOnly ? "max-h-[50vh]" : "max-h-[80vh]";
   return (
     <div className={`w-full sm:w-80 p-2`}>
@@ -19,7 +34,7 @@ const SingleColumn = ({ column, applications, isHalfSizeOnly = false }) => {
                 key={String(application.applicationId)}
                 {...application}
                 index={index}
-                status={column.title.toLowerCase()}
+                status={mapColumnNameToApplicationStatus(column.title)}
               />
             ))}
             {provided.placeholder}

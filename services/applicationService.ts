@@ -118,6 +118,7 @@ export const getFormattedCardsForBoard = async ({
 
     return {
       applicationId: card.id,
+      groupId: card.applicationGroupId,
       companyName: job.company.name,
       title: job.title,
       workMode: job.workMode,

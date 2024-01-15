@@ -1,3 +1,9 @@
+import {
+  PayFrequencyEnum,
+  ApplicationStatusEnum,
+  WorkModeEnum,
+} from "@/utils/databaseTypes";
+
 export interface IndividualFormattedCardInterface {
   applicationId: number;
   groupId: number;
@@ -8,9 +14,9 @@ export interface IndividualFormattedCardInterface {
   };
   jobTitle: string;
   jobDescription: string;
-  workMode: string;
+  workMode: WorkModeEnum;
   payAmount: number;
-  payFrequency: string;
+  payFrequency: PayFrequencyEnum;
   currency: string;
   streetAddress: string;
   streetAddress2: string;
@@ -20,22 +26,23 @@ export interface IndividualFormattedCardInterface {
   postalCode: string;
   applicationLink: string;
   applicationDate: Date;
-  status: string;
+  status: ApplicationStatusEnum;
   positionIndex: number;
   notes: string;
 }
 
 export interface FormattedCardForBoardInterface {
   applicationId: number;
+  groupId: number;
   companyName: string;
   title: string;
-  workMode: string;
+  workMode: WorkModeEnum;
   payAmount: number;
-  payFrequency: string;
+  payFrequency: PayFrequencyEnum;
   currency: string;
   city: string;
   country: string;
   applicationLink: string;
   applicationDate: string;
-  status: string;
+  status: ApplicationStatusEnum;
 }

@@ -1,5 +1,7 @@
 import { ApplicationStatus } from "@prisma/client";
 export const MAX_CHARACTERS = 10;
+import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ColumnNameEnum } from "../api/applicationGroup/BoardStructureInterface";
 
 export const getStatusColor = (status: ApplicationStatus): string => {
   switch (status) {
@@ -63,14 +65,9 @@ export const truncateText = (
   return `${text.substring(0, maxLength)}...`;
 };
 
-interface Column {
-  id: string;
-  applicationIds: string[];
-}
-
 interface ColumnInterface {
-  id: string;
-  title: string;
+  id: ApplicationStatusEnum;
+  title: ColumnNameEnum;
   applicationIds: string[];
 }
 

@@ -1,5 +1,10 @@
 import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
-import { BoardStructureInterface } from "./BoardStructureInterface";
+import {
+  BoardStructureInterface,
+  ColumnNameEnum,
+} from "./BoardStructureInterface";
+import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { columnOrder } from "./BoardStructureInterface";
 
 export const calculateBoardStructure = (
   applications: FormattedCardForBoardInterface[]
@@ -28,19 +33,34 @@ export const calculateBoardStructure = (
 };
 
 const columns = [
-  { id: "applied", title: "Applied", applicationIds: [] },
-  { id: "interview", title: "Interview", applicationIds: [] },
-  { id: "offer", title: "Offer", applicationIds: [] },
-  { id: "rejected", title: "Rejected", applicationIds: [] },
-  { id: "passed", title: "Passed", applicationIds: [] },
-  { id: "accepted", title: "Accepted", applicationIds: [] },
-];
-
-const columnOrder = [
-  "applied",
-  "interview",
-  "offer",
-  "rejected",
-  "accepted",
-  "passed",
+  {
+    id: ApplicationStatusEnum.Applied,
+    title: ColumnNameEnum.Applied,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatusEnum.Interview,
+    title: ColumnNameEnum.Interview,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatusEnum.Offer,
+    title: ColumnNameEnum.Offer,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatusEnum.Rejected,
+    title: ColumnNameEnum.Rejected,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatusEnum.Passed,
+    title: ColumnNameEnum.Passed,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatusEnum.Accepted,
+    title: ColumnNameEnum.Accepted,
+    applicationIds: [],
+  },
 ];
