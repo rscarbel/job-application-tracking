@@ -104,7 +104,11 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     });
   };
 
-  const handleEditClick = (cardData: IndividualFormattedCardInterface) => {
+  const handleEditClick = (
+    cardData: IndividualFormattedCardInterface | null
+  ) => {
+    if (!cardData) return;
+
     setEditingCard(cardData);
     setModalVisible(true);
   };
@@ -150,8 +154,12 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     }
   };
 
-  const onDragEnd = async (result: CardDropResult) => {
-    const { source, destination, draggableId } = result;
+  const onDragEnd = async (result: DropResult) => {
+    const { source, destination } = result;
+
+    const draggableId = result.draggableId as unknown as ApplicationStatus;
+    const newStatus = result.destination
+      ?.droppableId as unknown as ApplicationStatus;
 
     if (
       !destination ||
@@ -179,7 +187,6 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     }));
 
     const applicationId = draggableId;
-    const newStatus = destination.droppableId;
     const index = destination.index;
 
     showSaving();
