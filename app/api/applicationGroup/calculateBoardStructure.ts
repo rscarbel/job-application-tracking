@@ -1,5 +1,10 @@
 import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
-import { BoardStructureInterface } from "./BoardStructureInterface";
+import {
+  BoardStructureInterface,
+  ColumnNameEnum,
+} from "./BoardStructureInterface";
+import { ApplicationStatus } from "@prisma/client";
+import { columnOrder } from "./BoardStructureInterface";
 
 export const calculateBoardStructure = (
   applications: FormattedCardForBoardInterface[]
@@ -28,19 +33,34 @@ export const calculateBoardStructure = (
 };
 
 const columns = [
-  { id: "applied", title: "Applied", applicationIds: [] },
-  { id: "interview", title: "Interview", applicationIds: [] },
-  { id: "offer", title: "Offer", applicationIds: [] },
-  { id: "rejected", title: "Rejected", applicationIds: [] },
-  { id: "passed", title: "Passed", applicationIds: [] },
-  { id: "accepted", title: "Accepted", applicationIds: [] },
-];
-
-const columnOrder = [
-  "applied",
-  "interview",
-  "offer",
-  "rejected",
-  "accepted",
-  "passed",
+  {
+    id: ApplicationStatus.applied,
+    title: ColumnNameEnum.Applied,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatus.interview,
+    title: ColumnNameEnum.Interview,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatus.offer,
+    title: ColumnNameEnum.Offer,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatus.rejected,
+    title: ColumnNameEnum.Rejected,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatus.passed,
+    title: ColumnNameEnum.Passed,
+    applicationIds: [],
+  },
+  {
+    id: ApplicationStatus.accepted,
+    title: ColumnNameEnum.Accepted,
+    applicationIds: [],
+  },
 ];

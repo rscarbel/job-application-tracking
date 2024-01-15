@@ -1,4 +1,15 @@
-import { PrismaClient } from "@prisma/client";
+import {
+  PrismaClient,
+  ApplicationStatus,
+  WorkMode,
+  PayFrequency,
+  CompanyDesireability,
+  DocumentType,
+  ContactInteractionType,
+  CompanySize,
+  CompanyType,
+  BenefitType,
+} from "@prisma/client";
 import {
   DefaultArgs,
   PrismaClientOptions,
@@ -9,123 +20,6 @@ export type TransactionClient = Omit<
   "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
 >;
 
-export enum CompanyDesireabilityEnum {
-  Low = "low",
-  Medium = "medium",
-  High = "high",
-}
-
-export enum WorkModeEnum {
-  Onsite = "onsite",
-  Remote = "remote",
-  Hybrid = "hybrid",
-}
-
-export enum ApplicationStatusEnum {
-  Applied = "applied",
-  Interview = "interview",
-  Offer = "offer",
-  Rejected = "rejected",
-  Accepted = "accepted",
-  Passed = "passed",
-}
-
-export enum PayFrequencyEnum {
-  Hourly = "hourly",
-  Weekly = "weekly",
-  Biweekly = "biweekly",
-  Monthly = "monthly",
-  Yearly = "yearly",
-}
-
-export enum DocumentTypeEnum {
-  Resume = "RESUME",
-  CoverLetter = "COVER_LETTER",
-  Portfolio = "PORTFOLIO",
-  Other = "OTHER",
-}
-
-export enum ContactInteractionTypeEnum {
-  Email = "EMAIL",
-  Call = "CALL",
-  Meeting = "MEETING",
-  Other = "OTHER",
-}
-
-export enum CompanySizeEnum {
-  Tiny = "TINY",
-  Small = "SMALL",
-  Medium = "MEDIUM",
-  Large = "LARGE",
-  Massive = "MASSIVE",
-}
-
-export enum CompanyTypeEnum {
-  GovernmentAgency = "GOVERNMENT_AGENCY",
-  NonProfit = "NON_PROFIT",
-  Private = "PRIVATE",
-  Public = "PUBLIC",
-}
-
-export enum BenefitTypeEnum {
-  BonusesAndIncentives = "BONUSES_AND_INCENTIVES",
-  CasualDressCode = "CASUAL_DRESS_CODE",
-  ChildcareAssistance = "CHILDCARE_ASSISTANCE",
-  CommuterBenefits = "COMMUTER_BENEFITS",
-  CompanyCarOrAllowance = "COMPANY_CAR_OR_ALLOWANCE",
-  CompanyDiscounts = "COMPANY_DISCOUNTS",
-  CompanyEventsAndRetreats = "COMPANY_EVENTS_AND_RETREATS",
-  ConferenceAttendance = "CONFERENCE_ATTENDANCE",
-  CulturalLeave = "CULTURAL_LEAVE",
-  CustomizableBenefitsPackage = "CUSTOMIZABLE_BENEFITS_PACKAGE",
-  DisabilityInsurance = "DISABILITY_INSURANCE",
-  ElderCareAssistance = "ELDER_CARE_ASSISTANCE",
-  EmergencyChildAndElderCare = "EMERGENCY_CHILD_AND_ELDER_CARE",
-  EmployeeAssistancePrograms = "EMPLOYEE_ASSISTANCE_PROGRAMS",
-  EmployeeRecognitionPrograms = "EMPLOYEE_RECOGNITION_PROGRAMS",
-  ExtendedMaternityAndPaternityLeave = "EXTENDED_MATERNITY_AND_PATERNITY_LEAVE",
-  FinancialPlanningServices = "FINANCIAL_PLANNING_SERVICES",
-  FlexibleScheduling = "FLEXIBLE_SCHEDULING",
-  FlexibleSpendingAccounts = "FLEXIBLE_SPENDING_ACCOUNTS",
-  FreeOrSubsidizedMeals = "FREE_OR_SUBSIDIZED_MEALS",
-  GlobalWorkOpportunities = "GLOBAL_WORK_OPPORTUNITIES",
-  GreenCommutingIncentives = "GREEN_COMMUTING_INCENTIVES",
-  GymMemberships = "GYM_MEMBERSHIPS",
-  HealthInsurance = "HEALTH_INSURANCE",
-  HealthSavingsAccounts = "HEALTH_SAVINGS_ACCOUNTS",
-  HealthcareSpecialistAccess = "HEALTHCARE_SPECIALIST_ACCESS",
-  HomeOfficeStipend = "HOME_OFFICE_STIPEND",
-  HousingAssistance = "HOUSING_ASSISTANCE",
-  IdentityTheftProtection = "IDENTITY_THEFT_PROTECTION",
-  LanguageLearningAssistance = "LANGUAGE_LEARNING_ASSISTANCE",
-  LegalAssistance = "LEGAL_ASSISTANCE",
-  LifeInsurance = "LIFE_INSURANCE",
-  MentalHealthAssistance = "MENTAL_HEALTH_ASSISTANCE",
-  MentorshipPrograms = "MENTORSHIP_PROGRAMS",
-  MovingExpenseReimbursement = "MOVING_EXPENSE_REIMBURSEMENT",
-  OnsiteChildcareFacilities = "ONSITE_CHILDCARE_FACILITIES",
-  PaidParentalLeave = "PAID_PARENTAL_LEAVE",
-  PaidTimeOff = "PAID_TIME_OFF",
-  ParkingBenefits = "PARKING_BENEFITS",
-  PetFriendlyWorkplace = "PET_FRIENDLY_WORKPLACE",
-  PetInsurance = "PET_INSURANCE",
-  ProfessionalMemberships = "PROFESSIONAL_MEMBERSHIPS",
-  RelocationAssistance = "RELOCATION_ASSISTANCE",
-  RemoteWorkOptions = "REMOTE_WORK_OPTIONS",
-  RetirementPlans = "RETIREMENT_PLANS",
-  SabbaticalLeave = "SABBATICAL_LEAVE",
-  SocialImpactProjects = "SOCIAL_IMPACT_PROJECTS",
-  StockOptions = "STOCK_OPTIONS",
-  StressManagementPrograms = "STRESS_MANAGEMENT_PROGRAMS",
-  SubstanceAbuseAssistance = "SUBSTANCE_ABUSE_ASSISTANCE",
-  TechnologyAllowance = "TECHNOLOGY_ALLOWANCE",
-  TemporaryHousingAssistance = "TEMPORARY_HOUSING_ASSISTANCE",
-  TrainingAndDevelopment = "TRAINING_AND_DEVELOPMENT",
-  TuitionReimbursement = "TUITION_REIMBURSEMENT",
-  VolunteerTimeOff = "VOLUNTEER_TIME_OFF",
-  WellnessPrograms = "WELLNESS_PROGRAMS",
-}
-
 export interface ApplicationInterface {
   id?: number;
   applicationDate?: Date;
@@ -133,7 +27,7 @@ export interface ApplicationInterface {
   jobId: number;
   positionIndex: number;
   notes?: string;
-  status: ApplicationStatusEnum;
+  status: ApplicationStatus;
   applicationGroupId: number;
   documents: DocumentInterface[];
   interviews: InterviewInterface[];
@@ -151,11 +45,11 @@ export interface JobInterface {
   id?: number;
   title: string;
   responsibilities?: string[];
-  benefits?: BenefitTypeEnum[];
+  benefits?: BenefitType[];
   description?: string;
   companyId: number;
   userId: string;
-  workMode: WorkModeEnum;
+  workMode: WorkMode;
   compensation: CompensationInterface;
   address?: AddressInterface;
   applications?: ApplicationInterface[];
@@ -164,7 +58,7 @@ export interface JobInterface {
 export interface CompensationInterface {
   id?: number;
   payAmount: number;
-  payFrequency: PayFrequencyEnum;
+  payFrequency: PayFrequency;
   currency: string;
   salaryRangeMin?: number;
   salaryRangeMax?: number;
@@ -212,9 +106,9 @@ export interface CompanyDetailInterface {
   companyId?: number;
   culture?: string;
   industry?: string;
-  size?: CompanySizeEnum;
+  size?: CompanySize;
   website?: string;
-  type?: CompanyTypeEnum;
+  type?: CompanyType;
   history?: string;
   mission?: string;
   vision?: string;
@@ -225,7 +119,7 @@ export interface CompanyDetailInterface {
 export interface CompanyPreferenceInterface {
   id?: number;
   companyId?: number;
-  desireability?: CompanyDesireabilityEnum;
+  desireability?: CompanyDesireability;
   notes?: string;
 }
 
@@ -297,7 +191,7 @@ export interface DocumentInterface {
   user: UserInterface;
   userId: string;
   applications: ApplicationInterface[];
-  type: DocumentTypeEnum;
+  type: DocumentType;
   url?: string;
   name: string;
   content?: string;
@@ -307,7 +201,7 @@ export interface ContactInteractionInterface {
   id?: number;
   contact: ContactInterface;
   contactId: number;
-  type: ContactInteractionTypeEnum;
+  type: ContactInteractionType;
   notes?: string;
   interactionTime: Date;
 }

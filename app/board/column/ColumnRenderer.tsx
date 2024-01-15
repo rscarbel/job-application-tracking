@@ -3,9 +3,10 @@ import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterfac
 import { BoardStructureInterface } from "@/app/api/applicationGroup/BoardStructureInterface";
 import SingleColumn from "./SingleColumn";
 import DoubleColumn from "./DoubleColumn";
+import { ApplicationStatus } from "@prisma/client";
 
 interface ColumnRendererProps {
-  columnId: string;
+  columnId: ApplicationStatus;
   columns: BoardStructureInterface["columns"];
   applications: { [key: string]: FormattedCardForBoardInterface };
 }
@@ -15,9 +16,9 @@ const ColumnRenderer: FunctionComponent<ColumnRendererProps> = ({
   columns,
   applications,
 }) => {
-  const doubleColumns: { [key: string]: string } = {
-    offer: "accepted",
-    rejected: "passed",
+  const doubleColumns: { [key: string]: ApplicationStatus } = {
+    offer: ApplicationStatus.accepted,
+    rejected: ApplicationStatus.passed,
   };
 
   if (doubleColumns[columnId]) {
