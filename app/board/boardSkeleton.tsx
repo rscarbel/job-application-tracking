@@ -1,7 +1,7 @@
 import { Skeleton } from "primereact/skeleton";
 import React from "react";
 
-const BoardSkeleton = () => {
+const BoardSkeleton: React.FC = () => {
   const sizingClasses = "sm:w-1/2 md:w-1/3 lg:w-1/4";
 
   return (
