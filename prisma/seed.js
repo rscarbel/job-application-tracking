@@ -274,7 +274,7 @@ async function main() {
             ...companyDetails,
           },
         },
-        companyPreference: {
+        preferences: {
           create: {
             desireability: getRandomDesireability(),
             notes: faker.lorem.sentences(3),
