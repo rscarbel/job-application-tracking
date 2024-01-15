@@ -71,7 +71,7 @@ const EditCardFormModal = ({
     setExistingJobData(jobData);
   };
 
-  const handleCountryChange = (country) => {
+  const handleCountryChange = (country: string) => {
     const currencySymbol = getCurrencySymbol(country);
     const countryData = { country: country, currency: currencySymbol };
     setFormData({ ...formData, ...countryData });
