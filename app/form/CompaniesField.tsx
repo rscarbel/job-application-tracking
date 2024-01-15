@@ -4,15 +4,30 @@ import React, { useState, useEffect } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import { findCompanies } from "../network";
 
-const CompaniesField = ({ selectedCompany, onChange, isDisabled = false }) => {
-  const [filteredCompanies, setFilteredCompanies] = useState([]);
-  const [companiesList, setCompaniesList] = useState([]);
+interface CompanyInterface {
+  companyId: number;
+  name: string;
+}
+
+interface CompaniesFieldProps {
+  selectedCompany: CompanyInterface;
+  onChange: (name: string, companyId: number) => void;
+  isDisabled?: boolean;
+}
+
+const CompaniesField = ({
+  selectedCompany,
+  onChange,
+  isDisabled = false,
+}: CompaniesFieldProps) => {
+  const [filteredCompanies, setFilteredCompanies] = useState<
+    CompanyInterface[]
+  >([]);
+  const [companiesList, setCompaniesList] = useState<CompanyInterface[]>([]);
 
   useEffect(() => {
     const fetchCompanies = async () => {
       const response = await findCompanies();
-      if (response.error) return;
-
       setCompaniesList(response || []);
     };
     fetchCompanies();
@@ -30,9 +45,9 @@ const CompaniesField = ({ selectedCompany, onChange, isDisabled = false }) => {
     const selected = companiesList.find((company) => company.name === e.value);
 
     if (selected) {
-      onChange(selected);
+      onChange(selected.name, selected.companyId);
     } else {
-      onChange({ name: e.value, companyId: selectedCompany.companyId });
+      onChange(e.value, selectedCompany.companyId);
     }
   };
 

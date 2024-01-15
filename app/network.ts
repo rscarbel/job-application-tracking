@@ -60,17 +60,34 @@ export const createCard = async (card: NewApplicationFormData) => {
   }
 };
 
-export const findCompanies = async () => {
-  const response = await fetch("/api/applicationGroup/find/companies");
-  let data;
+interface CompanyInterface {
+  companyId: number;
+  name: string;
+}
+
+export const findCompanies = async (): Promise<CompanyInterface[]> => {
   try {
+    const response = await fetch("/api/applicationGroup/find/companies");
     const text = await response.text();
-    data = JSON.parse(text);
+    return JSON.parse(text);
   } catch (error) {
     await reportErrorToServer(error);
+    return [];
   }
-  return data?.body || [];
 };
+
+interface JobTitleResponse {
+  jobTitle: string;
+  lastApplicationToJobInThisBoard: string;
+  lastApplicationToJobInOtherBoard: {
+    date: string;
+    boardName: string;
+  };
+}
+
+interface JobTitleRepsonseData {
+  body?: JobTitleResponse;
+}
 
 export const findJobTitle = async ({
   companyName,
@@ -80,11 +97,11 @@ export const findJobTitle = async ({
   companyName: string;
   jobTitle: string;
   groupId: number;
-}) => {
+}): Promise<JobTitleResponse | null> => {
   const response = await fetch(
     `/api/applicationGroup/find/jobTitle?companyName=${companyName}&jobTitle=${jobTitle}&groupId=${groupId}`
   );
-  let data;
+  let data: JobTitleRepsonseData | null = null;
   try {
     const text = await response.text();
     data = JSON.parse(text);

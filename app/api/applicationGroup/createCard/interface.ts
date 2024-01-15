@@ -7,7 +7,7 @@ import {
 } from "@prisma/client";
 
 export interface CreateCardRequest {
-  applicationDate: string;
+  applicationDate: Date;
   applicationLink: string;
   city: string;
   company: CompanyInterface;

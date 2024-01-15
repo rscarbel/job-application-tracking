@@ -11,14 +11,11 @@ import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterf
 
 interface ExistingJobDataInterface {
   jobTitle: string;
-  companyId: number;
-  companyName: string;
-  groupId: number;
-}
-
-interface CompanyInterface {
-  companyId: number;
-  name: string;
+  lastApplicationToJobInThisBoard: string;
+  lastApplicationToJobInOtherBoard: {
+    date: string;
+    boardName: string;
+  };
 }
 
 interface EditCardFormModalProps {
@@ -69,6 +66,8 @@ const EditCardFormModal = ({
       companyName: formData.company.name,
       groupId: formData.groupId,
     });
+
+    if (!jobData) return;
     setExistingJobData(jobData);
   };
 
@@ -77,13 +76,12 @@ const EditCardFormModal = ({
     const countryData = { country: country, currency: currencySymbol };
     setFormData({ ...formData, ...countryData });
   };
-
-  const handleCompanyChange = (company: CompanyInterface) => {
+  const handleCompanyChange = (name: string, companyId: number) => {
     setFormData((prev) => ({
       ...prev,
       company: {
-        companyId: company.companyId,
-        name: company.name,
+        companyId: companyId,
+        name: name,
       },
     }));
   };
