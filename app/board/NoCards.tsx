@@ -1,4 +1,6 @@
-const NoCards = () => {
+import React from "react";
+
+const NoCards: React.FC = () => {
   return (
     <>
       <h1>No cards</h1>
