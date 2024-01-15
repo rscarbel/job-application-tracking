@@ -41,7 +41,7 @@ interface FormFieldsProps {
   notes: string;
   status: ApplicationStatus;
   onInputChange: (name: string, value: any) => void;
-  onCountryChange: (name: string, value: any) => void;
+  onCountryChange: (name: string) => void;
   onCompanyChange: (name: string, companyId: number) => void;
   onJobBlur: () => void;
   existingJobData: ExistingJobDataInterface;

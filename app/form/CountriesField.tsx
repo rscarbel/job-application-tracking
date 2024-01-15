@@ -4,11 +4,21 @@ import React, { useState } from "react";
 import { AutoComplete } from "primereact/autocomplete";
 import countriesList from "@/lib/data/countriesList";
 
-const CountriesField = ({ selectedCountry, onChange, isDisabled = false }) => {
-  const [filteredCountries, setFilteredCountries] = useState(null);
+interface CountriesFieldProps {
+  selectedCountry: string;
+  onChange: (name: string) => void;
+  isDisabled?: boolean;
+}
 
-  const search = (event) => {
-    let filtered;
+const CountriesField = ({
+  selectedCountry,
+  onChange,
+  isDisabled = false,
+}: CountriesFieldProps) => {
+  const [filteredCountries, setFilteredCountries] = useState<string[]>(null);
+
+  const search = (event: { query: string }) => {
+    let filtered: string[];
 
     if (!event.query.trim().length) {
       filtered = [...countriesList];
