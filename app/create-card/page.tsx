@@ -128,7 +128,7 @@ const CreateCard: React.FC = () => {
       } else {
         showError(data?.error || "There was a problem with the submission.");
       }
-    } catch (error) {
+    } catch (error: any) {
       showError(error.message);
     } finally {
       setLoading(false);
