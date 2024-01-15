@@ -60,7 +60,7 @@ export async function POST(request: ApiRequest) {
     return new Response(JSON.stringify({ board }), {
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     reportError(error, user);
     return serverErrorResponse();
   }

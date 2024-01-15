@@ -147,7 +147,7 @@ export async function POST(request: ApiRequest) {
     return new Response(JSON.stringify({ board }), {
       status: 200,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.stack);
     reportError(error, user);
     return serverErrorResponse(error.message, 500);

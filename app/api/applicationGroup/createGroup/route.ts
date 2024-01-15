@@ -21,7 +21,7 @@ export async function POST(request: ApiRequest) {
       name,
       userId: user.id,
     });
-  } catch (error) {
+  } catch (error: any) {
     reportError(error, user);
 
     return serverErrorResponse();
