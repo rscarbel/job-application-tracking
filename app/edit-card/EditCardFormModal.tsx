@@ -1,37 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { getCountryCode, getCurrencySymbol } from "@/utils/global";
 import { findJobTitle } from "../network";
 import FormFields from "../form/FormFields";
+import { WorkMode, ApplicationStatus, PayFrequency } from "@prisma/client";
+import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterface";
 
-const defaultFormData = {
-  applicationId: undefined,
-  groupId: undefined,
-  jobId: undefined,
-  company: {
-    companyId: undefined,
-    name: undefined,
-  },
-  jobTitle: undefined,
-  description: undefined,
-  workMode: undefined,
-  payAmount: undefined,
-  payFrequency: undefined,
-  currency: undefined,
-  streetAddress: undefined,
-  city: undefined,
-  state: undefined,
-  country: undefined,
-  postalCode: undefined,
-  applicationLink: undefined,
-  applicationDate: undefined,
-  notes: undefined,
-  status: undefined,
-};
+interface ExistingJobDataInterface {
+  jobTitle: string;
+  companyId: number;
+  companyName: string;
+  groupId: number;
+}
+
+interface CompanyInterface {
+  companyId: number;
+  name: string;
+}
+
+interface EditCardFormModalProps {
+  visible: boolean;
+  onHide: () => void;
+  cardData: IndividualFormattedCardInterface;
+  onSaveChanges: (formData: IndividualFormattedCardInterface) => void;
+  onDelete: (applicationId: number) => void;
+}
 
 const EditCardFormModal = ({
   visible,
@@ -39,26 +36,27 @@ const EditCardFormModal = ({
   cardData,
   onSaveChanges,
   onDelete,
-}) => {
-  const [formData, setFormData] = useState(cardData || defaultFormData);
-  const [existingJobData, setExistingJobData] = useState(null);
-  const [initialJobTitle, setInitialJobTitle] = useState(null);
+}: EditCardFormModalProps) => {
+  const [formData, setFormData] = useState(cardData);
+  const [existingJobData, setExistingJobData] =
+    useState<ExistingJobDataInterface | null>(null);
+  const [initialJobTitle, setInitialJobTitle] = useState<string>(null);
 
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
-  const isDataValid = formData?.company?.name && formData?.jobTitle;
+  const isDataValid = formData.company?.name && formData.jobTitle;
   const callToActionIcon =
     isDataValid && hasDataChanged ? "pi pi-check" : "pi pi-times";
   const callToActionStyle =
     isDataValid && hasDataChanged ? "success" : "secondary";
 
   useEffect(() => {
-    setFormData(cardData || defaultFormData);
-    setInitialJobTitle(cardData?.jobTitle);
+    setFormData(cardData);
+    setInitialJobTitle(cardData.jobTitle);
   }, [cardData]);
 
-  if (!cardData?.company?.name) return null;
+  if (!cardData.company.name) return null;
 
-  const handleInputChange = (name, value) => {
+  const handleInputChange = (name: string, value: any) => {
     setFormData((prev) => {
       return { ...prev, [name]: value };
     });
@@ -81,7 +79,7 @@ const EditCardFormModal = ({
     setFormData({ ...formData, ...countryData });
   };
 
-  const handleCompanyChange = (company) => {
+  const handleCompanyChange = (company: CompanyInterface) => {
     setFormData((prev) => ({
       ...prev,
       company: {
@@ -92,7 +90,6 @@ const EditCardFormModal = ({
   };
 
   const shutdownModal = () => {
-    setFormData(defaultFormData);
     onHide();
   };
 

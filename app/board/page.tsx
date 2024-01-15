@@ -25,7 +25,7 @@ const DynamicTextEditor = dynamic(() => import("./Board"), {
   loading: () => <BoardSkeleton />,
 });
 
-const getCardsForUser = async (email) => {
+const getCardsForUser = async (email: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return DEFAULT_EMPTY_BOARD;
 

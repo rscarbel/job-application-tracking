@@ -238,13 +238,15 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     >
       <Toast ref={toast} />
 
-      <EditCardFormModal
-        visible={isModalVisible}
-        onHide={() => setModalVisible(false)}
-        cardData={editingCard}
-        onSaveChanges={handleSaveChanges}
-        onDelete={handleDelete}
-      />
+      {editingCard && (
+        <EditCardFormModal
+          visible={isModalVisible}
+          onHide={() => setModalVisible(false)}
+          cardData={editingCard}
+          onSaveChanges={handleSaveChanges}
+          onDelete={handleDelete}
+        />
+      )}
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex flex-wrap sm:flex-nowrap lg:justify-center p-4">
           {columnOrder?.map((columnId) => (
