@@ -10,8 +10,35 @@ import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getRequestUser } from "@/services/userService";
 import serverErrorResponse from "../../serverErrorResponse";
+import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
+import { ApiRequest } from "@/utils/ApiRequestType";
 
-export async function POST(request) {
+interface UpdateCardRequestInterface {
+  applicationId: number;
+  groupId: number;
+  company: {
+    name: string;
+    companyId: number;
+  };
+  jobId: number;
+  jobTitle: string;
+  jobDescription: string;
+  workMode: WorkMode;
+  payAmount: number;
+  payFrequency: PayFrequency;
+  currency: string;
+  streetAddress: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  applicationLink: string;
+  applicationDate: string;
+  notes: string;
+  status: ApplicationStatus;
+}
+
+export async function POST(request: ApiRequest) {
   const {
     applicationId,
     groupId,
@@ -32,24 +59,7 @@ export async function POST(request) {
     applicationDate,
     notes,
     status,
-  } = await request.json();
-
-  const necessaryData = {
-    "Application Card": applicationId,
-    Board: groupId,
-    "Company Name": company.name,
-    "Job Title": jobTitle,
-  };
-
-  const dataMissing = Object.keys(necessaryData).filter(
-    (key) => !necessaryData[key]
-  );
-
-  if (dataMissing.length)
-    return serverErrorResponse(
-      `Request is missing ${dataMissing.join(", ")}`,
-      400
-    );
+  }: UpdateCardRequestInterface = await request.json();
 
   const user = await getRequestUser(request);
 
@@ -123,7 +133,9 @@ export async function POST(request) {
         },
       });
     });
-    const formattedCards = await getFormattedCardsForBoard(groupId);
+    const formattedCards = await getFormattedCardsForBoard({
+      groupId: groupId,
+    });
     const board = calculateBoardStructure(formattedCards);
 
     return new Response(JSON.stringify({ board }), {

@@ -28,6 +28,11 @@ type ApiResponse = {
   error?: string;
 };
 
+type Company = {
+  companyId: number;
+  name: string;
+};
+
 const defaultFormData: NewApplicationFormData = {
   groupId: 1,
   company: {
@@ -97,13 +102,13 @@ const CreateCard: React.FC = () => {
     setExistingJobData(jobData);
   };
 
-  const handleCountryChange = (country) => {
+  const handleCountryChange = (country: string) => {
     const currencySymbol = getCurrencySymbol(country);
     const countryData = { country: country, currency: currencySymbol };
     setFormData({ ...formData, ...countryData });
   };
 
-  const handleCompanyChange = (company) => {
+  const handleCompanyChange = (company: Company) => {
     setFormData((prev) => ({
       ...prev,
       company: {
@@ -116,7 +121,7 @@ const CreateCard: React.FC = () => {
   const countrySymbol = getCountryCode(formData.country);
   const currencySymbol = getCurrencySymbol(formData.country);
 
-  const handleFormSubmission = async (e) => {
+  const handleFormSubmission = async (e: Event) => {
     e.preventDefault();
     setLoading(true);
     try {
@@ -149,6 +154,7 @@ const CreateCard: React.FC = () => {
           isDisabled={loading}
         />
         <Button
+          // @ts-ignore - PrimeReact types are not up to date
           onClick={handleFormSubmission}
           icon={loading ? <ProgressSpinner /> : "pi pi-check"}
           label={loading ? "Saving Application..." : "Create Application"}

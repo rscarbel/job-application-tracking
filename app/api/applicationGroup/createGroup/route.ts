@@ -2,8 +2,9 @@ import { reportError } from "@/app/api/reportError/reportError";
 import { createApplicationBoard } from "@/services/applicationGroupService";
 import { getRequestUser } from "@/services/userService";
 import serverErrorResponse from "../../serverErrorResponse";
+import { ApiRequest } from "@/utils/ApiRequestType";
 
-export async function POST(request) {
+export async function POST(request: ApiRequest) {
   const { name } = await request.json();
   if (typeof name !== "string") {
     return serverErrorResponse(

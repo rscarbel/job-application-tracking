@@ -2,7 +2,7 @@
 
 import React, { FunctionComponent, useState, useRef, useEffect } from "react";
 import { BoardStructureInterface } from "../api/applicationGroup/BoardStructureInterface";
-import { DragDropContext } from "@hello-pangea/dnd";
+import { DragDropContext, DropResult } from "@hello-pangea/dnd";
 import { handleDifferentColumnMove, handleSameColumnMove } from "./utils";
 import { Toast } from "primereact/toast";
 import { ProgressSpinner } from "primereact/progressspinner";
@@ -12,6 +12,7 @@ import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
 import NoCards from "./NoCards";
 import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterface";
+import { ApplicationStatus } from "@prisma/client";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
 const SAVING_LIFE = 10_000_000;
@@ -21,6 +22,11 @@ const DELAY_FACTOR = 5;
 interface BoardProps {
   board: BoardStructureInterface;
 }
+
+type CardDropResult = DropResult & {
+  draggableId: ApplicationStatus;
+  destination: { droppableId: ApplicationStatus };
+};
 
 const Board: FunctionComponent<BoardProps> = ({ board }) => {
   const [boardData, setBoardData] = useState<BoardStructureInterface>(board);
@@ -77,7 +83,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     setIsSaving(true);
   };
 
-  const showError = (errorMessage) => {
+  const showError = (errorMessage: string) => {
     if (!toast.current) return;
 
     toast.current.show({
@@ -103,7 +109,9 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     setModalVisible(true);
   };
 
-  const handleSaveChanges = async (updatedData) => {
+  const handleSaveChanges = async (
+    updatedData: IndividualFormattedCardInterface
+  ) => {
     try {
       const { response, data } = await updateCard(updatedData);
       const board = data.board;
@@ -123,7 +131,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     }
   };
 
-  const handleDelete = async (applicationId) => {
+  const handleDelete = async (applicationId: number) => {
     try {
       const { response, data } = await deleteCard(applicationId);
       const board = data.board;
@@ -142,7 +150,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     }
   };
 
-  const onDragEnd = async (result) => {
+  const onDragEnd = async (result: CardDropResult) => {
     const { source, destination, draggableId } = result;
 
     if (
@@ -183,7 +191,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     saveTimeoutRef.current = setTimeout(async () => {
       try {
         const { response, data } = await updateCardStatus(
-          applicationId,
+          parseInt(applicationId),
           newStatus,
           index
         );

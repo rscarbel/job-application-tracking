@@ -15,6 +15,10 @@ interface CompaniesFieldProps {
   isDisabled?: boolean;
 }
 
+type SearchEvent = {
+  query: string;
+};
+
 const CompaniesField = ({
   selectedCompany,
   onChange,
@@ -33,7 +37,7 @@ const CompaniesField = ({
     fetchCompanies();
   }, []);
 
-  const search = (event) => {
+  const search = (event: SearchEvent) => {
     const query = event.query.toLowerCase();
     const filtered = companiesList.filter((company) =>
       company.name.toLowerCase().includes(query)
@@ -41,7 +45,7 @@ const CompaniesField = ({
     setFilteredCompanies(filtered);
   };
 
-  const handleCompanySelectOrInputChange = (e) => {
+  const handleCompanySelectOrInputChange = (e: { value: string }) => {
     const selected = companiesList.find((company) => company.name === e.value);
 
     if (selected) {

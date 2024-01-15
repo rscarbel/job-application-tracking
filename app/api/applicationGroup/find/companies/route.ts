@@ -1,8 +1,9 @@
 import prisma from "@/services/globalPrismaClient";
 import { getRequestUser } from "@/services/userService";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
+import { ApiRequest } from "@/utils/ApiRequestType";
 
-export async function GET(request) {
+export async function GET(request: ApiRequest) {
   const user = await getRequestUser(request);
   const userId = user?.id;
 
