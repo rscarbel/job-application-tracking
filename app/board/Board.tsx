@@ -11,9 +11,10 @@ import ColumnRenderer from "./column/ColumnRenderer";
 import EditCardFormModal from "../edit-card/EditCardFormModal";
 import { EditCardContext } from "./card/EditCardContext";
 import NoCards from "./NoCards";
+import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterface";
 
 const MILLISECONDS_FOR_MESSAGES = 3000;
-const SAVING_LIFE = 10000000;
+const SAVING_LIFE = 10_000_000;
 const MILLISECONDS_IN_A_SECOND = 1000;
 const DELAY_FACTOR = 5;
 
@@ -23,9 +24,11 @@ interface BoardProps {
 
 const Board: FunctionComponent<BoardProps> = ({ board }) => {
   const [boardData, setBoardData] = useState<BoardStructureInterface>(board);
-  const [lastSavedBoardData, setLastSavedBoardData] = useState(board);
+  const [lastSavedBoardData, setLastSavedBoardData] =
+    useState<BoardStructureInterface>(board);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [editingCard, setEditingCard] = useState(null);
+  const [editingCard, setEditingCard] =
+    useState<IndividualFormattedCardInterface | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const toast = useRef<Toast>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -95,7 +98,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     });
   };
 
-  const handleEditClick = (cardData) => {
+  const handleEditClick = (cardData: IndividualFormattedCardInterface) => {
     setEditingCard(cardData);
     setModalVisible(true);
   };
@@ -110,8 +113,10 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
         setBoardData(board);
         showSuccess();
       }
-    } catch (error) {
-      showError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showError(error.message);
+      }
     } finally {
       setEditingCard(null);
       setModalVisible(false);
@@ -127,8 +132,10 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
       if (!response.ok) {
         showError(data.error);
       }
-    } catch (error) {
-      showError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showError(error.message);
+      }
     } finally {
       setEditingCard(null);
       setModalVisible(false);
@@ -197,12 +204,14 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
             columns: { ...boardData.columns, ...updatedColumns },
           });
         }
-      } catch (error) {
+      } catch (error: unknown) {
         if (toast.current) {
           toast.current.clear();
         }
         setIsSaving(false);
-        showError(error.message);
+        if (error instanceof Error) {
+          showError(error.message);
+        }
         setBoardData(lastSavedBoardData);
       }
     }, saveDelayMilliseconds);

@@ -68,27 +68,39 @@ interface Column {
   applicationIds: string[];
 }
 
+interface ColumnInterface {
+  id: string;
+  title: string;
+  applicationIds: string[];
+}
+
 interface MoveResult {
-  [key: string]: Column;
+  [key: string]: ColumnInterface;
 }
 
 export const handleSameColumnMove = (
-  startColumn: Column,
+  startColumn: ColumnInterface,
   source: { index: number },
   destination: { index: number },
   draggableId: string
 ): MoveResult => {
-  const newTaskIds = Array.from(startColumn.applicationIds);
-  newTaskIds.splice(source.index, 1);
-  newTaskIds.splice(destination.index, 0, draggableId);
+  const newApplicationIds = Array.from(startColumn.applicationIds);
+  newApplicationIds.splice(source.index, 1);
+  newApplicationIds.splice(destination.index, 0, draggableId);
+
+  const updatedStartColumn: ColumnInterface = {
+    ...startColumn,
+    applicationIds: newApplicationIds,
+  };
+
   return {
-    [startColumn.id]: { ...startColumn, applicationIds: newTaskIds },
+    [startColumn.id]: updatedStartColumn,
   };
 };
 
 export const handleDifferentColumnMove = (
-  startColumn: Column,
-  endColumn: Column,
+  startColumn: ColumnInterface,
+  endColumn: ColumnInterface,
   source: { index: number },
   destination: { index: number },
   draggableId: string
