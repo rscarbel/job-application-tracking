@@ -15,7 +15,7 @@ const CountriesField = ({
   onChange,
   isDisabled = false,
 }: CountriesFieldProps) => {
-  const [filteredCountries, setFilteredCountries] = useState<string[]>(null);
+  const [filteredCountries, setFilteredCountries] = useState<string[]>([]);
 
   const search = (event: { query: string }) => {
     let filtered: string[];

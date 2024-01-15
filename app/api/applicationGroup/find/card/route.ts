@@ -5,8 +5,7 @@ import { ApiRequest } from "@/utils/ApiRequestType";
 
 export async function GET(request: ApiRequest) {
   const { searchParams } = new URL(request.url);
-  const applicationId = parseInt(searchParams.get("applicationId"));
-
+  const applicationId = searchParams.get("applicationId");
   if (!applicationId) return serverErrorResponse("Invalid application id", 400);
 
   const user = await getRequestUser(request);
@@ -14,7 +13,7 @@ export async function GET(request: ApiRequest) {
   if (!user) return serverErrorResponse("User not found", 404);
 
   const card = await getFormattedCardData({
-    applicationId: applicationId,
+    applicationId: parseInt(applicationId),
     userId: user?.id,
   });
 

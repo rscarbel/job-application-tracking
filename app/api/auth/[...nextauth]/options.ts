@@ -91,7 +91,7 @@ if (process.env.NODE_ENV === "development") {
       },
       async authorize(credentials) {
         if (
-          credentials.username === "admin" &&
+          credentials?.username === "admin" &&
           credentials.password === "admin"
         ) {
           // Fetch the user from the database

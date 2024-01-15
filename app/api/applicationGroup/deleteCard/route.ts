@@ -35,7 +35,7 @@ export async function POST(request: ApiRequest) {
     );
   }
 
-  if (cardToDelete.applicationGroup.userId !== user.id) {
+  if (cardToDelete.applicationGroup.userId !== user?.id) {
     serverErrorResponse("Unauthorized", 401);
   }
 

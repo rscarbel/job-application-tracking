@@ -36,7 +36,7 @@ const EditCardFormModal = ({
   const [formData, setFormData] = useState(cardData);
   const [existingJobData, setExistingJobData] =
     useState<ExistingJobDataInterface | null>(null);
-  const [initialJobTitle, setInitialJobTitle] = useState<string>(null);
+  const [initialJobTitle, setInitialJobTitle] = useState<string | null>(null);
 
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
   const isDataValid = formData.company?.name && formData.jobTitle;

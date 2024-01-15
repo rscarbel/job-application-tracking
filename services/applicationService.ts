@@ -1,11 +1,11 @@
 import prisma from "@/services/globalPrismaClient";
-import { prettifyDate } from "@/utils/global";
 import { ApplicationStatus } from "@prisma/client";
 import { TransactionClient } from "@/utils/databaseTypes";
 import {
   IndividualFormattedCardInterface,
   FormattedCardForBoardInterface,
 } from "./FormattedCardInterface";
+import { PayFrequency, WorkMode } from "@prisma/client";
 
 const defaultAddress = {
   streetAddress: "",
@@ -66,22 +66,22 @@ export const getFormattedCardData = async ({
       name: job.company.name,
     },
     jobTitle: job.title,
-    jobDescription: job.description,
+    jobDescription: job?.description || "",
     workMode: job.workMode,
-    payAmount: compensation.payAmount,
-    payFrequency: compensation.payFrequency,
-    currency: compensation.currency,
-    streetAddress: lastAddress.streetAddress,
-    streetAddress2: lastAddress.streetAddress2,
-    city: lastAddress.city,
-    state: lastAddress.state,
-    country: lastAddress.country,
-    postalCode: lastAddress.postalCode,
-    applicationLink: application.applicationLink,
+    payAmount: compensation?.payAmount || 0,
+    payFrequency: compensation?.payFrequency || PayFrequency.hourly,
+    currency: compensation?.currency || "USD",
+    streetAddress: lastAddress?.streetAddress || "",
+    streetAddress2: lastAddress?.streetAddress2 || "",
+    city: lastAddress?.city || "",
+    state: lastAddress?.state || "",
+    country: lastAddress?.country || "",
+    postalCode: lastAddress?.postalCode || "",
+    applicationLink: application?.applicationLink || "",
     applicationDate: application.applicationDate,
     status: application.status,
     positionIndex: application.positionIndex,
-    notes: application.notes,
+    notes: application?.notes || "",
   };
 };
 
@@ -89,9 +89,13 @@ export const getFormattedCardsForBoard = async ({
   groupId,
   client = prisma,
 }: {
-  groupId: number;
+  groupId: number | undefined;
   client?: TransactionClient | typeof prisma;
 }): Promise<FormattedCardForBoardInterface[]> => {
+  if (!groupId) {
+    return [];
+  }
+
   const applications = await client.application.findMany({
     where: {
       applicationGroupId: groupId,
@@ -113,6 +117,7 @@ export const getFormattedCardsForBoard = async ({
   return applications.map((card) => {
     const job = card.job;
     const compensation = job.compensation;
+
     const lastAddress =
       job.addresses[job.addresses.length - 1] || defaultAddress;
 
@@ -120,14 +125,14 @@ export const getFormattedCardsForBoard = async ({
       applicationId: card.id,
       groupId: card.applicationGroupId,
       companyName: job.company.name,
-      title: job.title,
-      workMode: job.workMode,
-      payAmount: compensation.payAmount,
-      payFrequency: compensation.payFrequency,
-      currency: compensation.currency,
-      city: lastAddress.city,
-      country: lastAddress.country,
-      applicationLink: card.applicationLink,
+      title: job.title || "",
+      workMode: job.workMode || WorkMode.onsite,
+      payAmount: compensation?.payAmount || 0,
+      payFrequency: compensation?.payFrequency || PayFrequency.hourly,
+      currency: compensation?.currency || "USD",
+      city: lastAddress.city || "",
+      country: lastAddress.country || "",
+      applicationLink: card.applicationLink || "",
       applicationDate: card.applicationDate,
       status: card.status,
     };
@@ -204,11 +209,11 @@ export const deleteCard = async ({
     },
   });
 
-  const job = cardToDelete.job;
-
   if (!cardToDelete) {
     throw new Error("Card not found");
   }
+
+  const job = cardToDelete.job;
 
   await client.application.delete({
     where: { id },

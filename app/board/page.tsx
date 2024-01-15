@@ -52,8 +52,8 @@ const Job = async () => {
     return;
   }
 
-  const userEmail = session.user.email;
-  const board = await getCardsForUser(userEmail);
+  const userEmail = session?.user?.email;
+  const board = await getCardsForUser(userEmail || "");
 
   if (boardIsEmpty(board)) {
     redirect("/create-card");

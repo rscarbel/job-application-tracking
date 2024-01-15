@@ -14,7 +14,7 @@ export const getRequestUser = async (
   if (provider === "credentials") {
     const user = await prisma.user.findUnique({
       where: {
-        email: token.email,
+        email: token?.email || "",
       },
     });
 

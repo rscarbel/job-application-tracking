@@ -42,8 +42,8 @@ const Table = async () => {
     return;
   }
 
-  const userEmail: string = session.user.email;
-  const cards = await getCardsForUser(userEmail);
+  const userEmail: string | null | undefined = session?.user?.email;
+  const cards = await getCardsForUser(userEmail || "");
 
   return (
     <div className="p-8 bg-white shadow-md rounded-lg">

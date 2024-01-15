@@ -63,9 +63,15 @@ export async function POST(request: ApiRequest) {
 
   const user = await getRequestUser(request);
 
+  if (!user) {
+    return serverErrorResponse("No authenticated user in this request", 401);
+  }
+
   const currentCard = await prisma.application.findUnique({
     where: { id: applicationId },
   });
+
+  if (!currentCard) return serverErrorResponse("Card not found", 404);
 
   try {
     await prisma.$transaction(async (pris) => {
