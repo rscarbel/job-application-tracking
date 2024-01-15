@@ -2,11 +2,11 @@ import React from "react";
 import SingleColumn from "./SingleColumn";
 import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
 import { ColumnNameEnum } from "@/app/api/applicationGroup/BoardStructureInterface";
-import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ApplicationStatus } from "@prisma/client";
 
 interface DoubleColumnProps {
-  column1: { id: ApplicationStatusEnum; title: ColumnNameEnum };
-  column2: { id: ApplicationStatusEnum; title: ColumnNameEnum };
+  column1: { id: ApplicationStatus; title: ColumnNameEnum };
+  column2: { id: ApplicationStatus; title: ColumnNameEnum };
   applications1: FormattedCardForBoardInterface[];
   applications2: FormattedCardForBoardInterface[];
 }

@@ -2,11 +2,11 @@ import prisma from "@/services/globalPrismaClient";
 import { getRequestUser } from "@/services/userService";
 import { reportError } from "@/app/api/reportError/reportError";
 import serverErrorResponse from "../../serverErrorResponse";
-import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ApplicationStatus } from "@prisma/client";
 
 interface RequestBody {
   id: string;
-  status: ApplicationStatusEnum;
+  status: ApplicationStatus;
   newPositionIndex: number;
 }
 

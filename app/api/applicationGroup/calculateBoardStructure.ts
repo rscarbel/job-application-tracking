@@ -3,7 +3,7 @@ import {
   BoardStructureInterface,
   ColumnNameEnum,
 } from "./BoardStructureInterface";
-import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ApplicationStatus } from "@prisma/client";
 import { columnOrder } from "./BoardStructureInterface";
 
 export const calculateBoardStructure = (
@@ -34,32 +34,32 @@ export const calculateBoardStructure = (
 
 const columns = [
   {
-    id: ApplicationStatusEnum.Applied,
+    id: ApplicationStatus.applied,
     title: ColumnNameEnum.Applied,
     applicationIds: [],
   },
   {
-    id: ApplicationStatusEnum.Interview,
+    id: ApplicationStatus.interview,
     title: ColumnNameEnum.Interview,
     applicationIds: [],
   },
   {
-    id: ApplicationStatusEnum.Offer,
+    id: ApplicationStatus.offer,
     title: ColumnNameEnum.Offer,
     applicationIds: [],
   },
   {
-    id: ApplicationStatusEnum.Rejected,
+    id: ApplicationStatus.rejected,
     title: ColumnNameEnum.Rejected,
     applicationIds: [],
   },
   {
-    id: ApplicationStatusEnum.Passed,
+    id: ApplicationStatus.passed,
     title: ColumnNameEnum.Passed,
     applicationIds: [],
   },
   {
-    id: ApplicationStatusEnum.Accepted,
+    id: ApplicationStatus.accepted,
     title: ColumnNameEnum.Accepted,
     applicationIds: [],
   },

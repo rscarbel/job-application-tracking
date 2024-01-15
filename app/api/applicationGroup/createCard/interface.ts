@@ -1,10 +1,10 @@
+import { CompanyInterface } from "@/utils/databaseTypes";
 import {
-  CompanyInterface,
-  WorkModeEnum,
-  PayFrequencyEnum,
-  ApplicationStatusEnum,
-  CompanyDesireabilityEnum,
-} from "@/utils/databaseTypes";
+  WorkMode,
+  ApplicationStatus,
+  PayFrequency,
+  CompanyDesireability,
+} from "@prisma/client";
 
 export interface CreateCardRequest {
   applicationDate: string;
@@ -13,18 +13,18 @@ export interface CreateCardRequest {
   company: CompanyInterface;
   country: string;
   currency: string;
-  desireability: CompanyDesireabilityEnum;
+  desireability: CompanyDesireability;
   groupId: number;
   jobDescription: string;
   jobTitle: string;
   notes: string;
   payAmount: number;
-  payFrequency: PayFrequencyEnum;
+  payFrequency: PayFrequency;
   positionIndex: number;
   postalCode: string;
   state: string;
-  status: ApplicationStatusEnum;
+  status: ApplicationStatus;
   streetAddress: string;
   streetAddress2: string;
-  workMode: WorkModeEnum;
+  workMode: WorkMode;
 }

@@ -5,10 +5,10 @@ import { Droppable } from "@hello-pangea/dnd";
 import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
 import { mapColumnNameToApplicationStatus } from "./mapColumnNameToApplicationStatus";
 import { ColumnNameEnum } from "@/app/api/applicationGroup/BoardStructureInterface";
-import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ApplicationStatus } from "@prisma/client";
 
 interface SingleColumnProps {
-  column: { id: ApplicationStatusEnum; title: ColumnNameEnum };
+  column: { id: ApplicationStatus; title: ColumnNameEnum };
   applications: FormattedCardForBoardInterface[];
   isHalfSizeOnly?: boolean;
 }

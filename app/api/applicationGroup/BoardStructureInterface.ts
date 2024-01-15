@@ -1,13 +1,13 @@
 import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
-import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ApplicationStatus } from "@prisma/client";
 
 export const columnOrder = [
-  ApplicationStatusEnum.Applied,
-  ApplicationStatusEnum.Interview,
-  ApplicationStatusEnum.Offer,
-  ApplicationStatusEnum.Rejected,
-  ApplicationStatusEnum.Accepted,
-  ApplicationStatusEnum.Passed,
+  ApplicationStatus.applied,
+  ApplicationStatus.interview,
+  ApplicationStatus.offer,
+  ApplicationStatus.rejected,
+  ApplicationStatus.accepted,
+  ApplicationStatus.passed,
 ];
 
 export enum ColumnNameEnum {
@@ -23,10 +23,10 @@ export interface BoardStructureInterface {
   applications: { [key: string]: FormattedCardForBoardInterface };
   columns: {
     [key: string]: {
-      id: ApplicationStatusEnum;
+      id: ApplicationStatus;
       title: ColumnNameEnum;
       applicationIds: string[];
     };
   };
-  columnOrder: ApplicationStatusEnum[];
+  columnOrder: ApplicationStatus[];
 }

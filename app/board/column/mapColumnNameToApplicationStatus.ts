@@ -1,22 +1,22 @@
-import { ApplicationStatusEnum } from "@/utils/databaseTypes";
+import { ApplicationStatus } from "@prisma/client";
 import { ColumnNameEnum } from "@/app/api/applicationGroup/BoardStructureInterface";
 
 export const mapColumnNameToApplicationStatus = (
   status: ColumnNameEnum
-): ApplicationStatusEnum => {
+): ApplicationStatus => {
   switch (status) {
     case ColumnNameEnum.Applied:
-      return ApplicationStatusEnum.Applied;
+      return ApplicationStatus.applied;
     case ColumnNameEnum.Interview:
-      return ApplicationStatusEnum.Interview;
+      return ApplicationStatus.interview;
     case ColumnNameEnum.Offer:
-      return ApplicationStatusEnum.Offer;
+      return ApplicationStatus.offer;
     case ColumnNameEnum.Rejected:
-      return ApplicationStatusEnum.Rejected;
+      return ApplicationStatus.rejected;
     case ColumnNameEnum.Accepted:
-      return ApplicationStatusEnum.Accepted;
+      return ApplicationStatus.accepted;
     case ColumnNameEnum.Passed:
-      return ApplicationStatusEnum.Passed;
+      return ApplicationStatus.passed;
     default:
       throw new Error(`Unknown status: ${status}`);
   }

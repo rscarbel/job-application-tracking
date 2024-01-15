@@ -1,8 +1,4 @@
-import {
-  PayFrequencyEnum,
-  ApplicationStatusEnum,
-  WorkModeEnum,
-} from "@/utils/databaseTypes";
+import { WorkMode, ApplicationStatus, PayFrequency } from "@prisma/client";
 
 export interface IndividualFormattedCardInterface {
   applicationId: number;
@@ -14,9 +10,9 @@ export interface IndividualFormattedCardInterface {
   };
   jobTitle: string;
   jobDescription: string;
-  workMode: WorkModeEnum;
+  workMode: WorkMode;
   payAmount: number;
-  payFrequency: PayFrequencyEnum;
+  payFrequency: PayFrequency;
   currency: string;
   streetAddress: string;
   streetAddress2: string;
@@ -26,7 +22,7 @@ export interface IndividualFormattedCardInterface {
   postalCode: string;
   applicationLink: string;
   applicationDate: Date;
-  status: ApplicationStatusEnum;
+  status: ApplicationStatus;
   positionIndex: number;
   notes: string;
 }
@@ -36,13 +32,13 @@ export interface FormattedCardForBoardInterface {
   groupId: number;
   companyName: string;
   title: string;
-  workMode: WorkModeEnum;
+  workMode: WorkMode;
   payAmount: number;
-  payFrequency: PayFrequencyEnum;
+  payFrequency: PayFrequency;
   currency: string;
   city: string;
   country: string;
   applicationLink: string;
   applicationDate: string;
-  status: ApplicationStatusEnum;
+  status: ApplicationStatus;
 }
