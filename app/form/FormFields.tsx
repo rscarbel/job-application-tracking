@@ -8,6 +8,50 @@ import { payFrequencyOptions } from "../board/utils";
 import CountriesField from "./CountriesField";
 import CompaniesField from "./CompaniesField";
 import SameJobMessage from "./SameJobMessage";
+import { WorkMode, PayFrequency, ApplicationStatus } from "@prisma/client";
+
+interface CompanyInterface {
+  companyId: number;
+  name: string;
+}
+
+interface ExistingJobDataInterface {
+  jobTitle: string;
+  companyId: number;
+  companyName: string;
+  groupId: number;
+  lastApplicationToJobInOtherBoard: {
+    boardName: string;
+    date: string;
+  };
+  lastApplicationToJobInThisBoard: string;
+}
+
+interface FormFieldsProps {
+  company: CompanyInterface;
+  jobTitle: string;
+  jobDescription: string;
+  workMode: WorkMode;
+  payAmount: number;
+  payFrequency: PayFrequency;
+  streetAddress: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+  applicationLink: string;
+  applicationDate: string;
+  notes: string;
+  status: ApplicationStatus;
+  onInputChange: (name: string, value: any) => void;
+  onCountryChange: (name: string, value: any) => void;
+  onCompanyChange: (name: string, value: any) => void;
+  onJobBlur: () => void;
+  existingJobData: ExistingJobDataInterface;
+  countrySymbol: string;
+  currencySymbol: string;
+  isDisabled?: boolean;
+}
 
 const FormFields = ({
   company,
@@ -33,9 +77,9 @@ const FormFields = ({
   countrySymbol,
   currencySymbol,
   isDisabled = false,
-}) => {
-  const companyName = company?.name;
-  const companyId = company?.companyId;
+}: FormFieldsProps) => {
+  const companyName = company.name;
+  const companyId = company.companyId;
 
   const previousBoardName =
     existingJobData?.lastApplicationToJobInOtherBoard?.boardName;

@@ -7,7 +7,6 @@ import { Button } from "primereact/button";
 import { getCountryCode, getCurrencySymbol } from "@/utils/global";
 import { findJobTitle } from "../network";
 import FormFields from "../form/FormFields";
-import { WorkMode, ApplicationStatus, PayFrequency } from "@prisma/client";
 import { IndividualFormattedCardInterface } from "@/services/FormattedCardInterface";
 
 interface ExistingJobDataInterface {
