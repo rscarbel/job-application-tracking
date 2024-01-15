@@ -36,8 +36,12 @@ export const formatCurrency = (
   }).format(parseFloat(amount));
 };
 
-export const prettifyDate = (date: Date): string => {
+export const prettifyDate = (dateInput: Date | string): string => {
   try {
+    // Check if the input is a string and convert to Date object if it is
+    const date =
+      typeof dateInput === "string" ? new Date(dateInput) : dateInput;
+
     return new Intl.DateTimeFormat("en-US").format(date) || "";
   } catch (error) {
     return "";

@@ -128,7 +128,7 @@ export const getFormattedCardsForBoard = async ({
       city: lastAddress.city,
       country: lastAddress.country,
       applicationLink: card.applicationLink,
-      applicationDate: prettifyDate(card.applicationDate),
+      applicationDate: card.applicationDate,
       status: card.status,
     };
   });

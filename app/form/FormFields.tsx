@@ -17,9 +17,6 @@ interface CompanyInterface {
 
 interface ExistingJobDataInterface {
   jobTitle: string;
-  companyId: number;
-  companyName: string;
-  groupId: number;
   lastApplicationToJobInOtherBoard: {
     boardName: string;
     date: string;
@@ -40,12 +37,12 @@ interface FormFieldsProps {
   country: string;
   postalCode: string;
   applicationLink: string;
-  applicationDate: string;
+  applicationDate: Date;
   notes: string;
   status: ApplicationStatus;
   onInputChange: (name: string, value: any) => void;
   onCountryChange: (name: string, value: any) => void;
-  onCompanyChange: (name: string, value: any) => void;
+  onCompanyChange: (name: string, companyId: number) => void;
   onJobBlur: () => void;
   existingJobData: ExistingJobDataInterface;
   countrySymbol: string;
@@ -289,7 +286,7 @@ const FormFields = ({
           id="applicationDate"
           name="applicationDate"
           className="mt-1 w-full shadow-sm border-gray-300 rounded  focus:border-blue-500 focus:ring focus:ring-blue-200"
-          value={new Date(applicationDate || Date.now())}
+          value={new Date(applicationDate)}
           onChange={(e) => {
             onInputChange(e.target.name, e.target.value);
           }}
@@ -324,12 +321,12 @@ const FormFields = ({
           value={status}
           className={STYLE_CLASSES.FORM_BASIC_INPUT}
           options={[
-            "applied",
-            "interview",
-            "offer",
-            "rejected",
-            "accepted",
-            "passed",
+            ApplicationStatus.applied,
+            ApplicationStatus.interview,
+            ApplicationStatus.offer,
+            ApplicationStatus.rejected,
+            ApplicationStatus.accepted,
+            ApplicationStatus.passed,
           ]}
           onChange={(e) => {
             onInputChange(e.target.name, e.target.value);

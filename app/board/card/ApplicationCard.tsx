@@ -4,9 +4,14 @@ import { useEditCard } from "./EditCardContext";
 import { formatCurrency } from "@/utils/global";
 import { findCard } from "../../network";
 import { getStatusColor, humanizedPayFrequency } from "../utils";
-import { ApplicationInterface } from "../../types";
+import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterface";
+import { prettifyDate } from "@/utils/global";
 
-const ApplicationCard: FC<ApplicationInterface> = ({
+interface ApplicationCardProps extends FormattedCardForBoardInterface {
+  index: number;
+}
+
+const ApplicationCard: FC<ApplicationCardProps> = ({
   applicationId,
   groupId,
   companyName,
@@ -50,7 +55,7 @@ const ApplicationCard: FC<ApplicationInterface> = ({
             const card = await findCard(applicationId);
             onEditClick({
               ...card,
-              groupId: 1,
+              groupId: groupId,
             });
           }}
         >
@@ -73,7 +78,7 @@ const ApplicationCard: FC<ApplicationInterface> = ({
             </a>
           )}
           <div className="mb-2 text-sm text-gray-500">
-            Date Applied: {applicationDate}
+            Date Applied: {prettifyDate(applicationDate)}
           </div>
         </div>
       )}

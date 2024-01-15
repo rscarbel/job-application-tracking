@@ -39,6 +39,6 @@ export interface FormattedCardForBoardInterface {
   city: string;
   country: string;
   applicationLink: string;
-  applicationDate: string;
+  applicationDate: Date;
   status: ApplicationStatus;
 }
