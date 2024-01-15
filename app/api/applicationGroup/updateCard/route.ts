@@ -34,8 +34,6 @@ export async function POST(request) {
     status,
   } = await request.json();
 
-  console.log(company);
-
   const necessaryData = {
     "Application Card": applicationId,
     Board: groupId,

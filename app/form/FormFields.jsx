@@ -50,8 +50,8 @@ const FormFields = ({
       <div className="p-field">
         <CompaniesField
           selectedCompany={{
-            name: companyName || undefined,
-            companyId: companyId || undefined,
+            name: companyName,
+            companyId: companyId,
           }}
           onChange={onCompanyChange}
           isDisabled={isDisabled}
@@ -77,8 +77,9 @@ const FormFields = ({
           name="jobTitle"
           value={jobTitle}
           onBlur={onJobBlur}
-          onChange={onInputChange}
-          disabled={isDisabled}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
         />
       </div>
 
@@ -91,8 +92,9 @@ const FormFields = ({
           id="jobDescription"
           name="jobDescription"
           value={jobDescription}
-          onChange={onInputChange}
-          disabled={isDisabled}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
           rows={5}
           cols={30}
         />
@@ -112,22 +114,24 @@ const FormFields = ({
             name="payAmount"
             value={payAmount || 0}
             className={`flex-1 mr-2`}
-            onValueChange={onInputChange}
+            onValueChange={(e) => {
+              onInputChange(e.target.name, e.target.value);
+            }}
             placeholder="0.00"
             mode="currency"
             currency={currencySymbol}
             locale={`en-${countrySymbol}`}
-            disabled={isDisabled}
           />
           <Dropdown
             id="payFrequency"
             name="payFrequency"
             value={payFrequency}
             options={payFrequencyOptions}
-            onChange={onInputChange}
+            onChange={(e) => {
+              onInputChange(e.target.name, e.target.value);
+            }}
             placeholder="Frequency"
             className="flex-1"
-            disabled={isDisabled}
           />
         </div>
       </div>
@@ -142,9 +146,10 @@ const FormFields = ({
           value={workMode}
           className={STYLE_CLASSES.FORM_BASIC_INPUT}
           options={["remote", "onsite", "hybrid"]}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
           placeholder="Select a Status"
-          disabled={isDisabled}
         />
       </div>
 
@@ -157,8 +162,9 @@ const FormFields = ({
           id="streetAddress"
           name="streetAddress"
           value={streetAddress}
-          onChange={onInputChange}
-          disabled={isDisabled}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
         />
       </div>
 
@@ -172,8 +178,9 @@ const FormFields = ({
             id="city"
             name="city"
             value={city}
-            onChange={onInputChange}
-            disabled={isDisabled}
+            onChange={(e) => {
+              onInputChange(e.target.name, e.target.value);
+            }}
           />
         </div>
 
@@ -186,8 +193,9 @@ const FormFields = ({
             id="state"
             name="state"
             value={state}
-            onChange={onInputChange}
-            disabled={isDisabled}
+            onChange={(e) => {
+              onInputChange(e.target.name, e.target.value);
+            }}
           />
         </div>
       </div>
@@ -201,8 +209,9 @@ const FormFields = ({
             id="postalCode"
             name="postalCode"
             value={postalCode}
-            onChange={onInputChange}
-            disabled={isDisabled}
+            onChange={(e) => {
+              onInputChange(e.target.name, e.target.value);
+            }}
           />
         </div>
 
@@ -222,8 +231,9 @@ const FormFields = ({
           id="applicationLink"
           name="applicationLink"
           value={applicationLink}
-          onChange={onInputChange}
-          disabled={isDisabled}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
         />
       </div>
 
@@ -236,9 +246,10 @@ const FormFields = ({
           name="applicationDate"
           className="mt-1 w-full shadow-sm border-gray-300 rounded  focus:border-blue-500 focus:ring focus:ring-blue-200"
           value={new Date(applicationDate || Date.now())}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
           dateFormat="mm/dd/yy"
-          disabled={isDisabled}
         />
       </div>
 
@@ -251,10 +262,11 @@ const FormFields = ({
           id="notes"
           name="notes"
           value={notes}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
           rows={5}
           cols={30}
-          disabled={isDisabled}
         />
       </div>
 
@@ -275,9 +287,10 @@ const FormFields = ({
             "accepted",
             "passed",
           ]}
-          onChange={onInputChange}
+          onChange={(e) => {
+            onInputChange(e.target.name, e.target.value);
+          }}
           placeholder="Select a Status"
-          disabled={isDisabled}
         />
       </div>
     </div>

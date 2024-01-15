@@ -5,8 +5,8 @@ import { Dialog } from "primereact/dialog";
 import { ConfirmDialog, confirmDialog } from "primereact/confirmdialog";
 import { Button } from "primereact/button";
 import { getCountryCode, getCurrencySymbol } from "@/utils/global";
-import ReadEditFormFields from "../form/ReadEditFormFields";
 import { findJobTitle } from "../network";
+import FormFields from "../form/FormFields";
 
 const defaultFormData = {
   applicationId: undefined,
@@ -43,7 +43,6 @@ const EditCardFormModal = ({
   const [formData, setFormData] = useState(cardData || defaultFormData);
   const [existingJobData, setExistingJobData] = useState(null);
   const [initialJobTitle, setInitialJobTitle] = useState(null);
-  const [isReadOnly, setIsReadOnly] = useState(true);
 
   const hasDataChanged = JSON.stringify(cardData) !== JSON.stringify(formData);
   const isDataValid = formData?.company?.name && formData?.jobTitle;
@@ -93,7 +92,6 @@ const EditCardFormModal = ({
   };
 
   const shutdownModal = () => {
-    setIsReadOnly(true);
     setFormData(defaultFormData);
     onHide();
   };
@@ -146,18 +144,10 @@ const EditCardFormModal = ({
       className="lg:w-1/2 md:w-2/3 sm:w-full"
       visible={visible}
       onHide={handleHide}
-      header={`${isReadOnly ? "View" : "Edit"} Application`}
+      header="View Application"
       dismissableMask
     >
-      {isReadOnly ? (
-        <Button
-          className="absolute top-4 right-16  p-button-text"
-          onClick={() => setIsReadOnly(false)}
-        >
-          Edit
-        </Button>
-      ) : null}
-      <ReadEditFormFields
+      <FormFields
         {...formData}
         onInputChange={handleInputChange}
         onCountryChange={handleCountryChange}
@@ -166,7 +156,6 @@ const EditCardFormModal = ({
         currencySymbol={currencySymbol}
         onJobBlur={checkIfJobExists}
         existingJobData={existingJobData}
-        isReadOnly={isReadOnly}
       />
       <ConfirmDialog />
       <div className="flex flex-wrap gap-2 justify-content-center align-items-center">
