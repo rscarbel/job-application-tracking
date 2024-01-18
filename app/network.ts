@@ -74,7 +74,8 @@ export const findCompanies = async (): Promise<CompanyInterface[]> => {
   try {
     const response = await fetch("/api/applicationGroup/find/companies");
     const text = await response.text();
-    return JSON.parse(text);
+    const parsedText = JSON.parse(text);
+    return parsedText.body;
   } catch (error: any) {
     await reportErrorToServer(error);
     return [];
