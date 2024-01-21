@@ -251,7 +251,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
         setModalVisible,
       }}
     >
-      <Toast ref={toast} />
+      <Toast content={null} ref={toast} />
 
       {editingCard && (
         <EditCardFormModal

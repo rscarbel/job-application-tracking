@@ -158,7 +158,7 @@ const CreateCard: React.FC = () => {
           disabled={!isDataValid || loading}
         />
       </div>
-      <Toast ref={toast} />
+      <Toast content={null} ref={toast} />
     </>
   );
 };

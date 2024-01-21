@@ -98,6 +98,7 @@ const EditCardFormModal = ({
   const handleHide = (confirmChanges = true) => {
     if (hasDataChanged && confirmChanges) {
       confirmDialog({
+        content: null,
         message: "Would you like to save your changes?",
         header: "Save Changes",
         icon: "",
@@ -125,6 +126,7 @@ const EditCardFormModal = ({
 
   const confirmDelete = () => {
     confirmDialog({
+      content: null,
       message: "Are you sure you want to delete this job application?",
       header: "Delete Confirmation",
       icon: "pi pi-info-circle",
@@ -135,6 +137,7 @@ const EditCardFormModal = ({
 
   return (
     <Dialog
+      content={null}
       className="lg:w-1/2 md:w-2/3 sm:w-full"
       visible={visible}
       onHide={handleHide}
@@ -151,7 +154,7 @@ const EditCardFormModal = ({
         onJobBlur={checkIfJobExists}
         existingJobData={existingJobData}
       />
-      <ConfirmDialog />
+      <ConfirmDialog content={null} />
       <div className="flex flex-wrap gap-2 justify-content-center align-items-center">
         <Button
           onClick={handleFormSubmission}
