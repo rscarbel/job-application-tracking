@@ -3,7 +3,11 @@ import { getToken } from "next-auth/jwt";
 import { User } from "@prisma/client";
 import { ApiRequest } from "@/utils/ApiRequestType";
 
-export const getRequestUser = async (
+/**
+ *
+ * @description Given a request object, return the user logged in or null.
+ */
+export const getCurrentUser = async (
   request: ApiRequest
 ): Promise<User | null> => {
   const token = await getToken({ req: request });

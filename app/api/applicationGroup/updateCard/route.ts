@@ -8,7 +8,7 @@ import { updateCompany } from "@/services/companyService";
 import { updateJob } from "@/services/jobService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
-import { getRequestUser } from "@/services/userService";
+import { getCurrentUser } from "@/services/UserManagement";
 import serverErrorResponse from "../../serverErrorResponse";
 import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
 import { ApiRequest } from "@/utils/ApiRequestType";
@@ -61,7 +61,7 @@ export async function POST(request: ApiRequest) {
     status,
   }: UpdateCardRequestInterface = await request.json();
 
-  const user = await getRequestUser(request);
+  const user = await getCurrentUser(request);
 
   if (!user) {
     return serverErrorResponse("No authenticated user in this request", 401);

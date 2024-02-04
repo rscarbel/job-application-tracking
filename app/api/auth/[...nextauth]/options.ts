@@ -6,6 +6,7 @@ import type { OAuthConfig } from "next-auth/providers/oauth";
 import type { CredentialsConfig } from "next-auth/providers/credentials";
 import prisma from "@/services/globalPrismaClient";
 import { Session } from "next-auth";
+import { login, findUserByEmail } from "@/services/UserManagement";
 
 interface OAuthAccount {
   providerAccountId: string;
@@ -13,7 +14,7 @@ interface OAuthAccount {
 }
 
 interface User {
-  id: number;
+  id: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -30,7 +31,7 @@ interface Profile {
 }
 
 interface Token {
-  uid: number;
+  uid: string;
   provider: string;
 }
 
@@ -95,11 +96,7 @@ if (process.env.NODE_ENV === "development") {
           credentials.password === "admin"
         ) {
           // Fetch the user from the database
-          const user = await prisma.user.findUnique({
-            where: {
-              email: "user1@example.com",
-            },
-          });
+          const user = await findUserByEmail("user1@example.com");
 
           if (user) {
             return user;
@@ -122,72 +119,8 @@ const options = {
     async linkAccount(message: string) {},
   },
   callbacks: {
-    async signIn({
-      user,
-      account,
-      profile,
-    }: {
-      user: User;
-      account: OAuthAccount;
-      profile: Profile;
-    }) {
-      const email = user.email;
-
-      if (!email) {
-        return false;
-      }
-      try {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: email },
-          include: {
-            oAuth: true,
-          },
-        });
-
-        if (existingUser) {
-          const isProviderLinked = existingUser.oAuth.some(
-            (oAuthAccount) => oAuthAccount.provider === account.provider
-          );
-
-          if (!isProviderLinked) {
-            await prisma.oAuth.create({
-              data: {
-                provider: account.provider,
-                externalId: account.providerAccountId,
-                user: {
-                  connect: {
-                    id: existingUser.id,
-                  },
-                },
-              },
-            });
-          }
-
-          return true;
-        } else {
-          const newUser = await prisma.user.create({
-            data: {
-              email: email,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              imageURL: user.imageUrl,
-              oAuth: {
-                create: {
-                  provider: account.provider,
-                  externalId: account.providerAccountId,
-                },
-              },
-            },
-            include: {
-              oAuth: true,
-            },
-          });
-        }
-      } catch (error) {
-        console.error("Sign in error:", error);
-        return false;
-      }
-      return true;
+    async signIn({ user, account }: { user: User; account: OAuthAccount }) {
+      return await login({ user, account });
     },
     async redirect({ url, baseUrl }: { url: string; baseUrl: string }) {
       if (url.startsWith(baseUrl)) {
@@ -195,19 +128,17 @@ const options = {
       }
       return baseUrl;
     },
-    async session({ session, user }: { session: Session; user: User }) {
+    async session({ session }: { session: Session }) {
       return session;
     },
     async jwt({
       token,
       user,
       account,
-      profile,
     }: {
       token: Token;
       user: User;
       account: OAuthAccount;
-      profile: Profile;
     }) {
       if (user) {
         token.uid = user.id;

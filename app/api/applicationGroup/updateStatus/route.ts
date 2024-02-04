@@ -1,5 +1,5 @@
 import prisma from "@/services/globalPrismaClient";
-import { getRequestUser } from "@/services/userService";
+import { getCurrentUser } from "@/services/UserManagement";
 import { reportError } from "@/app/api/reportError/reportError";
 import serverErrorResponse from "../../serverErrorResponse";
 import { ApplicationStatus } from "@prisma/client";
@@ -14,7 +14,7 @@ interface UpdateStatusRequest {
 export async function POST(request: ApiRequest) {
   const { id, status, newPositionIndex }: UpdateStatusRequest =
     await request.json();
-  const user = await getRequestUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return serverErrorResponse("The request user does not exist", 404);
 
   const currentCard = await prisma.application.findUnique({

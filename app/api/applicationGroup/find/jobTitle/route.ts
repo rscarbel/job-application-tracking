@@ -1,6 +1,5 @@
-import { prettifyDate } from "@/utils/global";
 import prisma from "@/services/globalPrismaClient";
-import { getRequestUser } from "@/services/userService";
+import { getCurrentUser } from "@/services/UserManagement";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
 import { ApiRequest } from "@/utils/ApiRequestType";
 
@@ -10,7 +9,7 @@ export async function GET(request: ApiRequest) {
   const jobTitle = searchParams.get("jobTitle");
   const groupId = searchParams.get("groupId");
 
-  const user = await getRequestUser(request);
+  const user = await getCurrentUser(request);
   const userId = user?.id;
 
   if (!userId)

@@ -1,12 +1,12 @@
 import { reportError } from "./reportError";
 import serverErrorResponse from "../serverErrorResponse";
-import { getRequestUser } from "@/services/userService";
+import { getCurrentUser } from "@/services/UserManagement";
 import { ApiRequest } from "@/utils/ApiRequestType";
 
 export async function POST(request: ApiRequest): Promise<Response> {
   try {
     const { error } = await request.body.json();
-    const user = await getRequestUser(request);
+    const user = await getCurrentUser(request);
     reportError(error, user);
 
     return new Response(JSON.stringify({ success: true }), {

@@ -3,7 +3,7 @@ import { findOrCreateCompany } from "@/services/companyService";
 import { createOrUpdateJob } from "@/services/jobService";
 import { incrementCardsAfterIndex } from "@/services/applicationService";
 import { reportError } from "@/app/api/reportError/reportError";
-import { getRequestUser } from "@/services/userService";
+import { getCurrentUser } from "@/services/UserManagement";
 import { CreateCardRequest } from "./interface";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
 import { ApiRequest } from "@/utils/ApiRequestType";
@@ -34,7 +34,7 @@ export async function POST(request: ApiRequest) {
     workMode,
   } = createCardRequest;
 
-  const user = await getRequestUser(request);
+  const user = await getCurrentUser(request);
   if (!user) return serverErrorResponse("User not found", 404);
 
   try {

@@ -1,5 +1,5 @@
 import { getFormattedCardData } from "@/services/applicationService";
-import { getRequestUser } from "@/services/userService";
+import { getCurrentUser } from "@/services/UserManagement";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
 import { ApiRequest } from "@/utils/ApiRequestType";
 
@@ -8,7 +8,7 @@ export async function GET(request: ApiRequest) {
   const applicationId = searchParams.get("applicationId");
   if (!applicationId) return serverErrorResponse("Invalid application id", 400);
 
-  const user = await getRequestUser(request);
+  const user = await getCurrentUser(request);
 
   if (!user) return serverErrorResponse("User not found", 404);
 
