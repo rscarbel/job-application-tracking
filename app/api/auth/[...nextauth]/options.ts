@@ -4,7 +4,6 @@ import LinkedInProvider from "next-auth/providers/linkedin";
 import CredentialsProvider from "next-auth/providers/credentials";
 import type { OAuthConfig } from "next-auth/providers/oauth";
 import type { CredentialsConfig } from "next-auth/providers/credentials";
-import prisma from "@/services/globalPrismaClient";
 import { Session } from "next-auth";
 import { login, findUserByEmail } from "@/services/UserManagement";
 
