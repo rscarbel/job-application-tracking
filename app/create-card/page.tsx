@@ -17,6 +17,15 @@ import { NewApplicationFormData } from "../types";
 
 const TODAY: string = new Date().toISOString();
 
+interface ExistingJobDataInterface {
+  jobTitle: string;
+  lastApplicationToJobInThisBoard: string;
+  lastApplicationToJobInOtherBoard: {
+    date: string;
+    boardName: string;
+  };
+}
+
 type ChangeEvent = {
   target: {
     name: string;
@@ -68,7 +77,8 @@ const CreateCard: React.FC = () => {
   const [formData, setFormData] =
     useState<NewApplicationFormData>(defaultFormData);
   const [loading, setLoading] = useState<boolean>(false);
-  const [existingJobData, setExistingJobData] = useState<any>(null);
+  const [existingJobData, setExistingJobData] =
+    useState<ExistingJobDataInterface | null>(null);
 
   const toast = useRef<Toast>(null);
   const isDataValid: boolean = Boolean(
