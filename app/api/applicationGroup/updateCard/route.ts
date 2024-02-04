@@ -147,9 +147,11 @@ export async function POST(request: ApiRequest) {
     return new Response(JSON.stringify({ board }), {
       status: 200,
     });
-  } catch (error: any) {
-    console.error(error.stack);
-    reportError(error, user);
-    return serverErrorResponse(error.message, 500);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error(error.stack);
+      reportError(error, user);
+      return serverErrorResponse(error.message, 500);
+    }
   }
 }

@@ -48,14 +48,7 @@ export const prettifyDate = (dateInput: Date | string): string => {
   }
 };
 
-interface ErrorInterface {
-  message: string;
-  stack: string;
-}
-
-export const reportErrorToServer = async (
-  error: ErrorInterface
-): Promise<void> => {
+export const reportErrorToServer = async (error: Error): Promise<void> => {
   const errorInfo = {
     message: error.message,
     stack: error.stack,

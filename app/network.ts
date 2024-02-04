@@ -60,8 +60,10 @@ export const createCard = async (card: NewApplicationFormData) => {
     });
     const data = await response.json();
     return { response, data };
-  } catch (error: any) {
-    await reportErrorToServer(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      await reportErrorToServer(error);
+    }
   }
 };
 
@@ -76,8 +78,10 @@ export const findCompanies = async (): Promise<CompanyInterface[]> => {
     const text = await response.text();
     const parsedText = JSON.parse(text);
     return parsedText.body;
-  } catch (error: any) {
-    await reportErrorToServer(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      await reportErrorToServer(error);
+    }
     return [];
   }
 };
@@ -111,8 +115,10 @@ export const findJobTitle = async ({
   try {
     const text = await response.text();
     data = JSON.parse(text);
-  } catch (error: any) {
-    await reportErrorToServer(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      await reportErrorToServer(error);
+    }
   }
   return data?.body || null;
 };
@@ -126,8 +132,10 @@ export const findCard = async (applicationId: number) => {
     const text = await response.text();
     const responseData = JSON.parse(text);
     data = JSON.parse(responseData.body);
-  } catch (error: any) {
-    await reportErrorToServer(error);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      await reportErrorToServer(error);
+    }
   }
   return data;
 };

@@ -110,8 +110,10 @@ export async function POST(request: ApiRequest) {
       });
     });
     return new Response(JSON.stringify({ error: null }), { status: 200 });
-  } catch (error: any) {
-    reportError(error, user);
-    return serverErrorResponse(error.message, 500);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      reportError(error, user);
+      return serverErrorResponse(error.message, 500);
+    }
   }
 }

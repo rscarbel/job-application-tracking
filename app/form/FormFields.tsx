@@ -10,6 +10,8 @@ import CompaniesField from "./CompaniesField";
 import SameJobMessage from "./SameJobMessage";
 import { WorkMode, PayFrequency, ApplicationStatus } from "@prisma/client";
 
+type EventValueType = string | number | undefined | null | Date;
+
 interface CompanyInterface {
   companyId: number;
   name: string;
@@ -40,7 +42,7 @@ interface FormFieldsProps {
   applicationDate: Date;
   notes: string;
   status: ApplicationStatus;
-  onInputChange: (name: string, value: any) => void;
+  onInputChange: (name: string, value: EventValueType) => void;
   onCountryChange: (name: string) => void;
   onCompanyChange: (name: string, companyId: number) => void;
   onJobBlur: () => void;

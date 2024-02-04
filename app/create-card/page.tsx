@@ -20,7 +20,7 @@ const TODAY: string = new Date().toISOString();
 type ChangeEvent = {
   target: {
     name: string;
-    value: any;
+    value: string | number;
   };
 };
 
@@ -128,8 +128,10 @@ const CreateCard: React.FC = () => {
       } else {
         showError(data?.error || "There was a problem with the submission.");
       }
-    } catch (error: any) {
-      showError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        showError(error.message);
+      }
     } finally {
       setLoading(false);
     }

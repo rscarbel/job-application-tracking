@@ -21,9 +21,10 @@ export async function POST(request: ApiRequest) {
       name,
       userId: user.id,
     });
-  } catch (error: any) {
-    reportError(error, user);
-
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      reportError(error, user);
+    }
     return serverErrorResponse();
   }
 }
