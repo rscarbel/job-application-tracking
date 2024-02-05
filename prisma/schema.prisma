@@ -66,65 +66,6 @@ enum CompanyType {
   PUBLIC
 }
 
-enum BenefitType {
-  BONUSES_AND_INCENTIVES
-  CASUAL_DRESS_CODE
-  CHILDCARE_ASSISTANCE
-  COMMUTER_BENEFITS
-  COMPANY_CAR_OR_ALLOWANCE
-  COMPANY_DISCOUNTS
-  COMPANY_EVENTS_AND_RETREATS
-  CONFERENCE_ATTENDANCE
-  CULTURAL_LEAVE
-  CUSTOMIZABLE_BENEFITS_PACKAGE
-  DISABILITY_INSURANCE
-  ELDER_CARE_ASSISTANCE
-  EMERGENCY_CHILD_AND_ELDER_CARE
-  EMPLOYEE_ASSISTANCE_PROGRAMS
-  EMPLOYEE_RECOGNITION_PROGRAMS
-  EXTENDED_MATERNITY_AND_PATERNITY_LEAVE
-  FINANCIAL_PLANNING_SERVICES
-  FLEXIBLE_SCHEDULING
-  FLEXIBLE_SPENDING_ACCOUNTS
-  FREE_OR_SUBSIDIZED_MEALS
-  GLOBAL_WORK_OPPORTUNITIES
-  GREEN_COMMUTING_INCENTIVES
-  GYM_MEMBERSHIPS
-  HEALTH_INSURANCE
-  HEALTH_SAVINGS_ACCOUNTS
-  HEALTHCARE_SPECIALIST_ACCESS
-  HOME_OFFICE_STIPEND
-  HOUSING_ASSISTANCE
-  IDENTITY_THEFT_PROTECTION
-  LANGUAGE_LEARNING_ASSISTANCE
-  LEGAL_ASSISTANCE
-  LIFE_INSURANCE
-  MENTAL_HEALTH_ASSISTANCE
-  MENTORSHIP_PROGRAMS
-  MOVING_EXPENSE_REIMBURSEMENT
-  ONSITE_CHILDCARE_FACILITIES
-  PAID_PARENTAL_LEAVE
-  PAID_TIME_OFF
-  PARKING_BENEFITS
-  PET_FRIENDLY_WORKPLACE
-  PET_INSURANCE
-  PROFESSIONAL_MEMBERSHIPS
-  RELOCATION_ASSISTANCE
-  REMOTE_WORK_OPTIONS
-  RETIREMENT_PLANS
-  SABBATICAL_LEAVE
-  SOCIAL_IMPACT_PROJECTS
-  STOCK_OPTIONS
-  STRESS_MANAGEMENT_PROGRAMS
-  SUBSTANCE_ABUSE_ASSISTANCE
-  TECHNOLOGY_ALLOWANCE
-  TEMPORARY_HOUSING_ASSISTANCE
-  TRAINING_AND_DEVELOPMENT
-  TUITION_REIMBURSEMENT
-  VOLUNTEER_TIME_OFF
-  WELLNESS_PROGRAMS
-}
-
 model Application {
   id                 Int               @id @default(autoincrement())
   applicationDate    DateTime          @default(now())
@@ -156,11 +97,20 @@ model ApplicationTag {
   @@index([groupId])
 }
 
+model Benefit {
+  id        Int      @id @default(autoincrement())
+  name      String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
 model Job {
   id               Int           @id @default(autoincrement())
   title            String
   responsibilities String[]
-  benefits         BenefitType[]
+  benefits         Benefit[]
   description      String?
   company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId        Int
@@ -180,13 +130,13 @@ model Job {
 
 model Compensation {
   id             Int          @id @default(autoincrement())
-  payAmount      Float        @default(0)
+  payAmount      Float?       @default(0)
   payFrequency   PayFrequency @default(hourly)
   currency       String       @default("USD")
   salaryRangeMin Float?
   salaryRangeMax Float?
   hoursWeek      Int          @default(40)
-  negotiable     Boolean      @default(false)
+  negotiable     Boolean      @default(true)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @default(now()) @updatedAt
   job            Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)

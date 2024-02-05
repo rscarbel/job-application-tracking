@@ -42,7 +42,6 @@ export const createOrUpdateJob = async ({
       data: {
         description: job.description,
         responsibilities: job.responsibilities,
-        benefits: job.benefits,
         compensation: {
           update: {
             ...job.compensation,

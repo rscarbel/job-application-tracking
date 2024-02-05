@@ -5,7 +5,6 @@ const {
   PrismaClient,
   CompanySize,
   CompanyType,
-  BenefitType,
   CompanyDesireability,
 } = require("@prisma/client");
 const { faker } = require("@faker-js/faker");
@@ -26,8 +25,26 @@ const getRandomInteger = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
+const BENEFIT_NAMES = [
+  "Health Insurance",
+  "Dental Insurance",
+  "Retirement Plan",
+  "Paid Time Off",
+  "Paid Holidays",
+  "Remote Work",
+  "Relocation Assistance",
+  "Professional Development",
+  "Tuition Reimbursement",
+  "Employee Discounts",
+  "Gym Membership",
+  "Commuter Benefits",
+  "Childcare",
+  "Pet Insurance",
+  "Stock Options",
+];
+
 const generateBenefits = () => {
-  const shuffledBenefitTypes = Object.values(BenefitType).sort(
+  const shuffledBenefitTypes = [...BENEFIT_NAMES].sort(
     () => 0.5 - Math.random()
   );
   const numberOfBenefits = getRandomInteger(0, 10);
@@ -356,6 +373,17 @@ async function main() {
     const { frequency, amount, salaryRangeMin, salaryRangeMax, negotiable } =
       cyclePayFrequency();
 
+    /**
+     model Benefit {
+      id        Int      @id @default(autoincrement())
+      name      String
+      job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+      jobId     Int
+      createdAt DateTime @default(now())
+      updatedAt DateTime @default(now()) @updatedAt
+    }
+     */
+
     const job = await prisma.job.create({
       data: {
         title: faker.person.jobTitle(),
@@ -376,7 +404,6 @@ async function main() {
             negotiable: negotiable,
           },
         },
-        benefits: generateBenefits(),
         responsibilities: generateJobResponsibilities(),
         user: {
           connect: {
@@ -393,6 +420,19 @@ async function main() {
           },
         },
       },
+    });
+
+    generateBenefits().map((name) => {
+      return prisma.benefit.create({
+        data: {
+          name,
+          job: {
+            connect: {
+              id: job.id,
+            },
+          },
+        },
+      });
     });
 
     const randomTags = getRandomTags();

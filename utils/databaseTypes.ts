@@ -8,7 +8,6 @@ import {
   ContactInteractionType,
   CompanySize,
   CompanyType,
-  BenefitType,
 } from "@prisma/client";
 import {
   DefaultArgs,
@@ -45,7 +44,6 @@ export interface JobInterface {
   id?: number;
   title: string;
   responsibilities?: string[];
-  benefits?: BenefitType[];
   description?: string;
   companyId: number;
   userId: string;
