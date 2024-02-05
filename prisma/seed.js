@@ -43,14 +43,6 @@ const BENEFIT_NAMES = [
   "Stock Options",
 ];
 
-const generateBenefits = () => {
-  const shuffledBenefitTypes = [...BENEFIT_NAMES].sort(
-    () => 0.5 - Math.random()
-  );
-  const numberOfBenefits = getRandomInteger(0, 10);
-  return shuffledBenefitTypes.slice(0, numberOfBenefits);
-};
-
 const getCountryCode = (country) => {
   const countrySymbol = countrySymbols[country];
   return countrySymbol || "US";
@@ -221,6 +213,13 @@ async function main() {
       },
     },
   });
+
+  BENEFIT_NAMES.map((name) =>
+    prisma.benefit.create({
+      data: { name, userIdL: user1.id },
+    })
+  );
+
   await createDocumentsForUser(user1.id, prisma);
 
   await prisma.oAuth.create({
@@ -373,17 +372,6 @@ async function main() {
     const { frequency, amount, salaryRangeMin, salaryRangeMax, negotiable } =
       cyclePayFrequency();
 
-    /**
-     model Benefit {
-      id        Int      @id @default(autoincrement())
-      name      String
-      job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-      jobId     Int
-      createdAt DateTime @default(now())
-      updatedAt DateTime @default(now()) @updatedAt
-    }
-     */
-
     const job = await prisma.job.create({
       data: {
         title: faker.person.jobTitle(),
@@ -422,17 +410,24 @@ async function main() {
       },
     });
 
-    generateBenefits().map((name) => {
-      return prisma.benefit.create({
-        data: {
-          name,
-          job: {
-            connect: {
-              id: job.id,
-            },
-          },
+    const allBenefits = await prisma.benefit.findMany();
+
+    const numBenefits = getRandomInteger(0, allBenefits.length);
+
+    const benefits = allBenefits
+      .sort(() => 0.5 - Math.random())
+      .slice(0, numBenefits)
+      .map((benefit) => ({ id: benefit.id }));
+
+    await prisma.job.update({
+      where: {
+        id: job.id,
+      },
+      data: {
+        benefits: {
+          connect: benefits,
         },
-      });
+      },
     });
 
     const randomTags = getRandomTags();

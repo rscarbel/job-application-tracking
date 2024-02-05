@@ -98,19 +98,21 @@ model ApplicationTag {
 }
 
 model Benefit {
-  id        Int      @id @default(autoincrement())
+  id        Int          @id @default(autoincrement())
   name      String
-  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId     Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  userId    String
+  jobs      JobBenefit[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @default(now()) @updatedAt
+
+  @@unique([name, userId])
 }
 
 model Job {
   id               Int           @id @default(autoincrement())
   title            String
   responsibilities String[]
-  benefits         Benefit[]
+  benefits         JobBenefit[]
   description      String?
   company          Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
   companyId        Int
@@ -126,6 +128,18 @@ model Job {
   @@unique([title, companyId, userId, workMode])
   @@index([companyId])
   @@index([userId])
+}
+
+model JobBenefit {
+  jobId     Int
+  benefitId Int
+  job       Job      @relation(fields: [jobId], references: [id])
+  benefit   Benefit  @relation(fields: [benefitId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@id([jobId, benefitId])
+  @@index([benefitId])
 }
 
 model Compensation {
