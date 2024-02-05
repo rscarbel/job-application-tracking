@@ -4,7 +4,7 @@ import {
   incrementCardsAfterIndex,
   getFormattedCardsForBoard,
 } from "@/services/applicationService";
-import { updateCompany } from "@/services/companyService";
+import { updateOrCreateCompany } from "@/services/companyService";
 import { updateJob } from "@/services/jobService";
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
@@ -18,7 +18,7 @@ interface UpdateCardRequestInterface {
   groupId: number;
   company: {
     name: string;
-    companyId: number;
+    companyId: number | undefined;
   };
   jobId: number;
   jobTitle: string;
@@ -97,8 +97,9 @@ export async function POST(request: ApiRequest) {
         });
       }
 
-      await updateCompany({
+      const updatedCompany = await updateOrCreateCompany({
         companyName: company.name,
+        userId: user.id,
         companyId: company.companyId,
         client: pris,
       });
@@ -109,7 +110,7 @@ export async function POST(request: ApiRequest) {
           userId: user.id,
           title: jobTitle,
           responsibilities: [],
-          companyId: company.companyId,
+          companyId: updatedCompany.id,
           description: jobDescription,
           workMode: workMode,
           compensation: {

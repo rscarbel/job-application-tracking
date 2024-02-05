@@ -5,13 +5,13 @@ import { AutoComplete } from "primereact/autocomplete";
 import { findCompanies } from "../network";
 
 interface CompanyInterface {
-  companyId: number;
+  companyId: number | undefined;
   name: string;
 }
 
 interface CompaniesFieldProps {
   selectedCompany: CompanyInterface;
-  onChange: (name: string, companyId: number) => void;
+  onChange: (name: string, companyId: number | undefined) => void;
   isDisabled?: boolean;
 }
 

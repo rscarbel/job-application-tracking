@@ -1,7 +1,7 @@
 import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
 
 type Company = {
-  companyId?: number;
+  companyId: number | undefined;
   name: string;
 };
 
@@ -10,8 +10,8 @@ export type NewApplicationFormData = {
   groupId: number;
   company: Company;
   jobTitle: string;
-  jobDescription?: string;
-  workMode?: WorkMode;
+  jobDescription: string;
+  workMode: WorkMode;
   payAmount?: number;
   payFrequency?: PayFrequency;
   currency?: string;

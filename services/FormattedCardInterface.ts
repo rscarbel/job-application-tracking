@@ -5,7 +5,7 @@ export interface IndividualFormattedCardInterface {
   groupId: number;
   jobId: number;
   company: {
-    companyId: number;
+    companyId: number | undefined;
     name: string;
   };
   jobTitle: string;

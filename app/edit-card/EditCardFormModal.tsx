@@ -76,7 +76,7 @@ const EditCardFormModal = ({
     const countryData = { country: country, currency: currencySymbol };
     setFormData({ ...formData, ...countryData });
   };
-  const handleCompanyChange = (name: string, companyId: number) => {
+  const handleCompanyChange = (name: string, companyId: number | undefined) => {
     setFormData((prev) => ({
       ...prev,
       company: {

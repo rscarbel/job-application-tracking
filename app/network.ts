@@ -68,7 +68,7 @@ export const createCard = async (card: NewApplicationFormData) => {
 };
 
 interface CompanyInterface {
-  companyId: number;
+  companyId: number | undefined;
   name: string;
 }
 

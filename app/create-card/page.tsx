@@ -17,6 +17,8 @@ import { NewApplicationFormData } from "../types";
 
 const TODAY: string = new Date().toISOString();
 
+type EventValueType = string | number | undefined | null | Date;
+
 interface ExistingJobDataInterface {
   jobTitle: string;
   lastApplicationToJobInThisBoard: string;
@@ -26,18 +28,6 @@ interface ExistingJobDataInterface {
   };
 }
 
-type ChangeEvent = {
-  target: {
-    name: string;
-    value: string | number;
-  };
-};
-
-type Company = {
-  companyId: number;
-  name: string;
-};
-
 const defaultFormData: NewApplicationFormData = {
   groupId: 1,
   company: {
@@ -46,7 +36,7 @@ const defaultFormData: NewApplicationFormData = {
   },
   jobId: undefined,
   jobTitle: "",
-  jobDescription: undefined,
+  jobDescription: "",
   workMode: WorkMode.onsite,
   payAmount: 0,
   payFrequency: PayFrequency.hourly,
@@ -85,8 +75,7 @@ const CreateCard: React.FC = () => {
     formData?.company?.name && formData?.jobTitle
   );
 
-  const handleInputChange = (e: ChangeEvent) => {
-    const { name, value } = e.target;
+  const handleInputChange = (name: string, value: EventValueType) => {
     setFormData({ ...formData, [name]: value });
   };
 
@@ -114,12 +103,12 @@ const CreateCard: React.FC = () => {
     setFormData({ ...formData, ...countryData });
   };
 
-  const handleCompanyChange = (company: Company) => {
+  const handleCompanyChange = (name: string, companyId: number | undefined) => {
     setFormData((prev) => ({
       ...prev,
       company: {
-        companyId: company.companyId,
-        name: company.name,
+        companyId: companyId,
+        name: name,
       },
     }));
   };
@@ -151,7 +140,7 @@ const CreateCard: React.FC = () => {
     <>
       <div className="mt-10 mb-10 mx-auto p-10 bg-white rounded-lg shadow-md xs:w-full md:w-1/2 claymorphic-shadow">
         <FormFields
-          {...(formData as any)}
+          {...formData}
           onInputChange={handleInputChange}
           onCountryChange={handleCountryChange}
           onCompanyChange={handleCompanyChange}

@@ -52,7 +52,7 @@ export const updateCompany = async ({
   companyName,
   client = prisma,
 }: {
-  companyId: number;
+  companyId: number | undefined;
   companyName: string;
   client?: TransactionClient | typeof prisma;
 }) => {
@@ -74,6 +74,28 @@ export const updateCompany = async ({
       name: companyName,
     },
   });
+
+  return company;
+};
+
+export const updateOrCreateCompany = async ({
+  companyName,
+  userId,
+  companyId,
+  client = prisma,
+}: {
+  companyName: string;
+  userId: string;
+  companyId: number | undefined;
+  client?: TransactionClient | typeof prisma;
+  address?: AddressInterface;
+}) => {
+  let company;
+  if (companyId) {
+    company = await updateCompany({ companyId, companyName, client });
+  } else {
+    company = await findOrCreateCompany({ companyName, userId, client });
+  }
 
   return company;
 };
