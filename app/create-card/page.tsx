@@ -1,6 +1,6 @@
 "use client";
 
-import FormFields from "../form/FormFields";
+import Form from "./Form";
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { Button } from "primereact/button";
@@ -41,15 +41,15 @@ const defaultFormData: NewApplicationFormData = {
   payAmount: 0,
   payFrequency: PayFrequency.hourly,
   currency: "USD",
-  streetAddress: undefined,
-  city: undefined,
-  state: undefined,
+  streetAddress: "",
+  city: "",
+  state: "",
   country: "United States",
-  postalCode: undefined,
-  applicationLink: undefined,
+  postalCode: "",
+  applicationLink: "",
   applicationDate: TODAY,
   positionIndex: 0,
-  notes: undefined,
+  notes: "",
   status: ApplicationStatus.applied,
 };
 
@@ -64,8 +64,7 @@ const CreateCard: React.FC = () => {
     }
   }, [status, router]);
 
-  const [formData, setFormData] =
-    useState<NewApplicationFormData>(defaultFormData);
+  const [formData, setFormData] = useState<any>(defaultFormData);
   const [loading, setLoading] = useState<boolean>(false);
   const [existingJobData, setExistingJobData] =
     useState<ExistingJobDataInterface | null>(null);
@@ -104,7 +103,7 @@ const CreateCard: React.FC = () => {
   };
 
   const handleCompanyChange = (name: string, companyId: number | undefined) => {
-    setFormData((prev) => ({
+    setFormData((prev: FormData) => ({
       ...prev,
       company: {
         companyId: companyId,
@@ -139,7 +138,7 @@ const CreateCard: React.FC = () => {
   return (
     <>
       <div className="mt-10 mb-10 mx-auto p-10 bg-white rounded-lg shadow-md xs:w-full md:w-1/2 claymorphic-shadow">
-        <FormFields
+        <Form
           {...formData}
           onInputChange={handleInputChange}
           onCountryChange={handleCountryChange}
