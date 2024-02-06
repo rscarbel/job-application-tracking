@@ -214,10 +214,11 @@ async function main() {
     },
   });
 
-  BENEFIT_NAMES.map((name) =>
-    prisma.benefit.create({
-      data: { name, userIdL: user1.id },
-    })
+  BENEFIT_NAMES.map(
+    async (name) =>
+      await prisma.benefit.create({
+        data: { name, userId: user1.id },
+      })
   );
 
   await createDocumentsForUser(user1.id, prisma);
@@ -419,15 +420,11 @@ async function main() {
       .slice(0, numBenefits)
       .map((benefit) => ({ id: benefit.id }));
 
-    await prisma.job.update({
-      where: {
-        id: job.id,
-      },
-      data: {
-        benefits: {
-          connect: benefits,
-        },
-      },
+    await prisma.jobBenefit.createMany({
+      data: benefits.map((benefit) => ({
+        jobId: job.id,
+        benefitId: benefit.id,
+      })),
     });
 
     const randomTags = getRandomTags();
