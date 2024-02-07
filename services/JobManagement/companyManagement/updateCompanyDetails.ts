@@ -1,8 +1,10 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
 import { CompanySize, CompanyType } from "@prisma/client";
+import { findCompanyByName } from ".";
 
-export const createCompany = async ({
+export const updateCompanyDetails = async ({
+  companyId,
   name,
   userId,
   culture,
@@ -17,7 +19,8 @@ export const createCompany = async ({
   description,
   client = prisma,
 }: {
-  name: string;
+  companyId?: number;
+  name?: string;
   userId: string;
   culture?: string;
   industry?: string;
@@ -31,12 +34,34 @@ export const createCompany = async ({
   description?: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.company.create({
+  if (!companyId && !name) {
+    throw new Error("companyId or name must be provided");
+  }
+
+  let company;
+
+  if (name) {
+    company = await findCompanyByName({ name, userId });
+  } else {
+    company = await client.company.findFirst({
+      where: {
+        id: companyId,
+        userId,
+      },
+    });
+  }
+
+  if (!company) {
+    throw new Error("Company not found");
+  }
+
+  return client.company.update({
+    where: {
+      id: company.id,
+    },
     data: {
-      name,
-      userId,
       details: {
-        create: {
+        update: {
           culture,
           industry,
           size,
