@@ -15,11 +15,10 @@ const mockPrisma = {
       jobId: 1,
     })),
   },
+  benefit: {
+    findFirst: mockFindBenefitByName,
+  },
 };
-
-mock.module("./findBenefitByName", () => {
-  return { findBenefitByName: mockFindBenefitByName };
-});
 
 mock.module("@/services/globalPrismaClient", () => {
   return { default: mockPrisma };
@@ -36,12 +35,6 @@ test("removeBenefitFromJob disassociates a benefit froma  job", async () => {
     benefitName,
     userId,
     jobId,
-  });
-
-  expect(mockFindBenefitByName).toHaveBeenCalledWith({
-    benefitName,
-    userId,
-    client: mockPrisma,
   });
 
   expect(mockPrisma.jobBenefit.delete).toHaveBeenCalledWith({

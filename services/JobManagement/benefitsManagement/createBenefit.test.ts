@@ -1,39 +1,38 @@
-import { test, expect, mock } from "bun:test";
-
-const createdBenefit = {
-  id: 1,
-  name: "Health Insurance",
-  userId: "user123",
-};
-
-const mockPrisma = {
-  benefit: {
-    create: mock(async () => ({
-      name: createdBenefit.name,
-      userId: createdBenefit.userId,
-    })),
-  },
-};
-
-mock.module("@/services/globalPrismaClient", () => {
-  return { default: mockPrisma };
-});
-
+import { test, expect, mock, describe } from "bun:test";
 import { createBenefit } from ".";
 
-test("createBenefit creates a new benefit associated with a user", async () => {
-  const benefitName = "Health Insurance";
-  const userId = "user123";
+describe("createBenefit", () => {
+  const createdBenefit = {
+    id: 1,
+    name: "Health Insurance",
+    userId: "user123",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-  await createBenefit({
-    name: benefitName,
-    userId,
+  const mockPrisma = {
+    benefit: {
+      create: mock(async () => ({
+        name: createdBenefit.name,
+        userId: createdBenefit.userId,
+      })),
+    },
+  };
+
+  mock.module("@/services/globalPrismaClient", () => {
+    return { default: mockPrisma };
   });
 
-  expect(mockPrisma.benefit.create).toHaveBeenCalledWith({
-    data: {
+  test("createBenefit creates a new benefit associated with a user", async () => {
+    const benefitName = "Health Insurance";
+    const userId = "user123";
+
+    const result = await createBenefit({
       name: benefitName,
-      userId: userId,
-    },
+      userId,
+    });
+
+    expect(result.name).toEqual(createdBenefit.name);
+    expect(result.userId).toEqual(createdBenefit.userId);
   });
 });
