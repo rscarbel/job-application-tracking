@@ -23,7 +23,7 @@ export const editCompensation = async ({
   jobId: number;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.compensation.updateMany({
+  return client.compensation.update({
     where: {
       jobId: jobId,
     },
