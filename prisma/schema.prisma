@@ -121,13 +121,30 @@ model Job {
   userId           String
   workMode         WorkMode      @default(onsite)
   compensation     Compensation?
-  addresses        Address[]
+  address          JobAddress?
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @default(now()) @updatedAt
 
   @@unique([title, companyId, userId, workMode])
   @@index([companyId])
   @@index([userId])
+}
+
+model JobAddress {
+  id             Int      @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?  @default("United States")
+  postalCode     String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  Job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId          Int
+
+  @@unique([jobId])
+  @@index([jobId])
 }
 
 model JobBenefit {
@@ -200,12 +217,31 @@ model Company {
   userId      String?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @default(now()) @updatedAt
-  addresses   Address[]
+  address     CompanyAddress?
   details     CompanyDetail?
   preferences CompanyPreference?
 
   @@unique([name, userId])
   @@index([userId])
+}
+
+model CompanyAddress {
+  id             Int       @id @default(autoincrement())
+  streetAddress  String?
+  streetAddress2 String?
+  city           String?
+  state          String?
+  country        String?   @default("United States")
+  postalCode     String?
+  fromDate       DateTime  @default(now())
+  throughDate    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+  company        Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId      Int
+
+  @@unique([companyId])
+  @@index([companyId])
 }
 
 model CompanyDetail {
@@ -281,18 +317,12 @@ model Address {
   throughDate    DateTime?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @default(now()) @updatedAt
-  Job            Job?      @relation(fields: [jobId], references: [id])
-  jobId          Int?
   User           User?     @relation(fields: [userId], references: [id])
   userId         String?
-  Company        Company?  @relation(fields: [companyId], references: [id])
-  companyId      Int?
   Contact        Contact?  @relation(fields: [contactId], references: [id])
   contactId      Int?
 
-  @@index([jobId])
   @@index([userId])
-  @@index([companyId])
   @@index([contactId])
 }
 

@@ -3,6 +3,15 @@ import { TransactionClient } from "@/utils/databaseTypes";
 import { PayFrequency, WorkMode } from "@prisma/client";
 import { findCompanyByName } from "./companyManagement";
 
+const emptyAddress = {
+  streetAddress: "",
+  streetAddress2: "",
+  city: "",
+  state: "",
+  country: "",
+  postalCode: "",
+};
+
 export const createJob = async ({
   title,
   userId,
@@ -16,13 +25,26 @@ export const createJob = async ({
     hoursWeek,
     negotiable,
   },
+  address = emptyAddress,
   workMode,
+  includeCompany = false,
+  includeCompensation = false,
   client = prisma,
 }: {
   title: string;
   userId: string;
   workMode: WorkMode;
   companyName: string;
+  includeCompany?: boolean;
+  includeCompensation?: boolean;
+  address?: {
+    streetAddress?: string;
+    streetAddress2?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    postalCode?: string;
+  };
   compensation: {
     payAmount?: number;
     payFrequency: PayFrequency;
@@ -69,10 +91,13 @@ export const createJob = async ({
           negotiable,
         },
       },
+      address: {
+        create: address,
+      },
     },
     include: {
-      company: true,
-      compensation: true,
+      company: includeCompany,
+      compensation: includeCompensation,
     },
   });
 };

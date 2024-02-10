@@ -46,8 +46,9 @@ describe("createJob", () => {
               negotiable,
             },
           },
+          address,
         },
-        include: { company, compensation },
+        include: { company: includeCompany, compensation: includeCompensation },
       }) => {
         return {
           id: 1,
@@ -69,6 +70,11 @@ describe("createJob", () => {
             hoursWeek,
             negotiable,
           },
+          address,
+          include: {
+            company: includeCompany,
+            compensation: includeCompensation,
+          },
         };
       }
     );
@@ -87,7 +93,7 @@ describe("createJob", () => {
     });
   });
 
-  test("should create a job with company name and user id", async () => {
+  test("should create a job with an empty address", async () => {
     const jobDetails = {
       title: "Software Engineer",
       userId: "user123",
@@ -126,6 +132,79 @@ describe("createJob", () => {
             salaryRangeMax: 90000,
             negotiable: true,
           },
+        },
+        address: {
+          create: {
+            streetAddress: "",
+            streetAddress2: "",
+            city: "",
+            state: "",
+            country: "",
+            postalCode: "",
+          },
+        },
+      },
+      include: {
+        company: false,
+        compensation: false,
+      },
+    });
+  });
+
+  test("should create a job with an address", async () => {
+    const jobDetails = {
+      title: "Software Engineer",
+      userId: "user123",
+      companyName: "Tech Innovations",
+      workMode: WorkMode.remote,
+      compensation: {
+        payFrequency: PayFrequency.monthly,
+        currency: "USD",
+        salaryRangeMin: 60000,
+        salaryRangeMax: 90000,
+        hoursWeek: 40,
+        negotiable: true,
+      },
+      address: {
+        streetAddress: "123 Main St",
+        city: "Anytown",
+        state: "NY",
+        country: "USA",
+        postalCode: "12345",
+      },
+      includeCompany: true,
+      includeCompensation: true,
+    };
+
+    const job = await createJob(jobDetails);
+
+    expect(job).toMatchObject({
+      id: 1,
+      title: "Software Engineer",
+      workMode: "remote",
+      company: {
+        id: 1,
+      },
+      user: {
+        id: "user123",
+      },
+      compensation: {
+        id: 1,
+        payAmount: undefined,
+        payFrequency: "monthly",
+        currency: "USD",
+        salaryRangeMin: 60000,
+        salaryRangeMax: 90000,
+        hoursWeek: 40,
+        negotiable: true,
+      },
+      address: {
+        create: {
+          streetAddress: "123 Main St",
+          city: "Anytown",
+          state: "NY",
+          country: "USA",
+          postalCode: "12345",
         },
       },
       include: {
