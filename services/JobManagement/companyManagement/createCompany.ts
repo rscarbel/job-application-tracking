@@ -1,53 +1,68 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { CompanySize, CompanyType } from "@prisma/client";
+import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
+import { CompanyDetailsInterface } from "./CompanyDetailsInterface";
+import { CompanyAddressInterface } from "./CompanyAddressInterface";
+import { CompanyPreferenceInterface } from "./CompanyPreferenceInterface";
+
+const defaultCompanyDetails: CompanyDetailsInterface = {
+  culture: "",
+  industry: "",
+  size: CompanySize.SMALL,
+  website: "",
+  type: CompanyType.PUBLIC,
+  history: "",
+  mission: "",
+  vision: "",
+  values: "",
+  description: "",
+};
+
+const defaultCompanyAddress: CompanyAddressInterface = {
+  streetAddress: "",
+  streetAddress2: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  country: "",
+};
+
+const defaultCompanyPreferences: CompanyPreferenceInterface = {
+  desireability: CompanyDesireability.medium,
+  notes: "",
+};
 
 export const createCompany = async ({
   name,
   userId,
-  culture,
-  industry,
-  size,
-  website,
-  type,
-  history,
-  mission,
-  vision,
-  values,
-  description,
+  details = defaultCompanyDetails,
+  address = defaultCompanyAddress,
+  preferences = defaultCompanyPreferences,
   client = prisma,
 }: {
   name: string;
   userId: string;
-  culture?: string;
-  industry?: string;
-  size?: CompanySize;
-  website?: string;
-  type?: CompanyType;
-  history?: string;
-  mission?: string;
-  vision?: string;
-  values?: string;
-  description?: string;
+  details?: CompanyDetailsInterface;
+  address?: CompanyAddressInterface;
+  preferences?: CompanyPreferenceInterface;
   client?: TransactionClient | typeof prisma;
 }) => {
   return client.company.create({
     data: {
       name,
-      userId,
-      details: {
-        create: {
-          culture,
-          industry,
-          size,
-          website,
-          type,
-          history,
-          mission,
-          vision,
-          values,
-          description,
+      user: {
+        connect: {
+          id: userId,
         },
+      },
+      details: {
+        create: details,
+      },
+      address: {
+        create: address,
+      },
+      preferences: {
+        create: preferences,
       },
     },
   });

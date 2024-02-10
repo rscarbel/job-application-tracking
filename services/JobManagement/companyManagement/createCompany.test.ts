@@ -1,40 +1,54 @@
 import { test, expect, mock, describe } from "bun:test";
-import { CompanyType, CompanySize } from "@prisma/client";
 import { createCompany } from "./createCompany";
+import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
+import { CompanyDetailsInterface } from "./CompanyDetailsInterface";
+import { CompanyAddressInterface } from "./CompanyAddressInterface";
+import { CompanyPreferenceInterface } from "./CompanyPreferenceInterface";
+import { connect } from "http2";
 
 describe("createCompany", () => {
-  interface CompanyWithDetails {
-    id: number;
-    name: string;
-    userId: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-    details?: {
-      culture?: string;
-      industry?: string;
-      size?: CompanySize;
-      website?: string;
-      type?: CompanyType;
-      history?: string;
-      mission?: string;
-      vision?: string;
-      values?: string;
-      description?: string;
+  const mockCompanyCreate = mock(async (data) => {
+    return {
+      ...data,
     };
-  }
+  });
 
-  const createdCompany = {
-    id: 1,
-    name: "new company",
-    userId: "userId1234",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
+  const mockPreferencesCreate = mock(async (data) => {
+    return {
+      ...data,
+    };
+  });
+
+  const mockDetailsCreate = mock(async (data) => {
+    return {
+      ...data,
+    };
+  });
+
+  const mockAddressCreate = mock(async (data) => {
+    return {
+      ...data,
+    };
+  });
 
   const mockPrisma = {
     company: {
-      create: mock(async (data) => {
-        return { ...createdCompany, details: data.data.details.create };
+      create: mockCompanyCreate,
+    },
+    companyDetails: {
+      create: mockDetailsCreate,
+    },
+    companyAddress: {
+      create: mockAddressCreate,
+    },
+    companyPreferences: {
+      create: mockPreferencesCreate,
+    },
+    user: {
+      connect: mock(async (data) => {
+        return {
+          ...data,
+        };
       }),
     },
   };
@@ -43,63 +57,127 @@ describe("createCompany", () => {
     return { default: mockPrisma };
   });
 
-  test("should create a new company", async () => {
+  test("should create a new company with only name and uuid", async () => {
     const companyInput = {
-      name: "new company",
-      userId: "userId1234",
-      culture: "a very good company",
-      industry: "manufacturing",
-      size: CompanySize.MASSIVE,
-      website: "www.example.com",
-      type: CompanyType.PUBLIC,
-      history: "built in 1905",
-      mission: "to create the best toothpaste",
-      vision: "to see the whole world have clean teeth",
-      values: "work hard, brush hard",
-      description: "a large manufacturing company producing household products",
+      name: "The Empire",
+      userId: "darthVader123",
     };
 
-    const result: CompanyWithDetails = await createCompany(companyInput);
+    await createCompany(companyInput);
 
     expect(mockPrisma.company.create).toHaveBeenCalledWith({
       data: {
-        name: companyInput.name,
-        userId: companyInput.userId,
+        name: "The Empire",
+        user: {
+          connect: {
+            id: "darthVader123",
+          },
+        },
         details: {
           create: {
-            culture: companyInput.culture,
-            industry: companyInput.industry,
-            size: companyInput.size,
-            website: companyInput.website,
-            type: companyInput.type,
-            history: companyInput.history,
-            mission: companyInput.mission,
-            vision: companyInput.vision,
-            values: companyInput.values,
-            description: companyInput.description,
+            culture: "",
+            industry: "",
+            size: "SMALL",
+            website: "",
+            type: "PUBLIC",
+            history: "",
+            mission: "",
+            vision: "",
+            values: "",
+            description: "",
+          },
+        },
+        address: {
+          create: {
+            streetAddress: "",
+            streetAddress2: "",
+            city: "",
+            state: "",
+            postalCode: "",
+            country: "",
+          },
+        },
+        preferences: {
+          create: {
+            desireability: "medium",
+            notes: "",
           },
         },
       },
     });
+  });
 
-    const expectedDetails = {
-      culture: companyInput.culture,
-      industry: companyInput.industry,
-      size: companyInput.size,
-      website: companyInput.website,
-      type: companyInput.type,
-      history: companyInput.history,
-      mission: companyInput.mission,
-      vision: companyInput.vision,
-      values: companyInput.values,
-      description: companyInput.description,
+  test("should create a new company with all details", async () => {
+    const companyInput = {
+      name: "The Empire",
+      userId: "darthVader123",
+      details: {
+        culture: "Sith",
+        industry: "Dark Side",
+        size: CompanySize.LARGE,
+        website: "www.empire.com",
+        type: CompanyType.PRIVATE,
+        history: "A long time ago...",
+        mission: "Conquer the galaxy",
+        vision: "Rule the galaxy",
+        values: "Power",
+        description: "The Empire is a powerful organization",
+      },
+      address: {
+        streetAddress: "123 Death Star",
+        streetAddress2: "Apt 66",
+        city: "Coruscant",
+        state: "Coruscant",
+        postalCode: "12345",
+        country: "Galactic Empire",
+      },
+      preferences: {
+        desireability: CompanyDesireability.high,
+        notes: "The Empire is a great place to work",
+      },
     };
 
-    expect(result).toEqual({
-      ...createdCompany,
-      details: expectedDetails,
-    });
+    await createCompany(companyInput);
 
-    expect(result.details).toEqual(expectedDetails);
+    expect(mockPrisma.company.create).toHaveBeenCalledWith({
+      data: {
+        name: "The Empire",
+        user: {
+          connect: {
+            id: "darthVader123",
+          },
+        },
+        details: {
+          create: {
+            culture: "Sith",
+            industry: "Dark Side",
+            size: "LARGE",
+            website: "www.empire.com",
+            type: "PRIVATE",
+            history: "A long time ago...",
+            mission: "Conquer the galaxy",
+            vision: "Rule the galaxy",
+            values: "Power",
+            description: "The Empire is a powerful organization",
+          },
+        },
+        address: {
+          create: {
+            streetAddress: "123 Death Star",
+            streetAddress2: "Apt 66",
+            city: "Coruscant",
+            state: "Coruscant",
+            postalCode: "12345",
+            country: "Galactic Empire",
+          },
+        },
+        preferences: {
+          create: {
+            desireability: "high",
+            notes: "The Empire is a great place to work",
+          },
+        },
+      },
+    });
   });
 });
