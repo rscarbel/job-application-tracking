@@ -10,10 +10,12 @@ export const findCompanyByName = async ({
   userId: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.company.findFirst({
+  return client.company.findUnique({
     where: {
-      name,
-      userId,
+      name_userId: {
+        name,
+        userId,
+      },
     },
   });
 };
