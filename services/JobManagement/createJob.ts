@@ -6,7 +6,6 @@ import { findCompanyByName } from "./companyManagement";
 export const createJob = async ({
   title,
   userId,
-  companyId,
   companyName,
   compensation: {
     payAmount,
@@ -23,8 +22,7 @@ export const createJob = async ({
   title: string;
   userId: string;
   workMode: WorkMode;
-  companyId?: number;
-  companyName?: string;
+  companyName: string;
   compensation: {
     payAmount?: number;
     payFrequency: PayFrequency;
@@ -36,33 +34,11 @@ export const createJob = async ({
   };
   client?: TransactionClient | typeof prisma;
 }) => {
-  if (!companyId && !companyName) {
-    throw new Error("You must provide either a companyId or a companyName");
-  }
-
-  if (companyId && companyName) {
-    throw new Error(
-      "You must provide either a companyId or a companyName, not both"
-    );
-  }
-
   if (!payAmount && !salaryRangeMin && !salaryRangeMax) {
     throw new Error("You must provide either a payAmount or a salaryRange");
   }
 
-  let company;
-
-  if (companyName) {
-    company = await findCompanyByName({ name: companyName, userId });
-    companyId = company?.id;
-  } else {
-    company = await client.company.findFirst({
-      where: {
-        id: companyId,
-        userId,
-      },
-    });
-  }
+  const company = await findCompanyByName({ name: companyName, userId });
 
   if (!company) {
     throw new Error("Company not found");
@@ -93,6 +69,10 @@ export const createJob = async ({
           negotiable,
         },
       },
+    },
+    include: {
+      company: true,
+      compensation: true,
     },
   });
 };

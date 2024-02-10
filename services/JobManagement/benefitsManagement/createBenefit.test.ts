@@ -1,5 +1,5 @@
 import { test, expect, mock, describe } from "bun:test";
-import { createBenefit } from ".";
+import { createBenefit } from "./createBenefit";
 
 describe("createBenefit", () => {
   const createdBenefit = {

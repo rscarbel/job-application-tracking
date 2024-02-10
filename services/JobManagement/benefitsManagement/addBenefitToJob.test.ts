@@ -1,5 +1,5 @@
-import { test, expect, mock, describe, beforeAll, afterAll } from "bun:test";
-import { addBenefitToJob } from ".";
+import { test, expect, mock, describe } from "bun:test";
+import { addBenefitToJob } from "./addBenefitToJob";
 
 describe("addBenefitToJob", () => {
   const foundBenefit = {
