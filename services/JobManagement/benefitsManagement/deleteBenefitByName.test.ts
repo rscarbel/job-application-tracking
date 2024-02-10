@@ -6,16 +6,34 @@ const foundBenefit = {
   userId: "user123",
 };
 
-const mockFindBenefitByName = mock(async () => foundBenefit);
+const mockFindUnique = mock(
+  async ({
+    where: {
+      name_userId: { name, userId },
+    },
+  }) => {
+    const nameMatches = name === foundBenefit.name;
+    const userIdMatches = userId === foundBenefit.userId;
+    const isFound = nameMatches && userIdMatches;
+
+    return isFound ? foundBenefit : null;
+  }
+);
 
 const mockPrisma = {
   benefit: {
-    delete: mock(async () => ({
-      id: foundBenefit.id,
-      name: foundBenefit.name,
-      userId: foundBenefit.userId,
-    })),
-    findFirst: mockFindBenefitByName,
+    delete: mock(
+      async ({
+        where: {
+          name_userId: { name, userId },
+        },
+      }) => ({
+        id: foundBenefit.id,
+        name,
+        userId,
+      })
+    ),
+    findUnique: mockFindUnique,
   },
 };
 
@@ -34,7 +52,7 @@ test("deleteBenefitByName deletes a benefit for a given user", async () => {
     userId,
   });
 
-  expect(mockFindBenefitByName).toHaveBeenCalledTimes(1);
+  expect(mockFindUnique).toHaveBeenCalled();
 
   expect(mockPrisma.benefit.delete).toHaveBeenCalledWith({
     where: {
@@ -44,4 +62,27 @@ test("deleteBenefitByName deletes a benefit for a given user", async () => {
       },
     },
   });
+});
+
+test("deleteBenefitByName returns null if no benefit is found", async () => {
+  const benefitName = "nonsense name";
+  const userId = "user123";
+
+  const result = await deleteBenefitByName({
+    benefitName,
+    userId,
+  });
+
+  expect(mockFindUnique).toHaveBeenCalled();
+
+  expect(mockPrisma.benefit.delete).not.toHaveBeenCalledWith({
+    where: {
+      name_userId: {
+        name: benefitName,
+        userId: userId,
+      },
+    },
+  });
+
+  expect(result).toBeNull();
 });

@@ -10,14 +10,19 @@ interface Benefit {
 
 const mockPrisma = {
   benefit: {
-    findFirst: mock(() =>
-      Promise.resolve({
-        id: 1,
-        name: "Health Insurance",
-        userId: "user123",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+    findUnique: mock(
+      ({
+        where: {
+          name_userId: { name, userId },
+        },
+      }) =>
+        Promise.resolve({
+          id: 1,
+          name,
+          userId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
     ),
   },
 };
@@ -43,11 +48,13 @@ test("findBenefitByName returns the correct benefit for a given user", async () 
   });
 
   expect(result).toEqual(expectedBenefit);
-  expect(mockPrisma.benefit.findFirst).toHaveBeenCalled();
-  expect(mockPrisma.benefit.findFirst).toHaveBeenCalledWith({
+  expect(mockPrisma.benefit.findUnique).toHaveBeenCalled();
+  expect(mockPrisma.benefit.findUnique).toHaveBeenCalledWith({
     where: {
-      name: "Health Insurance",
-      userId: "user123",
+      name_userId: {
+        name: "Health Insurance",
+        userId: "user123",
+      },
     },
   });
 });

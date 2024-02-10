@@ -16,11 +16,19 @@ describe("addBenefitToJob", () => {
 
   const jobId = 1;
 
-  const originalMockFindBenefitByName = mock(async (data) => {
-    if (data.where.name === foundBenefit.name) return foundBenefit;
+  const mockFindUnique = mock(
+    async ({
+      where: {
+        name_userId: { name, userId },
+      },
+    }) => {
+      const nameMatches = name === foundBenefit.name;
+      const userIdMatches = userId === foundBenefit.userId;
+      const isFound = nameMatches && userIdMatches;
 
-    return null;
-  });
+      return isFound ? foundBenefit : null;
+    }
+  );
 
   const mockCreateBenefit = mock(async (data) => newBenefit);
 
@@ -32,7 +40,7 @@ describe("addBenefitToJob", () => {
       })),
     },
     benefit: {
-      findFirst: originalMockFindBenefitByName,
+      findUnique: mockFindUnique,
       create: mockCreateBenefit,
     },
   };
@@ -50,8 +58,6 @@ describe("addBenefitToJob", () => {
       userId,
       jobId,
     });
-
-    console.log(result);
 
     expect(result).toMatchObject({
       benefitId: foundBenefit.id,

@@ -6,7 +6,19 @@ const foundBenefit = {
   userId: "user123",
 };
 
-const mockFindBenefitByName = mock(async () => foundBenefit);
+const mockFindUnique = mock(
+  async ({
+    where: {
+      name_userId: { name, userId },
+    },
+  }) => {
+    const nameMatches = name === foundBenefit.name;
+    const userIdMatches = userId === foundBenefit.userId;
+    const isFound = nameMatches && userIdMatches;
+
+    return isFound ? foundBenefit : null;
+  }
+);
 
 const mockPrisma = {
   jobBenefit: {
@@ -16,7 +28,7 @@ const mockPrisma = {
     })),
   },
   benefit: {
-    findFirst: mockFindBenefitByName,
+    findUnique: mockFindUnique,
   },
 };
 

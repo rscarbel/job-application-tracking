@@ -10,14 +10,19 @@ interface Company {
 
 const mockPrisma = {
   company: {
-    findUnique: mock(() =>
-      Promise.resolve({
-        id: 1,
-        name: "East Indian Trading Company",
-        userId: "user123",
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })
+    findUnique: mock(
+      ({
+        where: {
+          name_userId: { name, userId },
+        },
+      }) =>
+        Promise.resolve({
+          id: 1,
+          name,
+          userId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
     ),
   },
 };

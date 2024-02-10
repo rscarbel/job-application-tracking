@@ -13,7 +13,7 @@ export const deleteBenefitByName = async ({
 }) => {
   const benefit = await findBenefitByName({ benefitName, userId, client });
 
-  if (!benefit) return;
+  if (!benefit) return null;
 
   client.benefit.delete({
     where: {

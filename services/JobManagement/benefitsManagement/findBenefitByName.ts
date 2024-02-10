@@ -10,10 +10,12 @@ export const findBenefitByName = async ({
   userId: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.benefit.findFirst({
+  return client.benefit.findUnique({
     where: {
-      name: benefitName,
-      userId: userId,
+      name_userId: {
+        name: benefitName,
+        userId: userId,
+      },
     },
   });
 };
