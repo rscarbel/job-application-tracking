@@ -1,11 +1,9 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { CompanySize, CompanyType } from "@prisma/client";
-import { findCompanyByName } from ".";
+import { CompanySize, CompanyType, Company } from "@prisma/client";
 
 export const updateCompanyDetails = async ({
-  name,
-  userId,
+  company,
   culture,
   industry,
   size,
@@ -18,8 +16,7 @@ export const updateCompanyDetails = async ({
   description,
   client = prisma,
 }: {
-  name: string;
-  userId: string;
+  company: Company;
   culture?: string;
   industry?: string;
   size?: CompanySize;
@@ -32,34 +29,21 @@ export const updateCompanyDetails = async ({
   description?: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  const company = await findCompanyByName({ name, userId });
-
-  if (!company) {
-    throw new Error("Company not found");
-  }
-
-  return client.company.update({
+  return client.companyDetail.update({
     where: {
-      id: company.id,
+      companyId: company.id,
     },
     data: {
-      details: {
-        update: {
-          culture,
-          industry,
-          size,
-          website,
-          type,
-          history,
-          mission,
-          vision,
-          values,
-          description,
-        },
-      },
-    },
-    include: {
-      details: true,
+      culture,
+      industry,
+      size,
+      website,
+      type,
+      history,
+      mission,
+      vision,
+      values,
+      description,
     },
   });
 };
