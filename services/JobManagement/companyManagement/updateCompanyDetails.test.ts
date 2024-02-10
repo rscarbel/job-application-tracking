@@ -60,16 +60,18 @@ describe("updateCompanyDetails", () => {
   test("should the correct company for a given user", async () => {
     const updateCompanyArgs = {
       company: foundCompany,
-      culture: "Dark Side",
-      industry: "Galactic Empire",
-      size: CompanySize.MASSIVE,
-      website: "www.empire.com",
-      type: CompanyType.GOVERNMENT_AGENCY,
-      history: "Founded by Darth Sidious",
-      mission: "To bring peace to the galaxy",
-      vision: "To rule the galaxy",
-      values: "Power, control, order",
-      description: "A galaxy-spanning government",
+      details: {
+        culture: "Dark Side",
+        industry: "Galactic Empire",
+        size: CompanySize.MASSIVE,
+        website: "www.empire.com",
+        type: CompanyType.GOVERNMENT_AGENCY,
+        history: "Founded by Darth Sidious",
+        mission: "To bring peace to the galaxy",
+        vision: "To rule the galaxy",
+        values: "Power, control, order",
+        description: "A galaxy-spanning government",
+      },
     };
 
     await updateCompanyDetails(updateCompanyArgs);

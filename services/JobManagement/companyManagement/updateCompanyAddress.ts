@@ -1,23 +1,23 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
 import { Company } from "@prisma/client";
-import { CompanyDetailsInterface } from "./CompanyDetailsInterface";
+import { CompanyAddressInterface } from "./CompanyAddressInterface";
 
-export const updateCompanyDetails = async ({
+export const updateCompanyAddress = async ({
   company,
-  details,
+  address,
   client = prisma,
 }: {
   company: Company;
-  details: CompanyDetailsInterface;
+  address: CompanyAddressInterface;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.companyDetail.update({
+  return client.companyAddress.update({
     where: {
       companyId: company.id,
     },
     data: {
-      ...details,
+      ...address,
     },
   });
 };

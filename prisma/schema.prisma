@@ -226,21 +226,18 @@ model Company {
 }
 
 model CompanyAddress {
-  id             Int       @id @default(autoincrement())
+  id             Int      @id @default(autoincrement())
   streetAddress  String?
   streetAddress2 String?
   city           String?
   state          String?
-  country        String?   @default("United States")
+  country        String?  @default("United States")
   postalCode     String?
-  fromDate       DateTime  @default(now())
-  throughDate    DateTime?
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @default(now()) @updatedAt
-  company        Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  companyId      Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now()) @updatedAt
+  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  companyId      Int      @unique
 
-  @@unique([companyId])
   @@index([companyId])
 }
 
