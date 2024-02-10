@@ -15,9 +15,12 @@ export const deleteBenefitByName = async ({
 
   if (!benefit) return;
 
-  client.jobBenefit.deleteMany({
+  client.benefit.delete({
     where: {
-      benefitId: benefit.id,
+      name_userId: {
+        name: benefitName,
+        userId: userId,
+      },
     },
   });
 };

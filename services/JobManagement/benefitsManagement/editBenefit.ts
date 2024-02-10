@@ -12,10 +12,12 @@ export const editBenefit = async ({
   userId: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.benefit.updateMany({
+  return client.benefit.update({
     where: {
-      name: name,
-      userId: userId,
+      name_userId: {
+        name: name,
+        userId: userId,
+      },
     },
     data: {
       name: newName,
