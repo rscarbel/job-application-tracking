@@ -20,5 +20,8 @@ export const updateCompany = async ({
       name: name,
       userId: userId,
     },
+    include: {
+      details: true,
+    },
   });
 };

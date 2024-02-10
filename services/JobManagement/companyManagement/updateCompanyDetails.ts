@@ -4,7 +4,6 @@ import { CompanySize, CompanyType } from "@prisma/client";
 import { findCompanyByName } from ".";
 
 export const updateCompanyDetails = async ({
-  companyId,
   name,
   userId,
   culture,
@@ -19,8 +18,7 @@ export const updateCompanyDetails = async ({
   description,
   client = prisma,
 }: {
-  companyId?: number;
-  name?: string;
+  name: string;
   userId: string;
   culture?: string;
   industry?: string;
@@ -34,22 +32,7 @@ export const updateCompanyDetails = async ({
   description?: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  if (!companyId && !name) {
-    throw new Error("companyId or name must be provided");
-  }
-
-  let company;
-
-  if (name) {
-    company = await findCompanyByName({ name, userId });
-  } else {
-    company = await client.company.findFirst({
-      where: {
-        id: companyId,
-        userId,
-      },
-    });
-  }
+  const company = await findCompanyByName({ name, userId });
 
   if (!company) {
     throw new Error("Company not found");
@@ -74,6 +57,9 @@ export const updateCompanyDetails = async ({
           description,
         },
       },
+    },
+    include: {
+      details: true,
     },
   });
 };
