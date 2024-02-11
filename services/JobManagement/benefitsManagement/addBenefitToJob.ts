@@ -1,6 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { createBenefit } from ".";
+import { createBenefit } from "./createBenefit";
 import { findBenefitByName } from "./findBenefitByName";
 
 export const addBenefitToJob = async ({

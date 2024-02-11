@@ -6,7 +6,7 @@ describe("updateCompensation", () => {
   let mockPrisma: any;
 
   beforeEach(() => {
-    const mockUpdateMany = mock(
+    const mockCompensationUpdate = mock(
       async ({
         where: { jobId },
         data: {
@@ -41,7 +41,7 @@ describe("updateCompensation", () => {
 
     mockPrisma = {
       compensation: {
-        update: mockUpdateMany,
+        update: mockCompensationUpdate,
       },
     };
 

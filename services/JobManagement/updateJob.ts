@@ -6,12 +6,15 @@ import { JobAddressInterface } from "./JobAddressInterface";
 import { JobCompensationInterface } from "./JobCompensationInterface";
 import { findJob } from "./findJob";
 import { updateJobAddress } from "./updateJobAddress";
+import { addBenefitToJob } from "./benefitsManagement";
 
 export const updateJob = async ({
   title,
   userId,
   company,
   workMode = WorkMode.remote,
+  newTitle,
+  newWorkMode,
   responsibilities = [],
   benefits,
   compensation,
@@ -19,9 +22,11 @@ export const updateJob = async ({
   client = prisma,
 }: {
   title: string;
+  newTitle?: string;
   userId: string;
   company: Company;
   workMode: WorkMode;
+  newWorkMode?: WorkMode;
   responsibilities?: string[];
   benefits?: string[];
   compensation?: JobCompensationInterface;
@@ -61,6 +66,50 @@ export const updateJob = async ({
       job,
       address,
       client,
+    });
+  }
+
+  if (benefits) {
+    for (const benefitName of benefits) {
+      await addBenefitToJob({
+        jobId: job.id,
+        benefitName,
+        userId,
+        client,
+      });
+    }
+  }
+
+  if (responsibilities.length) {
+    const existingResponsibilities = job.responsibilities;
+
+    const responsibilitiesToAdd = responsibilities.filter(
+      (responsibility) => !existingResponsibilities.includes(responsibility)
+    );
+
+    if (responsibilitiesToAdd.length) {
+      await client.job.update({
+        where: {
+          id: job.id,
+        },
+        data: {
+          responsibilities: {
+            set: [...existingResponsibilities, ...responsibilitiesToAdd],
+          },
+        },
+      });
+    }
+  }
+
+  if (newTitle || newWorkMode) {
+    await client.job.update({
+      where: {
+        id: job.id,
+      },
+      data: {
+        title: newTitle,
+        workMode: newWorkMode,
+      },
     });
   }
 
