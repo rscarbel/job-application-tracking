@@ -114,6 +114,47 @@ describe("findManyJobs", () => {
 
     expect(jobs).toHaveLength(1);
     expect(jobs[0].title).toEqual("Software Engineer");
-    expect(mockJobsFindMany).toHaveBeenCalled();
+    expect(mockJobsFindMany).toHaveBeenCalledWith({
+      where: {
+        userId: "user123",
+        company: {
+          name: { not: { in: ["Tech Innovations"] } },
+          details: {
+            size: { not: { in: ["SMALL"] } },
+            type: { not: { in: ["PUBLIC"] } },
+          },
+        },
+        workMode: { not: { in: ["hybrid"] } },
+        benefits: {
+          some: {
+            benefit: {
+              name: { not: { in: ["Dental Insurance"] } },
+            },
+          },
+        },
+        compensation: {
+          payAmount: { gte: 50000, lte: 150000 },
+          payFrequency: { not: { in: ["weekly"] } },
+          currency: { not: { in: ["EUR"] } },
+        },
+        address: {
+          city: { not: { in: ["Goldnerberg"] } },
+          state: { not: { in: ["Texas"] } },
+          country: { not: { in: ["Germany"] } },
+        },
+        createdAt: { gte: new Date() },
+      },
+      skip: 1,
+      take: 10,
+      select: {
+        id: true,
+        title: true,
+        workMode: true,
+        company: { select: { name: true, address: true, details: true } },
+        address: true,
+        compensation: true,
+        benefits: { select: { benefit: true } },
+      },
+    });
   });
 });
