@@ -53,13 +53,12 @@ const defaultSelect = {
 export const findManyJobs = async ({
   userId,
   include,
-  pagination = { offset: 1, limit: 10 },
+  pagination = { offset: 0, limit: 10 },
   select,
   filters,
   client = prisma,
 }: ManyJobsInterface) => {
-  const skip = (pagination.offset - 1) * pagination.limit;
-  const take = pagination.limit;
+  const { offset: skip, limit: take } = pagination;
 
   const address = include?.address || defaultInclude.address;
   const compensation = include?.compensation || defaultInclude.compensation;
