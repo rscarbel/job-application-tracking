@@ -278,4 +278,20 @@ describe("updateJob", () => {
       },
     });
   });
+
+  test("should throw an error if only a salary range min is provided", async () => {
+    await expect(
+      updateJob({
+        title: "Software Engineer",
+        userId: "user123",
+        company: mockCompany,
+        workMode: WorkMode.remote,
+        compensation: {
+          salaryRangeMin: 100000,
+        },
+      })
+    ).rejects.toThrow(
+      "You must provide both salaryRangeMin and salaryRangeMax"
+    );
+  });
 });
