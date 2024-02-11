@@ -11,6 +11,7 @@ import {
   updateCompany,
   findCompanyByName,
   deleteCompany,
+  findManyCompanies,
 } from "./companyManagement";
 
 import { createJob } from "./createJob";
@@ -29,6 +30,7 @@ export {
   createCompany,
   updateCompany,
   findCompanyByName,
+  findManyCompanies,
   createJob,
   findJob,
   updateJob,
