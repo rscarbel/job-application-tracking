@@ -5,7 +5,7 @@ import {
   CompanySize,
   CompanyType,
 } from "@prisma/client";
-import { ManyJobsInterface } from "./ManyJobsInterface";
+import { ManyJobsInterface, JobSortField } from "./ManyJobsInterface";
 
 interface WhereInterface {
   userId: string;
@@ -56,6 +56,7 @@ export const findManyJobs = async ({
   pagination = { offset: 0, limit: 10 },
   select,
   filters,
+  sort,
   client = prisma,
 }: ManyJobsInterface) => {
   const { offset: skip, limit: take } = pagination;
@@ -64,6 +65,30 @@ export const findManyJobs = async ({
   const compensation = include?.compensation || defaultInclude.compensation;
   const benefits = include?.benefits || defaultInclude.benefits;
   const company = include?.company || defaultInclude.company;
+
+  const orderBy = [];
+  if (sort) {
+    switch (sort.field) {
+      case JobSortField.CreatedAt:
+        orderBy.push({ createdAt: sort.order });
+        break;
+      case JobSortField.Title:
+        orderBy.push({ title: sort.order });
+        break;
+      case JobSortField.Pay:
+        orderBy.push({ compensation: { payAmount: sort.order } });
+        break;
+      case JobSortField.WorkMode:
+        orderBy.push({ workMode: sort.order });
+        break;
+      case JobSortField.CompanyName:
+        orderBy.push({ company: { name: sort.order } });
+        break;
+      case JobSortField.CompanySize:
+        orderBy.push({ company: { details: { size: sort.order } } });
+        break;
+    }
+  }
 
   select = select || defaultSelect;
 
@@ -217,6 +242,7 @@ export const findManyJobs = async ({
     where,
     skip,
     take,
+    orderBy,
     select: {
       ...select,
       company: company

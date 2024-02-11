@@ -128,6 +128,8 @@ model Job {
   @@unique([title, companyId, userId, workMode])
   @@index([companyId])
   @@index([userId])
+  @@index([workMode])
+  @@index([title])
 }
 
 model JobAddress {
@@ -157,6 +159,7 @@ model JobBenefit {
 
   @@id([jobId, benefitId])
   @@index([benefitId])
+  @@index([jobId])
 }
 
 model Compensation {
@@ -174,6 +177,7 @@ model Compensation {
   jobId          Int          @unique
 
   @@index([jobId])
+  @@index([payAmount])
 }
 
 model ApplicationGroup {
@@ -223,6 +227,7 @@ model Company {
 
   @@unique([name, userId])
   @@index([userId])
+  @@index([name])
 }
 
 model CompanyAddress {
@@ -259,6 +264,7 @@ model CompanyDetail {
   updatedAt   DateTime     @default(now()) @updatedAt
 
   @@index([companyId])
+  @@index([size])
 }
 
 model CompanyPreference {

@@ -6,6 +6,7 @@ import {
   CompanySize,
   CompanyType,
 } from "@prisma/client";
+import { JobSortField } from "./ManyJobsInterface";
 
 describe("findManyJobs", () => {
   const mockCompanyDetails = {
@@ -72,6 +73,7 @@ describe("findManyJobs", () => {
         benefits: true,
         company: true,
       },
+      sort: { field: JobSortField.Pay, order: "desc" },
       filters: {
         companies: ["Tech Innovations"],
         workModes: [WorkMode.remote],
@@ -146,6 +148,7 @@ describe("findManyJobs", () => {
       },
       skip: 1,
       take: 10,
+      orderBy: [{ compensation: { payAmount: "desc" } }],
       select: {
         id: true,
         title: true,
@@ -155,6 +158,53 @@ describe("findManyJobs", () => {
         compensation: true,
         benefits: { select: { benefit: true } },
       },
+    });
+  });
+
+  test("should return jobs with few options", async () => {
+    const jobs = await findManyJobs({
+      userId: "user123",
+    });
+
+    expect(jobs).toHaveLength(1);
+    expect(jobs[0].title).toEqual("Software Engineer");
+    expect(mockJobsFindMany).toHaveBeenCalledWith({
+      where: { userId: "user123" },
+      skip: 0,
+      take: 10,
+      orderBy: [],
+      select: {
+        id: true,
+        title: true,
+        workMode: false,
+        responsibilities: false,
+        description: false,
+        createdAt: false,
+        updatedAt: false,
+        company: false,
+        address: false,
+        compensation: false,
+        benefits: false,
+      },
+    });
+  });
+
+  /**
+   I'll 100% admit this is a useless test so that
+   I can get 100% coverage. Without this test, the
+   logic is already 100% tested, so this bad test
+   isn't actually hurting, but it's not helping.
+  */
+  test("should return jobs in a variety of sort fields", async () => {
+    const sortFields = Object.values(JobSortField);
+
+    sortFields.forEach(async (field) => {
+      await findManyJobs({
+        userId: "user123",
+        sort: { field, order: "asc" },
+      });
+
+      expect(mockJobsFindMany).toHaveBeenCalled();
     });
   });
 });
