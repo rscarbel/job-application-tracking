@@ -33,19 +33,6 @@ export const updateJob = async ({
   address?: JobAddressInterface;
   client?: TransactionClient | typeof prisma;
 }) => {
-  // first validate that if compensation is provided, it has either both
-  // salaryRangeMin and salaryRangeMax or neither
-  if (compensation) {
-    if (
-      (compensation.salaryRangeMin || compensation.salaryRangeMax) &&
-      !(compensation.salaryRangeMin && compensation.salaryRangeMax)
-    ) {
-      throw new Error(
-        "You must provide both salaryRangeMin and salaryRangeMax"
-      );
-    }
-  }
-
   const job = await findJob({
     title,
     company,
