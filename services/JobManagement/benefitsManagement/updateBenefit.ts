@@ -1,7 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
 
-export const editBenefit = async ({
+export const updateBenefit = async ({
   name,
   newName,
   userId,

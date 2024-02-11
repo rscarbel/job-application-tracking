@@ -1,50 +1,44 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { editCompensation } from "./editCompensation";
-import { WorkMode } from "@prisma/client";
+import { Company, WorkMode } from "@prisma/client";
+import { updateCompensation } from "./updateCompensation";
 import { JobAddressInterface } from "./JobAddressInterface";
 import { JobCompensationInterface } from "./JobCompensationInterface";
-import { findCompanyByName } from "./companyManagement";
 import { findJob } from "./findJob";
-
-interface JobInterface {
-  title: string;
-  newTitle?: string;
-  companyName: string;
-  responsibilities?: string[];
-  benefits?: string[];
-  description?: string;
-  userId: string;
-  workMode: WorkMode;
-  newWorkMode?: WorkMode;
-  compensation?: JobCompensationInterface;
-  address?: JobAddressInterface;
-  client?: TransactionClient | typeof prisma;
-}
+import { updateJobAddress } from "./updateJobAddress";
 
 export const updateJob = async ({
   title,
   userId,
-  companyName,
-  newTitle,
-  responsibilities,
-  description,
-  newWorkMode,
+  company,
+  workMode = WorkMode.remote,
+  responsibilities = [],
   benefits,
   compensation,
   address,
-  workMode,
   client = prisma,
-}: JobInterface) => {
-  const company = await findCompanyByName({ name: companyName, userId });
-
-  if (!company) {
-    throw new Error("Company not found");
+}: {
+  title: string;
+  userId: string;
+  company: Company;
+  workMode: WorkMode;
+  responsibilities?: string[];
+  benefits?: string[];
+  compensation?: JobCompensationInterface;
+  address?: JobAddressInterface;
+  client?: TransactionClient | typeof prisma;
+}) => {
+  if (compensation) {
+    if (
+      !compensation.payAmount &&
+      !(compensation.salaryRangeMin && compensation.salaryRangeMax)
+    ) {
+      throw new Error("You must provide either a payAmount or a salaryRange");
+    }
   }
 
   const job = await findJob({
     title,
-    companyName,
     company,
     userId,
     workMode,
@@ -55,7 +49,7 @@ export const updateJob = async ({
   }
 
   if (compensation) {
-    const updatedJob = await editCompensation({
+    await updateCompensation({
       jobId: job.id,
       ...compensation,
       client,
@@ -63,17 +57,10 @@ export const updateJob = async ({
   }
 
   if (address) {
-    const updatedJob = await client.job.update({
-      where: {
-        id: job.id,
-      },
-      data: {
-        address: {
-          update: {
-            ...address,
-          },
-        },
-      },
+    updateJobAddress({
+      job,
+      address,
+      client,
     });
   }
 

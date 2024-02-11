@@ -1,8 +1,8 @@
 import { test, expect, mock, beforeEach, describe } from "bun:test";
 import { PayFrequency } from "@prisma/client";
-import { editCompensation } from "./editCompensation";
+import { updateCompensation } from "./updateCompensation";
 
-describe("editCompensation", () => {
+describe("updateCompensation", () => {
   let mockPrisma: any;
 
   beforeEach(() => {
@@ -63,7 +63,7 @@ describe("editCompensation", () => {
       negotiable: true,
     };
 
-    const result = await editCompensation(compensationDetails);
+    const result = await updateCompensation(compensationDetails);
 
     expect(result).toEqual({
       id: 1,
@@ -105,7 +105,7 @@ describe("editCompensation", () => {
       negotiable: true,
     };
 
-    const result = await editCompensation(compensationDetails);
+    const result = await updateCompensation(compensationDetails);
 
     expect(result).toBeNull();
     expect(mockPrisma.compensation.update).toHaveBeenCalledWith({

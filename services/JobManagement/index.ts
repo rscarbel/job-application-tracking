@@ -3,30 +3,31 @@ import {
   addBenefitToJob,
   deleteBenefitByName,
   removeBenefitFromJob,
-  editBenefit,
+  updateBenefit,
 } from "./benefitsManagement";
-
-import { editCompensation } from "./editCompensation";
 
 import {
   createCompany,
   updateCompany,
   findCompanyByName,
+  deleteCompany,
 } from "./companyManagement";
 
 import { createJob } from "./createJob";
 import { findJob } from "./findJob";
+import { updateJob } from "./updateJob";
 
 export {
   createBenefit,
   addBenefitToJob,
   deleteBenefitByName,
   removeBenefitFromJob,
-  editBenefit,
-  editCompensation,
+  updateBenefit,
+  deleteCompany,
   createCompany,
   updateCompany,
   findCompanyByName,
   createJob,
   findJob,
+  updateJob,
 };

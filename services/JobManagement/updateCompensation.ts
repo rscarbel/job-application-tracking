@@ -1,8 +1,14 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
 import { PayFrequency } from "@prisma/client";
+import { JobCompensationInterface } from "./JobCompensationInterface";
 
-export const editCompensation = async ({
+interface UpdateCompensationInterface extends JobCompensationInterface {
+  jobId: number;
+  client?: TransactionClient | typeof prisma;
+}
+
+export const updateCompensation = async ({
   payAmount,
   payFrequency,
   currency,
@@ -12,17 +18,7 @@ export const editCompensation = async ({
   negotiable,
   jobId,
   client = prisma,
-}: {
-  payAmount?: number;
-  payFrequency?: PayFrequency;
-  currency?: string;
-  salaryRangeMin?: number;
-  salaryRangeMax?: number;
-  hoursWeek?: number;
-  negotiable?: boolean;
-  jobId: number;
-  client?: TransactionClient | typeof prisma;
-}) => {
+}: UpdateCompensationInterface) => {
   return client.compensation.update({
     where: {
       jobId: jobId,

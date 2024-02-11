@@ -16,7 +16,7 @@ describe("addBenefitToJob", () => {
 
   const jobId = 1;
 
-  const mockFindUnique = mock(
+  const mockBenefitFindUnique = mock(
     async ({
       where: {
         name_userId: { name, userId },
@@ -30,6 +30,20 @@ describe("addBenefitToJob", () => {
     }
   );
 
+  const mockJobBenefitUnique = mock(
+    async ({
+      where: {
+        jobId_benefitId: { jobId, benefitId },
+      },
+    }) => {
+      const jobIdMatches = jobId === 1;
+      const benefitIdMatches = benefitId === foundBenefit.id;
+      const isFound = jobIdMatches && benefitIdMatches;
+
+      return isFound ? { jobId, benefitId } : null;
+    }
+  );
+
   const mockCreateBenefit = mock(async (data) => newBenefit);
 
   const mockPrisma = {
@@ -38,9 +52,10 @@ describe("addBenefitToJob", () => {
         benefitId: args.data.benefitId,
         jobId: args.data.jobId,
       })),
+      findUnique: mockJobBenefitUnique,
     },
     benefit: {
-      findUnique: mockFindUnique,
+      findUnique: mockBenefitFindUnique,
       create: mockCreateBenefit,
     },
   };

@@ -1,7 +1,7 @@
 import { test, expect, mock, describe } from "bun:test";
-import { editBenefit } from "./editBenefit";
+import { updateBenefit } from "./updateBenefit";
 
-describe("editBenefit", () => {
+describe("updateBenefit", () => {
   interface UpdateResponse {
     id: number;
     name: string;
@@ -40,7 +40,7 @@ describe("editBenefit", () => {
       updatedAt: new Date(),
     };
 
-    const result = await editBenefit({
+    const result = await updateBenefit({
       name: oldName,
       newName: newName,
       userId: userId,

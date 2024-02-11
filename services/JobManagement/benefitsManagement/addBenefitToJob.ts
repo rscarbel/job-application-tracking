@@ -20,6 +20,17 @@ export const addBenefitToJob = async ({
     benefit = await createBenefit({ name: benefitName, userId, client });
   }
 
+  const existingJobBenefit = await client.jobBenefit.findUnique({
+    where: {
+      jobId_benefitId: {
+        jobId,
+        benefitId: benefit.id,
+      },
+    },
+  });
+
+  if (existingJobBenefit) return existingJobBenefit;
+
   return client.jobBenefit.create({
     data: {
       jobId,

@@ -10,8 +10,8 @@ import { updateCompanyPreferences } from "./updateCompanyPreferences";
 
 export const updateCompany = async ({
   name,
-  newName,
   userId,
+  newName,
   details,
   address,
   preferences,
