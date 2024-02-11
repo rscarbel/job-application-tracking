@@ -16,6 +16,7 @@ import {
 import { createJob } from "./createJob";
 import { findJob } from "./findJob";
 import { updateJob } from "./updateJob";
+import { deleteJob } from "./deleteJob";
 
 export {
   createBenefit,
@@ -30,4 +31,5 @@ export {
   createJob,
   findJob,
   updateJob,
+  deleteJob,
 };
