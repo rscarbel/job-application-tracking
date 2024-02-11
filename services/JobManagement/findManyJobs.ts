@@ -10,42 +10,63 @@ import { ManyJobsInterface } from "./ManyJobsInterface";
 interface WhereInterface {
   userId: string;
   company?: {
-    name: { in: string[] };
+    name?: { in?: string[]; not?: { in: string[] } };
     details?: {
-      size?: { in: CompanySize[] };
-      type?: { in: CompanyType[] };
+      size?: { in?: CompanySize[]; not?: { in: CompanySize[] } };
+      type?: { in?: CompanyType[]; not?: { in: CompanyType[] } };
     };
   };
-  workMode?: { in: WorkMode[] };
-  benefits?: { some: { benefit: { name: { in: string[] } } } };
+  workMode?: { in?: WorkMode[]; not?: { in: WorkMode[] } };
+  benefits?: {
+    some: { benefit: { name: { in?: string[]; not?: { in: string[] } } } };
+  };
   compensation?: {
     payAmount?: { gte?: number; lte?: number };
-    payFrequency?: { in: PayFrequency[] };
-    currency?: { in: string[] };
+    payFrequency?: { in?: PayFrequency[]; not?: { in: PayFrequency[] } };
+    currency?: { in?: string[]; not?: { in: string[] } };
   };
   address?: {
-    city: { in: string[] };
-    state: { in: string[] };
-    country: { in: string[] };
+    city?: { in?: string[]; not?: { in: string[] } };
+    state?: { in?: string[]; not?: { in: string[] } };
+    country?: { in?: string[]; not?: { in: string[] } };
   };
   createdAt?: { gte: Date };
 }
 
+const defaultInclude = {
+  address: false,
+  compensation: false,
+  benefits: false,
+  company: false,
+};
+
+const defaultSelect = {
+  id: true,
+  title: true,
+  workMode: false,
+  responsibilities: false,
+  description: false,
+  createdAt: false,
+  updatedAt: false,
+};
+
 export const findManyJobs = async ({
   userId,
-  include: {
-    address = false,
-    compensation = false,
-    benefits = false,
-    company = false,
-  },
-  pagination = { page: 1, per: 10 },
+  include,
+  pagination = { offset: 1, limit: 10 },
   select,
   filters,
   client = prisma,
 }: ManyJobsInterface) => {
-  const skip = (pagination.page - 1) * pagination.per;
-  const take = pagination.per;
+  const skip = (pagination.offset - 1) * pagination.limit;
+  const take = pagination.limit;
+
+  const address = include?.address || defaultInclude.address;
+  const compensation = include?.compensation || defaultInclude.compensation;
+  const benefits = include?.benefits || defaultInclude.benefits;
+  const company = include?.company || defaultInclude.company;
+
+  select = select || defaultSelect;
 
   const where: WhereInterface = { userId };
   if (filters) {
@@ -56,14 +77,38 @@ export const findManyJobs = async ({
       };
     }
 
-    if (where.company && (filters.companySizes || filters.companyTypes)) {
+    if (filters.excludeCompanies) {
+      where.company = {
+        ...where.company,
+        name: {
+          not: {
+            in: filters.excludeCompanies,
+          },
+        },
+      };
+    }
+
+    if (filters.companySizes || filters.companyTypes) {
       where.company = where.company || {};
       where.company.details = where.company.details || {};
       if (filters.companySizes) {
         where.company.details.size = { in: filters.companySizes };
       }
+
+      if (filters.excludeCompanySizes) {
+        where.company.details.size = {
+          not: { in: filters.excludeCompanySizes },
+        };
+      }
+
       if (filters.companyTypes) {
         where.company.details.type = { in: filters.companyTypes };
+      }
+
+      if (filters.excludeCompanyTypes) {
+        where.company.details.type = {
+          not: { in: filters.excludeCompanyTypes },
+        };
       }
     }
 
@@ -71,9 +116,19 @@ export const findManyJobs = async ({
       where.workMode = { in: filters.workModes };
     }
 
+    if (filters.excludeWorkModes) {
+      where.workMode = { not: { in: filters.excludeWorkModes } };
+    }
+
     if (filters.benefits) {
       where.benefits = {
         some: { benefit: { name: { in: filters.benefits } } },
+      };
+    }
+
+    if (filters.excludeBenefits) {
+      where.benefits = {
+        some: { benefit: { name: { not: { in: filters.excludeBenefits } } } },
       };
     }
 
@@ -98,17 +153,60 @@ export const findManyJobs = async ({
       where.compensation.payFrequency = { in: filters.payFrequencies };
     }
 
+    if (filters.excludePayFrequencies) {
+      where.compensation = where.compensation || {};
+      where.compensation.payFrequency = {
+        not: { in: filters.excludePayFrequencies },
+      };
+    }
+
     if (filters.currencies) {
       where.compensation = where.compensation || {};
       where.compensation.currency = { in: filters.currencies };
     }
 
-    if (filters.locations) {
-      where.address = {
-        city: { in: filters.locations.cities || [] },
-        state: { in: filters.locations.states || [] },
-        country: { in: filters.locations.countries || [] },
+    if (filters.excludeCurrencies) {
+      where.compensation = where.compensation || {};
+      where.compensation.currency = {
+        not: { in: filters.excludeCurrencies },
       };
+    }
+
+    if (filters.locations) {
+      where.address = {};
+      if (filters.locations.cities) {
+        where.address.city = { in: filters.locations.cities };
+      }
+
+      if (filters.locations.states) {
+        where.address.state = { in: filters.locations.states };
+      }
+      if (filters.locations.countries) {
+        where.address.country = { in: filters.locations.countries };
+      }
+    }
+
+    if (filters.excludeLocations) {
+      if (filters.excludeLocations.cities) {
+        where.address = where.address || {};
+        where.address.city = {
+          not: { in: filters.excludeLocations.cities },
+        };
+      }
+
+      if (filters.excludeLocations.states) {
+        where.address = where.address || {};
+        where.address.state = {
+          not: { in: filters.excludeLocations.states },
+        };
+      }
+
+      if (filters.excludeLocations.countries) {
+        where.address = where.address || {};
+        where.address.country = {
+          not: { in: filters.excludeLocations.countries },
+        };
+      }
     }
 
     if (filters.createdAt) {
