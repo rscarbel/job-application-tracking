@@ -8,19 +8,10 @@
 */
 
 process.env.NODE_ENV = "test";
-/**
-  this test database should not be used, but rather
-  prefer to mock all database calls.
-
-  It is only set in case of an oversight so we don't
-  accidentally overwrite our development database
-*/
+// this test database should only be used for integration tests
 process.env.DATABASE_URL =
   "postgres://postgres:@localhost:5432/application_tracking_test";
 
-const { mock } = require("bun:test");
-
-const mockPrisma = {};
 /**
   Mock the Date object to always return the same date
   for idempotent tests. However, we can still pass in
@@ -48,9 +39,5 @@ class MockDate extends OriginalDate {
 
 global.Date = MockDate;
 
-mock.module("@/services/globalPrismaClient", () => {
-  return { default: mockPrisma };
-});
-
-console.log("\nnew Date() has been froze at 2024-02-08T00:00:00Z");
+console.log("\nnew Date() has been frozen at 2024-02-08T00:00:00Z");
 console.log("The global Prisma client has been mocked.\n");

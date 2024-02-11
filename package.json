@@ -18,7 +18,7 @@
     "@faker-js/faker": "^8.2.0",
     "@hello-pangea/dnd": "^16.3.0",
     "@next-auth/prisma-adapter": "^1.0.7",
-    "@prisma/client": "^5.5.2",
+    "@prisma/client": "^5.9.1",
     "bun": "^1.0.26",
     "next": "14.0.1",
     "next-auth": "^4.24.4",
