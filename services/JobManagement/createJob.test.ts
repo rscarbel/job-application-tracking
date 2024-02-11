@@ -5,30 +5,34 @@ import { createJob } from "./createJob";
 describe("createJob", () => {
   let mockPrisma: any;
 
-  beforeEach(() => {
-    const mockFindUnique = mock(
-      async ({
-        where: {
-          name_userId: { name, userId },
-        },
-      }) => {
-        if (name === "Tech Innovations" && userId === "user123") {
-          return {
-            id: 1,
-            name: "Tech Innovations",
-            userId: "user123",
-          };
-        }
+  const mockCompany = {
+    id: 1,
+    name: "Tech Innovations",
+    userId: "user123",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
 
-        return null;
-      }
-    );
+  beforeEach(() => {
+    const mockCompanyConnect = mock(async ({ id }) => {
+      return {
+        id,
+      };
+    });
+
+    const mockBenefitFindUnique = mock(() => null);
+    const mockBenefitCreate = mock(async ({ data: { name, userId } }) => ({
+      name,
+      userId,
+    }));
 
     const mockJobCreate = mock(
       async ({
         data: {
           title,
           workMode,
+          responsibilities,
+          benefits,
           company: {
             connect: { id },
           },
@@ -46,14 +50,23 @@ describe("createJob", () => {
               negotiable,
             },
           },
-          address,
+          address: {
+            create: {
+              streetAddress,
+              streetAddress2,
+              city,
+              state,
+              country,
+              postalCode,
+            },
+          },
         },
-        include: { company: includeCompany, compensation: includeCompensation },
       }) => {
         return {
           id: 1,
           title,
           workMode,
+          responsibilities,
           company: {
             id,
           },
@@ -70,21 +83,33 @@ describe("createJob", () => {
             hoursWeek,
             negotiable,
           },
-          address,
-          include: {
-            company: includeCompany,
-            compensation: includeCompensation,
+          address: {
+            streetAddress,
+            streetAddress2,
+            city,
+            state,
+            country,
+            postalCode,
           },
+          benefits,
         };
       }
     );
 
     mockPrisma = {
       company: {
-        findUnique: mockFindUnique,
+        connect: mockCompanyConnect,
       },
       job: {
         create: mockJobCreate,
+      },
+      benefit: {
+        findUnique: mockBenefitFindUnique,
+        create: mockBenefitCreate,
+      },
+      jobBenefit: {
+        create: mock(() => ({})),
+        findUnique: mock(() => null),
       },
     };
 
@@ -93,11 +118,11 @@ describe("createJob", () => {
     });
   });
 
-  test("should create a job with an empty address", async () => {
+  test("should create a job with minimum content", async () => {
     const jobDetails = {
       title: "Software Engineer",
       userId: "user123",
-      companyName: "Tech Innovations",
+      company: mockCompany,
       workMode: WorkMode.remote,
       compensation: {
         payFrequency: PayFrequency.monthly,
@@ -108,12 +133,13 @@ describe("createJob", () => {
       },
     };
 
-    const job = await createJob(jobDetails);
+    await createJob(jobDetails);
 
     expect(mockPrisma.job.create).toHaveBeenCalledWith({
       data: {
         title: "Software Engineer",
-        workMode: WorkMode.remote,
+        workMode: "remote",
+        responsibilities: [],
         company: {
           connect: {
             id: 1,
@@ -126,7 +152,7 @@ describe("createJob", () => {
         },
         compensation: {
           create: {
-            payFrequency: PayFrequency.monthly,
+            payFrequency: "monthly",
             currency: "USD",
             salaryRangeMin: 60000,
             salaryRangeMax: 90000,
@@ -144,20 +170,18 @@ describe("createJob", () => {
           },
         },
       },
-      include: {
-        company: false,
-        compensation: false,
-      },
     });
   });
 
-  test("should create a job with an address", async () => {
+  test("should create a job with details", async () => {
     const jobDetails = {
       title: "Software Engineer",
       userId: "user123",
-      companyName: "Tech Innovations",
+      company: mockCompany,
       workMode: WorkMode.remote,
+      responsibilities: ["Write code", "Test code"],
       compensation: {
+        payAmount: undefined,
         payFrequency: PayFrequency.monthly,
         currency: "USD",
         salaryRangeMin: 60000,
@@ -167,79 +191,62 @@ describe("createJob", () => {
       },
       address: {
         streetAddress: "123 Main St",
+        streetAddress2: undefined,
         city: "Anytown",
         state: "NY",
         country: "USA",
         postalCode: "12345",
       },
-      includeCompany: true,
-      includeCompensation: true,
+      benefits: ["Health insurance", "401k"],
     };
 
-    const job = await createJob(jobDetails);
+    await createJob(jobDetails);
 
-    expect(job).toMatchObject({
-      id: 1,
-      title: "Software Engineer",
-      workMode: "remote",
-      company: {
-        id: 1,
-      },
-      user: {
-        id: "user123",
-      },
-      compensation: {
-        id: 1,
-        payAmount: undefined,
-        payFrequency: "monthly",
-        currency: "USD",
-        salaryRangeMin: 60000,
-        salaryRangeMax: 90000,
-        hoursWeek: 40,
-        negotiable: true,
-      },
-      address: {
-        create: {
-          streetAddress: "123 Main St",
-          city: "Anytown",
-          state: "NY",
-          country: "USA",
-          postalCode: "12345",
+    expect(mockPrisma.job.create).toHaveBeenCalledWith({
+      data: {
+        title: "Software Engineer",
+        workMode: "remote",
+        responsibilities: ["Write code", "Test code"],
+        company: {
+          connect: {
+            id: 1,
+          },
+        },
+        user: {
+          connect: {
+            id: "user123",
+          },
+        },
+        compensation: {
+          create: {
+            payAmount: undefined,
+            payFrequency: "monthly",
+            currency: "USD",
+            salaryRangeMin: 60000,
+            salaryRangeMax: 90000,
+            hoursWeek: 40,
+            negotiable: true,
+          },
+        },
+        address: {
+          create: {
+            streetAddress: "123 Main St",
+            streetAddress2: undefined,
+            city: "Anytown",
+            state: "NY",
+            country: "USA",
+            postalCode: "12345",
+          },
         },
       },
-      include: {
-        company: true,
-        compensation: true,
-      },
     });
-  });
-
-  test("should throw error when no company is found", async () => {
-    const jobDetails = {
-      title: "Software Engineer",
-      userId: "user123",
-      companyName: "Nonexistent Corp",
-      workMode: WorkMode.remote,
-      compensation: {
-        payFrequency: PayFrequency.monthly,
-        currency: "USD",
-        salaryRangeMin: 60000,
-        salaryRangeMax: 90000,
-        negotiable: true,
-      },
-    };
-
-    await expect(createJob(jobDetails)).rejects.toThrow("Company not found");
-
-    expect(mockPrisma.company.findUnique).toHaveBeenCalled();
-    expect(mockPrisma.job.create).not.toHaveBeenCalled();
   });
 
   test("should throw error when no pay amount or salary range is provided", async () => {
     const jobDetails = {
       title: "Software Engineer",
       userId: "user123",
-      companyName: "Tech Innovations",
+      company: mockCompany,
       workMode: WorkMode.remote,
       compensation: {
         payFrequency: PayFrequency.monthly,
@@ -251,7 +258,6 @@ describe("createJob", () => {
       "You must provide either a payAmount or a salaryRange"
     );
 
-    expect(mockPrisma.company.findUnique).not.toHaveBeenCalled();
     expect(mockPrisma.job.create).not.toHaveBeenCalled();
   });
 });

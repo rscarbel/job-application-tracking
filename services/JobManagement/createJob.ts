@@ -1,9 +1,11 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { PayFrequency, WorkMode } from "@prisma/client";
-import { findCompanyByName } from "./companyManagement";
+import { Company, PayFrequency, WorkMode } from "@prisma/client";
+import { JobAddressInterface } from "./JobAddressInterface";
+import { JobCompensationInterface } from "./JobCompensationInterface";
+import { addBenefitToJob } from "./benefitsManagement";
 
-const emptyAddress = {
+const defaultAddress = {
   streetAddress: "",
   streetAddress2: "",
   city: "",
@@ -12,64 +14,51 @@ const emptyAddress = {
   postalCode: "",
 };
 
+const defaultCompensation = {
+  payAmount: 0,
+  payFrequency: PayFrequency.hourly,
+  currency: "USD",
+  salaryRangeMin: undefined,
+  salaryRangeMax: undefined,
+  hoursWeek: 40,
+  negotiable: true,
+};
+
 export const createJob = async ({
   title,
   userId,
-  companyName,
-  compensation: {
-    payAmount,
-    payFrequency,
-    currency,
-    salaryRangeMin,
-    salaryRangeMax,
-    hoursWeek,
-    negotiable,
-  },
-  address = emptyAddress,
-  workMode,
-  includeCompany = false,
-  includeCompensation = false,
+  company,
+  workMode = WorkMode.remote,
+  responsibilities = [],
+  benefits,
+  compensation = defaultCompensation,
+  address = defaultAddress,
   client = prisma,
 }: {
   title: string;
   userId: string;
+  company: Company;
   workMode: WorkMode;
-  companyName: string;
-  includeCompany?: boolean;
-  includeCompensation?: boolean;
-  address?: {
-    streetAddress?: string;
-    streetAddress2?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    postalCode?: string;
-  };
-  compensation: {
-    payAmount?: number;
-    payFrequency: PayFrequency;
-    currency: string;
-    salaryRangeMin?: number;
-    salaryRangeMax?: number;
-    hoursWeek?: number;
-    negotiable?: boolean;
-  };
+  responsibilities?: string[];
+  benefits?: string[];
+  compensation?: JobCompensationInterface;
+  address?: JobAddressInterface;
   client?: TransactionClient | typeof prisma;
 }) => {
-  if (!payAmount && !salaryRangeMin && !salaryRangeMax) {
-    throw new Error("You must provide either a payAmount or a salaryRange");
+  if (compensation) {
+    if (
+      !compensation.payAmount &&
+      !(compensation.salaryRangeMin && compensation.salaryRangeMax)
+    ) {
+      throw new Error("You must provide either a payAmount or a salaryRange");
+    }
   }
 
-  const company = await findCompanyByName({ name: companyName, userId });
-
-  if (!company) {
-    throw new Error("Company not found");
-  }
-
-  return client.job.create({
+  const job = await client.job.create({
     data: {
       title,
       workMode,
+      responsibilities,
       company: {
         connect: {
           id: company.id,
@@ -81,23 +70,22 @@ export const createJob = async ({
         },
       },
       compensation: {
-        create: {
-          payAmount,
-          payFrequency,
-          currency,
-          salaryRangeMin,
-          salaryRangeMax,
-          hoursWeek,
-          negotiable,
-        },
+        create: compensation,
       },
       address: {
         create: address,
       },
     },
-    include: {
-      company: includeCompany,
-      compensation: includeCompensation,
-    },
   });
+
+  if (benefits) {
+    for (const benefitName of benefits) {
+      await addBenefitToJob({
+        jobId: job.id,
+        benefitName,
+        userId,
+        client,
+      });
+    }
+  }
 };

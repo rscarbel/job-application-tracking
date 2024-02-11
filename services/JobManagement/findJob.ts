@@ -5,8 +5,7 @@ import { findCompanyByName } from "./companyManagement";
 
 interface JobInterface {
   title: string;
-  companyName: string;
-  company?: Company;
+  company: Company;
   userId: string;
   workMode: WorkMode;
   includeCompensation?: boolean;
@@ -21,10 +20,18 @@ interface IncludesInterface {
   benefits?: boolean;
 }
 
+/**
+ *
+ * @usage Pass in a job title, company, user ID,
+ * and work mode to find a job.
+ *
+ * @options includeAddress, includeCompensation,
+ * includeBenefits are all booleans to include the
+ * address, compensation, and benefits in the query.
+ */
 export const findJob = async ({
   title,
   userId,
-  companyName,
   company,
   workMode,
   includeAddress = false,
@@ -32,14 +39,6 @@ export const findJob = async ({
   includeBenefits = false,
   client = prisma,
 }: JobInterface) => {
-  const jobCompany = company
-    ? company
-    : await findCompanyByName({ name: companyName, userId });
-
-  if (!jobCompany) {
-    throw new Error("Company not found");
-  }
-
   const itemsToInclude: IncludesInterface = {
     compensation: includeCompensation,
     address: includeAddress,
@@ -50,7 +49,7 @@ export const findJob = async ({
     where: {
       title_companyId_userId_workMode: {
         title,
-        companyId: jobCompany.id,
+        companyId: company.id,
         userId,
         workMode,
       },

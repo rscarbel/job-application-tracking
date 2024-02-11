@@ -8,7 +8,14 @@ import {
 
 import { editCompensation } from "./editCompensation";
 
-import { createCompany, updateCompany } from "./companyManagement";
+import {
+  createCompany,
+  updateCompany,
+  findCompanyByName,
+} from "./companyManagement";
+
+import { createJob } from "./createJob";
+import { findJob } from "./findJob";
 
 export {
   createBenefit,
@@ -19,4 +26,7 @@ export {
   editCompensation,
   createCompany,
   updateCompany,
+  findCompanyByName,
+  createJob,
+  findJob,
 };

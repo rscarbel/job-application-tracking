@@ -1,29 +1,11 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
 import { editCompensation } from "./editCompensation";
-import { PayFrequency, WorkMode } from "@prisma/client";
+import { WorkMode } from "@prisma/client";
+import { JobAddressInterface } from "./JobAddressInterface";
+import { JobCompensationInterface } from "./JobCompensationInterface";
 import { findCompanyByName } from "./companyManagement";
 import { findJob } from "./findJob";
-
-export interface AddressInterface {
-  streetAddress?: string;
-  streetAddress2?: string;
-  city?: string;
-  state?: string;
-  country?: string;
-  postalCode?: string;
-}
-
-interface CompensationInterface {
-  payAmount?: number;
-  payFrequency?: PayFrequency;
-  currency?: string;
-  salaryRangeMin?: number;
-  salaryRangeMax?: number;
-  hoursWeek?: number;
-  negotiable?: boolean;
-  jobId?: number;
-}
 
 interface JobInterface {
   title: string;
@@ -35,8 +17,8 @@ interface JobInterface {
   userId: string;
   workMode: WorkMode;
   newWorkMode?: WorkMode;
-  compensation?: CompensationInterface;
-  address?: AddressInterface;
+  compensation?: JobCompensationInterface;
+  address?: JobAddressInterface;
   client?: TransactionClient | typeof prisma;
 }
 

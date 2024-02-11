@@ -12,8 +12,8 @@ export const createBenefit = async ({
 }) => {
   return client.benefit.create({
     data: {
-      name: name,
-      userId: userId,
+      name,
+      userId,
     },
   });
 };
