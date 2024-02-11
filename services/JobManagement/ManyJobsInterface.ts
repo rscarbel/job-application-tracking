@@ -22,15 +22,23 @@ interface LocationInterface {
 
 interface FilterInterface {
   companies?: string[];
+  excludeCompanies?: string[];
   companySizes?: CompanySize[];
+  excludeCompanySizes?: CompanySize[];
   companyTypes?: CompanyType[];
+  excludeCompanyTypes?: CompanyType[];
   workModes?: WorkMode[];
+  excludeWorkModes?: WorkMode[];
   benefits?: string[];
+  excludeBenefits?: string[];
   payMinimum?: number;
   payMaximum?: number;
   payFrequencies?: PayFrequency[];
+  excludePayFrequencies?: PayFrequency[];
   currencies?: string[];
+  excludeCurrencies?: string[];
   locations?: LocationInterface;
+  excludeLocations?: LocationInterface;
   createdAt?: Date;
 }
 
@@ -45,13 +53,13 @@ interface SelectInterface {
 }
 
 interface PaginationInterface {
-  page: number;
-  per: number;
+  offset: number;
+  limit: number;
 }
 
 export interface ManyJobsInterface {
   userId: string;
-  include: IncludesInterface;
+  include?: IncludesInterface;
   filters?: FilterInterface;
   pagination?: PaginationInterface;
   select?: SelectInterface;
