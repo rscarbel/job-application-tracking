@@ -1,9 +1,4 @@
-import {
-  PrismaClient,
-  CompanySize,
-  CompanyType,
-  CompanyDesireability,
-} from "@prisma/client";
+import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import prisma from "@/services/globalPrismaClient";
 import { ManyCompaniesInterface } from "./ManyCompaniesInterface";
 
@@ -52,6 +47,12 @@ export const findManyCompanies = async ({
   client = prisma,
 }: ManyCompaniesInterface) => {
   const { offset: skip, limit: take } = pagination;
+
+  const address = include?.address || defaultInclude.address;
+  const details = include?.details || defaultInclude.details;
+  const preferences = include?.preferences || defaultInclude.preferences;
+  const contacts = include?.contacts || defaultInclude.contacts;
+  const jobs = include?.jobs || defaultInclude.jobs;
 
   const where: WhereInterface = {};
   if (userId) {
@@ -120,11 +121,11 @@ export const findManyCompanies = async ({
     take,
     select: {
       ...select,
-      address: include.address ? { select: {} } : false,
-      details: include.details ? { select: {} } : false,
-      preferences: include.preferences ? { select: {} } : false,
-      contacts: include.contacts ? { select: {} } : false,
-      jobs: include.jobs ? { select: {} } : false,
+      address,
+      details,
+      preferences,
+      contacts,
+      jobs,
     },
   };
 
