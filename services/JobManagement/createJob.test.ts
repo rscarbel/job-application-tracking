@@ -33,6 +33,7 @@ describe("createJob", () => {
           workMode,
           responsibilities,
           benefits,
+          description,
           company: {
             connect: { id },
           },
@@ -67,6 +68,7 @@ describe("createJob", () => {
           title,
           workMode,
           responsibilities,
+          description,
           company: {
             id,
           },
@@ -180,6 +182,7 @@ describe("createJob", () => {
       company: mockCompany,
       workMode: WorkMode.remote,
       responsibilities: ["Write code", "Test code"],
+      description: "A software engineer to write and test code",
       compensation: {
         payAmount: undefined,
         payFrequency: PayFrequency.monthly,
@@ -207,6 +210,7 @@ describe("createJob", () => {
         title: "Software Engineer",
         workMode: "remote",
         responsibilities: ["Write code", "Test code"],
+        description: "A software engineer to write and test code",
         company: {
           connect: {
             id: 1,

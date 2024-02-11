@@ -28,6 +28,7 @@ export const createJob = async ({
   title,
   userId,
   company,
+  description,
   workMode = WorkMode.remote,
   responsibilities = [],
   benefits,
@@ -39,6 +40,7 @@ export const createJob = async ({
   userId: string;
   company: Company;
   workMode: WorkMode;
+  description?: string;
   responsibilities?: string[];
   benefits?: string[];
   compensation?: JobCompensationInterface;
@@ -59,6 +61,7 @@ export const createJob = async ({
       title,
       workMode,
       responsibilities,
+      description,
       company: {
         connect: {
           id: company.id,
@@ -88,4 +91,6 @@ export const createJob = async ({
       });
     }
   }
+
+  return job;
 };

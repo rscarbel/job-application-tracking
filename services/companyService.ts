@@ -61,7 +61,7 @@ export const updateCompany = async ({
   }
   const company = await client.company.findUnique({
     where: { id: companyId },
-    include: { addresses: { orderBy: { fromDate: "desc" }, take: 1 } },
+    include: { address: true },
   });
 
   if (!company) {

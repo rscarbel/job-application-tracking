@@ -4,13 +4,23 @@ import {
   incrementCardsAfterIndex,
   getFormattedCardsForBoard,
 } from "@/services/applicationService";
-import { updateOrCreateCompany } from "@/services/companyService";
-import { updateJob } from "@/services/jobService";
+import {
+  createCompany,
+  findCompanyByName,
+  updateJob,
+  findJob,
+  updateCompany,
+} from "@/services/JobManagement";
 import { calculateBoardStructure } from "../calculateBoardStructure";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getCurrentUser } from "@/services/UserManagement";
 import serverErrorResponse from "../../serverErrorResponse";
-import { ApplicationStatus, WorkMode, PayFrequency } from "@prisma/client";
+import {
+  ApplicationStatus,
+  WorkMode,
+  PayFrequency,
+  Company,
+} from "@prisma/client";
 import { ApiRequest } from "@/utils/ApiRequestType";
 
 interface UpdateCardRequestInterface {
@@ -97,34 +107,55 @@ export async function POST(request: ApiRequest) {
         });
       }
 
-      const updatedCompany = await updateOrCreateCompany({
-        companyName: company.name,
-        userId: user.id,
-        companyId: company.companyId,
-        client: pris,
+      let updatedCompany: Company | null = null;
+
+      if (company.companyId) {
+        updatedCompany = await pris.company.findUnique({
+          where: { id: company.companyId, userId: user.id },
+        });
+      }
+
+      if (!updatedCompany) {
+        updatedCompany = await createCompany({
+          name: company.name,
+          userId: user.id,
+          client: pris,
+        });
+      } else {
+        updatedCompany = await updateCompany({
+          name: updatedCompany.name,
+          userId: user.id,
+          newName: company.name,
+          client: pris,
+        });
+      }
+
+      const job = pris.job.findUnique({
+        where: { id: jobId },
       });
 
+      if (!job) {
+        throw new Error("Job not found");
+      }
+
       await updateJob({
-        job: {
-          id: jobId,
-          userId: user.id,
-          title: jobTitle,
-          responsibilities: [],
-          companyId: updatedCompany.id,
-          description: jobDescription,
-          workMode: workMode,
-          compensation: {
-            payAmount: payAmount,
-            payFrequency: payFrequency,
-            currency: currency,
-          },
-          address: {
-            streetAddress: streetAddress,
-            city: city,
-            state: state,
-            country: country,
-            postalCode: postalCode,
-          },
+        userId: user.id,
+        title: jobTitle,
+        responsibilities: [],
+        company: updatedCompany,
+        description: jobDescription,
+        workMode: workMode,
+        compensation: {
+          payAmount: payAmount,
+          payFrequency: payFrequency,
+          currency: currency,
+        },
+        address: {
+          streetAddress: streetAddress,
+          city: city,
+          state: state,
+          country: country,
+          postalCode: postalCode,
         },
         client: pris,
       });

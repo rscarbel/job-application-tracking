@@ -1,12 +1,17 @@
 import prisma from "@/services/globalPrismaClient";
-import { findOrCreateCompany } from "@/services/companyService";
-import { createOrUpdateJob } from "@/services/jobService";
+import {
+  createCompany,
+  findCompanyByName,
+  createJob,
+  findJob,
+} from "@/services/JobManagement";
 import { incrementCardsAfterIndex } from "@/services/applicationService";
 import { reportError } from "@/app/api/reportError/reportError";
 import { getCurrentUser } from "@/services/UserManagement";
 import { CreateCardRequest } from "./interface";
 import serverErrorResponse from "@/app/api/serverErrorResponse";
 import { ApiRequest } from "@/utils/ApiRequestType";
+import { Job } from "@prisma/client";
 
 export async function POST(request: ApiRequest) {
   const requestData = await request.body.json();
@@ -59,28 +64,55 @@ export async function POST(request: ApiRequest) {
         throw new Error("Application Group not found");
       }
 
-      const newCompany = await findOrCreateCompany({
-        companyName: company.name,
+      let jobCompany = await findCompanyByName({
+        name: company.name,
         userId: user.id,
         client: client,
       });
 
-      const job = await createOrUpdateJob({
-        job: {
+      if (!jobCompany) {
+        jobCompany = await createCompany({
+          name: company.name,
+          userId: user.id,
+          client: client,
+          preferences: {
+            desireability: desireability,
+          },
+        });
+      }
+
+      if (!jobCompany) {
+        throw new Error("Unable to create company.");
+      }
+
+      let job: Job | null = await findJob({
+        title: jobTitle,
+        userId: user.id,
+        company: jobCompany,
+        workMode: workMode,
+        client: client,
+      });
+
+      if (!job) {
+        job = await createJob({
           title: jobTitle,
           userId: user.id,
-          companyId: newCompany.id,
-          description: jobDescription,
+          company: jobCompany,
           workMode: workMode,
+          description: jobDescription,
           compensation: {
             payAmount: payAmount,
             payFrequency: payFrequency,
             currency: currency,
           },
           address: addressProperties,
-        },
-        client: client,
-      });
+          client: client,
+        });
+      }
+
+      if (!job) {
+        throw new Error("Unable to create job.");
+      }
 
       await client.application.create({
         data: {

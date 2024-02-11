@@ -15,6 +15,7 @@ export const updateJob = async ({
   workMode = WorkMode.remote,
   newTitle,
   newWorkMode,
+  description,
   responsibilities = [],
   benefits,
   compensation,
@@ -27,6 +28,7 @@ export const updateJob = async ({
   company: Company;
   workMode: WorkMode;
   newWorkMode?: WorkMode;
+  description?: string;
   responsibilities?: string[];
   benefits?: string[];
   compensation?: JobCompensationInterface;
@@ -92,7 +94,7 @@ export const updateJob = async ({
     }
   }
 
-  if (newTitle || newWorkMode) {
+  if (newTitle || newWorkMode || description) {
     await client.job.update({
       where: {
         id: job.id,
@@ -100,6 +102,7 @@ export const updateJob = async ({
       data: {
         title: newTitle,
         workMode: newWorkMode,
+        description,
       },
     });
   }

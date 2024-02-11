@@ -38,7 +38,7 @@ export const getFormattedCardData = async ({
       job: {
         include: {
           company: true,
-          addresses: true,
+          address: true,
           compensation: true,
         },
       },
@@ -55,7 +55,7 @@ export const getFormattedCardData = async ({
 
   const job = application.job;
   const compensation = job.compensation;
-  const lastAddress = job.addresses[job.addresses.length - 1] || defaultAddress;
+  const lastAddress = job.address;
 
   return {
     applicationId: application.id,
@@ -105,7 +105,7 @@ export const getFormattedCardsForBoard = async ({
         include: {
           company: true,
           compensation: true,
-          addresses: true,
+          address: true,
         },
       },
     },
@@ -118,8 +118,7 @@ export const getFormattedCardsForBoard = async ({
     const job = card.job;
     const compensation = job.compensation;
 
-    const lastAddress =
-      job.addresses[job.addresses.length - 1] || defaultAddress;
+    const lastAddress = job.address || defaultAddress;
 
     return {
       applicationId: card.id,

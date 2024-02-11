@@ -260,12 +260,13 @@ describe("updateJob", () => {
     });
   });
 
-  test("should update job title and work mode", async () => {
+  test("should update job title work mode, and description", async () => {
     await updateJob({
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
       workMode: WorkMode.remote,
+      description: "A software engineer to write and test code",
       newTitle: "Senior Software Engineer",
       newWorkMode: WorkMode.onsite,
     });
@@ -275,6 +276,7 @@ describe("updateJob", () => {
       data: {
         title: "Senior Software Engineer",
         workMode: WorkMode.onsite,
+        description: "A software engineer to write and test code",
       },
     });
   });
