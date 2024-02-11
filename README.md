@@ -1,5 +1,25 @@
 Hi there! For details on how to get set up and any other dev questions, please reference the [GitHub wiki](https://github.com/rscarbel/job-application-tracking/wiki)!
 
+### Testing
+
+For writing tests with prisma mocks, the easiest way to see what is being called on the mocked prisma object is to log it using the inspect function from node's util library.
+
+It will pretty-print the full object, where as a simple console.log will cut off most of the details.
+
+Example:
+
+```javascript
+import { inspect } from "util";
+
+console.log(
+  inspect(mockPrisma.job.create.mock.calls, {
+    showHidden: false,
+    depth: null,
+    colors: true,
+  })
+);
+```
+
 <img width="1359" alt="Screenshot 2023-11-07 at 11 10 14 PM" src="https://github.com/rscarbel/job-application-tracking/assets/40727301/425285c2-1fdf-4750-801b-9053b8c3b9be">
 
 <img width="1143" alt="Screenshot 2023-11-07 at 11 11 20 PM" src="https://github.com/rscarbel/job-application-tracking/assets/40727301/bd9f691b-20b9-4717-8918-fbc583716288">

@@ -7,6 +7,20 @@ import {
   CompanyType,
 } from "@prisma/client";
 
+export enum JobSortField {
+  CreatedAt = "createdAt",
+  Title = "title",
+  Pay = "pay",
+  WorkMode = "workMode",
+  CompanyName = "companyName",
+  CompanySize = "companySize",
+}
+
+interface SortInterface {
+  field: JobSortField;
+  order: "asc" | "desc";
+}
+
 interface IncludesInterface {
   compensation?: boolean;
   address?: boolean;
@@ -63,5 +77,6 @@ export interface ManyJobsInterface {
   filters?: FilterInterface;
   pagination?: PaginationInterface;
   select?: SelectInterface;
+  sort?: SortInterface;
   client?: TransactionClient | typeof prisma;
 }
