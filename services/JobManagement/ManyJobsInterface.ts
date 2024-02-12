@@ -7,17 +7,17 @@ import {
   CompanyType,
 } from "@prisma/client";
 
-export enum JobSortField {
-  CreatedAt = "createdAt",
-  Title = "title",
-  Pay = "pay",
-  WorkMode = "workMode",
-  CompanyName = "companyName",
-  CompanySize = "companySize",
+export enum JobSortFieldEnum {
+  createdAt = "createdAt",
+  title = "title",
+  pay = "pay",
+  workMode = "workMode",
+  companyName = "companyName",
+  companySize = "companySize",
 }
 
 interface SortInterface {
-  field: JobSortField;
+  field: JobSortFieldEnum;
   order: "asc" | "desc";
 }
 

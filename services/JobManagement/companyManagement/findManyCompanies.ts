@@ -1,6 +1,9 @@
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import prisma from "@/services/globalPrismaClient";
-import { ManyCompaniesInterface } from "./ManyCompaniesInterface";
+import {
+  ManyCompaniesInterface,
+  CompanySortFieldEnum,
+} from "./ManyCompaniesInterface";
 
 const defaultInclude = {
   address: false,
@@ -43,6 +46,7 @@ export const findManyCompanies = async ({
   include = defaultInclude,
   filters,
   pagination = { offset: 0, limit: 10 },
+  sort,
   select = defaultSelect,
   client = prisma,
 }: ManyCompaniesInterface) => {
@@ -53,6 +57,33 @@ export const findManyCompanies = async ({
   const preferences = include?.preferences || defaultInclude.preferences;
   const contacts = include?.contacts || defaultInclude.contacts;
   const jobs = include?.jobs || defaultInclude.jobs;
+
+  const orderBy = [];
+  if (sort) {
+    switch (sort.field) {
+      case CompanySortFieldEnum.createdAt:
+        orderBy.push({ createdAt: sort.order });
+        break;
+      case CompanySortFieldEnum.name:
+        orderBy.push({ name: sort.order });
+        break;
+      case CompanySortFieldEnum.city:
+        orderBy.push({ address: { city: sort.order } });
+        break;
+      case CompanySortFieldEnum.state:
+        orderBy.push({ address: { state: sort.order } });
+        break;
+      case CompanySortFieldEnum.size:
+        orderBy.push({ details: { size: sort.order } });
+        break;
+      case CompanySortFieldEnum.type:
+        orderBy.push({ details: { details: { type: sort.order } } });
+        break;
+      case CompanySortFieldEnum.desireability:
+        orderBy.push({ preferences: { desireability: sort.order } });
+        break;
+    }
+  }
 
   const where: WhereInterface = {};
   if (userId) {
@@ -119,6 +150,7 @@ export const findManyCompanies = async ({
     where,
     skip,
     take,
+    orderBy,
     select: {
       ...select,
       address,

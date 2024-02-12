@@ -7,6 +7,7 @@ import {
 } from "./benefitsManagement";
 
 import {
+  CompanySortFieldEnum,
   createCompany,
   updateCompany,
   findCompanyByName,
@@ -14,6 +15,7 @@ import {
   findManyCompanies,
 } from "./companyManagement";
 
+import { JobSortFieldEnum } from "./ManyJobsInterface";
 import { createJob } from "./createJob";
 import { findJob } from "./findJob";
 import { updateJob } from "./updateJob";
@@ -21,6 +23,8 @@ import { deleteJob } from "./deleteJob";
 import { findManyJobs } from "./findManyJobs";
 
 export {
+  JobSortFieldEnum,
+  CompanySortFieldEnum,
   createBenefit,
   addBenefitToJob,
   deleteBenefitByName,
