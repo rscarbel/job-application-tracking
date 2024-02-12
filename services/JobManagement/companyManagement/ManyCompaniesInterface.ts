@@ -2,6 +2,21 @@ import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import { TransactionClient } from "@/utils/databaseTypes";
 import prisma from "@/services/globalPrismaClient";
 
+export enum CompanySortFieldEnum {
+  createdAt = "createdAt",
+  name = "name",
+  size = "size",
+  type = "type",
+  city = "city",
+  state = "state",
+  desireability = "desireability",
+}
+
+interface SortInterface {
+  field: CompanySortFieldEnum;
+  order: "asc" | "desc";
+}
+
 interface IncludesInterface {
   address?: boolean;
   details?: boolean;
@@ -47,6 +62,7 @@ export interface ManyCompaniesInterface {
   include?: IncludesInterface;
   filters?: FilterInterface;
   pagination?: PaginationInterface;
+  sort?: SortInterface;
   select?: SelectInterface;
   client?: TransactionClient | typeof prisma;
 }

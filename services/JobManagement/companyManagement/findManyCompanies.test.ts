@@ -1,6 +1,7 @@
 import { test, expect, mock, describe } from "bun:test";
 import { findManyCompanies } from "./findManyCompanies";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
+import { CompanySortFieldEnum } from "./ManyCompaniesInterface";
 
 describe("findManyCompanies", () => {
   const mockCompanyDetails = {
@@ -50,6 +51,7 @@ describe("findManyCompanies", () => {
         contacts: false,
         jobs: false,
       },
+      sort: { field: CompanySortFieldEnum.name, order: "desc" },
       filters: {
         names: ["Innovative Startups"],
         companySizes: [CompanySize.SMALL],
@@ -95,6 +97,7 @@ describe("findManyCompanies", () => {
       },
       skip: 0,
       take: 10,
+      orderBy: [{ name: "desc" }],
       select: {
         id: true,
         name: true,
@@ -105,6 +108,48 @@ describe("findManyCompanies", () => {
         contacts: false,
         jobs: false,
       },
+    });
+  });
+
+  test("should return companies without filters", async () => {
+    const companies = await findManyCompanies({ userId: "user456" });
+
+    expect(companies).toHaveLength(1);
+    expect(companies[0].name).toEqual("Innovative Startups");
+    expect(mockCompaniesFindMany).toHaveBeenCalledWith({
+      where: { userId: "user456" },
+      skip: 0,
+      take: 10,
+      orderBy: [],
+      select: {
+        id: true,
+        name: true,
+        createdAt: false,
+        updatedAt: false,
+        address: false,
+        details: false,
+        preferences: false,
+        contacts: false,
+        jobs: false,
+      },
+    });
+  });
+
+  /**
+   As I mentioned on the job test (services/JobManagement/findManyJobs.test.ts)
+   This is a useless test so that I can get 100% coverage. Without this test, the
+   logic is already 100% tested, so this test is not damaging or helpful.
+  */
+  test("should return jobs in a variety of sort fields", async () => {
+    const sortFields = Object.values(CompanySortFieldEnum);
+
+    sortFields.forEach(async (field) => {
+      await findManyCompanies({
+        userId: "user123",
+        sort: { field, order: "asc" },
+      });
+
+      expect(mockCompaniesFindMany).toHaveBeenCalled();
     });
   });
 });

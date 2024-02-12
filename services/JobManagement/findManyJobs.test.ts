@@ -6,7 +6,7 @@ import {
   CompanySize,
   CompanyType,
 } from "@prisma/client";
-import { JobSortField } from "./ManyJobsInterface";
+import { JobSortFieldEnum } from "./ManyJobsInterface";
 
 describe("findManyJobs", () => {
   const mockCompanyDetails = {
@@ -73,7 +73,7 @@ describe("findManyJobs", () => {
         benefits: true,
         company: true,
       },
-      sort: { field: JobSortField.Pay, order: "desc" },
+      sort: { field: JobSortFieldEnum.pay, order: "desc" },
       filters: {
         companies: ["Tech Innovations"],
         workModes: [WorkMode.remote],
@@ -196,7 +196,7 @@ describe("findManyJobs", () => {
    isn't actually hurting, but it's not helping.
   */
   test("should return jobs in a variety of sort fields", async () => {
-    const sortFields = Object.values(JobSortField);
+    const sortFields = Object.values(JobSortFieldEnum);
 
     sortFields.forEach(async (field) => {
       await findManyJobs({

@@ -5,7 +5,7 @@ import {
   CompanySize,
   CompanyType,
 } from "@prisma/client";
-import { ManyJobsInterface, JobSortField } from "./ManyJobsInterface";
+import { ManyJobsInterface, JobSortFieldEnum } from "./ManyJobsInterface";
 
 interface WhereInterface {
   userId: string;
@@ -69,22 +69,22 @@ export const findManyJobs = async ({
   const orderBy = [];
   if (sort) {
     switch (sort.field) {
-      case JobSortField.CreatedAt:
+      case JobSortFieldEnum.createdAt:
         orderBy.push({ createdAt: sort.order });
         break;
-      case JobSortField.Title:
+      case JobSortFieldEnum.title:
         orderBy.push({ title: sort.order });
         break;
-      case JobSortField.Pay:
+      case JobSortFieldEnum.pay:
         orderBy.push({ compensation: { payAmount: sort.order } });
         break;
-      case JobSortField.WorkMode:
+      case JobSortFieldEnum.workMode:
         orderBy.push({ workMode: sort.order });
         break;
-      case JobSortField.CompanyName:
+      case JobSortFieldEnum.companyName:
         orderBy.push({ company: { name: sort.order } });
         break;
-      case JobSortField.CompanySize:
+      case JobSortFieldEnum.companySize:
         orderBy.push({ company: { details: { size: sort.order } } });
         break;
     }
