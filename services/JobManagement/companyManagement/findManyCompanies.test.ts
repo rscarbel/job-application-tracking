@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, expect, mock, describe, afterEach } from "bun:test";
 import { findManyCompanies } from "./findManyCompanies";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import { CompanySortFieldEnum } from "./ManyCompaniesInterface";
@@ -19,15 +19,6 @@ describe("findManyCompanies", () => {
     updatedAt: new Date(),
   };
 
-  const mockAddress = {
-    id: 1,
-    city: "Tech City",
-    state: "Innovation State",
-    country: "Techland",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
   const mockCompaniesFindMany = mock(async ({ where, skip, take, select }) => {
     return [mockCompanyDetails];
   });
@@ -40,6 +31,10 @@ describe("findManyCompanies", () => {
 
   mock.module("@/services/globalPrismaClient", () => {
     return { default: mockPrisma };
+  });
+
+  afterEach(() => {
+    mockCompaniesFindMany.mockClear();
   });
 
   test("should return companies based on filters", async () => {
@@ -93,7 +88,7 @@ describe("findManyCompanies", () => {
         name: { notIn: ["Old Enterprises"] },
         details: { type: { notIn: ["PUBLIC"] } },
         createdAt: { gte: new Date() },
-        preferences: { desireability: { notIn: ["low"] } },
+        preferences: { desireability: { notIn: ["LOW"] } },
         address: { country: { notIn: ["Oldland"] } },
       },
       skip: 0,

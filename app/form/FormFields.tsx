@@ -324,12 +324,12 @@ const FormFields = ({
           value={status}
           className={STYLE_CLASSES.FORM_BASIC_INPUT}
           options={[
-            ApplicationStatus.applied,
-            ApplicationStatus.interview,
-            ApplicationStatus.offer,
-            ApplicationStatus.rejected,
-            ApplicationStatus.accepted,
-            ApplicationStatus.passed,
+            ApplicationStatus.APPLIED,
+            ApplicationStatus.INTERVIEW,
+            ApplicationStatus.OFFER,
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.PASSED,
           ]}
           onChange={(e) => {
             onInputChange(e.target.name, e.target.value);

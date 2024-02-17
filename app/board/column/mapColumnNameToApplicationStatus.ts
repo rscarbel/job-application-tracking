@@ -5,18 +5,18 @@ export const mapColumnNameToApplicationStatus = (
   status: ColumnNameEnum
 ): ApplicationStatus => {
   switch (status) {
-    case ColumnNameEnum.Applied:
-      return ApplicationStatus.applied;
-    case ColumnNameEnum.Interview:
-      return ApplicationStatus.interview;
-    case ColumnNameEnum.Offer:
-      return ApplicationStatus.offer;
-    case ColumnNameEnum.Rejected:
-      return ApplicationStatus.rejected;
-    case ColumnNameEnum.Accepted:
-      return ApplicationStatus.accepted;
-    case ColumnNameEnum.Passed:
-      return ApplicationStatus.passed;
+    case ColumnNameEnum.APPLIED:
+      return ApplicationStatus.APPLIED;
+    case ColumnNameEnum.INTERVIEW:
+      return ApplicationStatus.INTERVIEW;
+    case ColumnNameEnum.OFFER:
+      return ApplicationStatus.OFFER;
+    case ColumnNameEnum.REJECTED:
+      return ApplicationStatus.REJECTED;
+    case ColumnNameEnum.ACCEPTED:
+      return ApplicationStatus.ACCEPTED;
+    case ColumnNameEnum.PASSED:
+      return ApplicationStatus.PASSED;
     default:
       throw new Error(`Unknown status: ${status}`);
   }

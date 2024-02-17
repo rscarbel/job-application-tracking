@@ -4,39 +4,39 @@ import { ColumnNameEnum } from "../api/applicationGroup/BoardStructureInterface"
 
 export const getStatusColor = (status: ApplicationStatus): string => {
   switch (status) {
-    case "applied":
+    case "APPLIED":
       return "bg-blue-100";
-    case "interview":
+    case "INTERVIEW":
       return "bg-green-100";
-    case "offer":
+    case "OFFER":
       return "bg-blue-300";
-    case "rejected":
+    case "REJECTED":
       return "bg-red-300";
-    case "passed":
+    case "PASSED":
       return "bg-gray-300";
-    case "accepted":
+    case "ACCEPTED":
       return "bg-green-300";
     default:
       return "bg-gray-100";
   }
 };
 
-type PayFrequency = "hourly" | "weekly" | "biweekly" | "monthly" | "yearly";
+type PayFrequency = "HOURLY" | "WEEKLY" | "BIWEEKLY" | "MONTHLY" | "ANNUALLY";
 
 export const payFrequencyOptions: { label: string; value: PayFrequency }[] = [
-  { label: "per hour", value: "hourly" },
-  { label: "per week", value: "weekly" },
-  { label: "biweekly", value: "biweekly" },
-  { label: "per month", value: "monthly" },
-  { label: "per year", value: "yearly" },
+  { label: "per hour", value: "HOURLY" },
+  { label: "per week", value: "WEEKLY" },
+  { label: "biweekly", value: "BIWEEKLY" },
+  { label: "per month", value: "MONTHLY" },
+  { label: "per year", value: "ANNUALLY" },
 ];
 
 export const humanizedPayFrequency: { [K in PayFrequency]: string } = {
-  hourly: "per hour",
-  weekly: "per week",
-  biweekly: "biweekly",
-  monthly: "per month",
-  yearly: "per year",
+  HOURLY: "per hour",
+  WEEKLY: "per week",
+  BIWEEKLY: "biweekly",
+  MONTHLY: "per month",
+  ANNUALLY: "per year",
 };
 
 export const prettifyPay = (pay: number | string): string => {

@@ -114,23 +114,23 @@ const cyclePayFrequency = () => {
   let amount;
   let rangeModifier;
   switch (frequency) {
-    case PayFrequency.hourly:
+    case PayFrequency.HOURLY:
       amount = getRandomInteger(15, 60); // Random hourly wage between $15 and $60
       rangeModifier = 5;
       break;
-    case PayFrequency.weekly:
+    case PayFrequency.WEEKLY:
       amount = getRandomInteger(500, 1500); // Random weekly salary
       rangeModifier = 100;
       break;
-    case PayFrequency.biweekly:
+    case PayFrequency.BIWEEKLY:
       amount = getRandomInteger(1000, 3000); // Random bi-weekly salary
       rangeModifier = 200;
       break;
-    case PayFrequency.monthly:
+    case PayFrequency.MONTHLY:
       amount = getRandomInteger(4000, 10000); // Random monthly salary
       rangeModifier = 400;
       break;
-    case PayFrequency.yearly:
+    case PayFrequency.ANNUALLY:
       amount = getRandomInteger(50000, 120000); // Random yearly salary
       rangeModifier = 5000;
       break;
@@ -472,7 +472,7 @@ async function main() {
       })),
     });
 
-    if (currentStatus !== ApplicationStatus.applied) {
+    if (currentStatus !== ApplicationStatus.APPLIED) {
       const numInterviews = getRandomInteger(1, 2);
 
       for (let k = 0; k < numInterviews; k++) {

@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, expect, mock, describe, afterEach } from "bun:test";
 import { updateJob } from "./updateJob";
 import { WorkMode } from "@prisma/client";
 import { expectToHaveBeenCalledWith } from "@/testHelper";
@@ -33,6 +33,10 @@ describe("updateJob", () => {
 
   const mockJobUpdate = mock(async ({ where: { id }, data }) => {
     return { id, ...data };
+  });
+
+  afterEach(() => {
+    mockJobUpdate.mockClear();
   });
 
   const mockCompensationUpdate = mock(
@@ -180,6 +184,7 @@ describe("updateJob", () => {
         salaryRangeMax: undefined,
         hoursWeek: undefined,
         negotiable: undefined,
+        user: { connect: { id: "user123" } },
       },
     });
   });

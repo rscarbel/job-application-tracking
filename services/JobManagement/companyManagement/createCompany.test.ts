@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, mock, describe, afterEach } from "bun:test";
 import { createCompany } from "./createCompany";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import { expectToHaveBeenCalledWith } from "@/testHelper";
@@ -54,6 +54,13 @@ describe("createCompany", () => {
     return { default: mockPrisma };
   });
 
+  afterEach(() => {
+    mockCompanyCreate.mockClear();
+    mockDetailsCreate.mockClear();
+    mockAddressCreate.mockClear();
+    mockPreferencesCreate.mockClear();
+  });
+
   test("should create a new company with only name and uuid", async () => {
     const companyInput = {
       name: "The Empire",
@@ -96,7 +103,7 @@ describe("createCompany", () => {
         },
         preferences: {
           create: {
-            desireability: "medium",
+            desireability: "MEDIUM",
             notes: "",
           },
         },
@@ -170,7 +177,7 @@ describe("createCompany", () => {
         },
         preferences: {
           create: {
-            desireability: "high",
+            desireability: "HIGH",
             notes: "The Empire is a great place to work",
           },
         },

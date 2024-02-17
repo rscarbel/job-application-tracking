@@ -74,7 +74,7 @@ export const createJob = async ({
         },
       },
       compensation: {
-        create: compensation,
+        create: { userId, ...compensation },
       },
       address: {
         create: address,

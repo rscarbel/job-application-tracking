@@ -140,7 +140,7 @@ describe("createJob", () => {
     expectToHaveBeenCalledWith(mockPrisma.job.create, {
       data: {
         title: "Software Engineer",
-        workMode: "remote",
+        workMode: "REMOTE",
         responsibilities: [],
         company: {
           connect: {

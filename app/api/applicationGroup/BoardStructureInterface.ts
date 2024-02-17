@@ -2,21 +2,21 @@ import { FormattedCardForBoardInterface } from "@/services/FormattedCardInterfac
 import { ApplicationStatus } from "@prisma/client";
 
 export const columnOrder = [
-  ApplicationStatus.applied,
-  ApplicationStatus.interview,
-  ApplicationStatus.offer,
-  ApplicationStatus.rejected,
-  ApplicationStatus.accepted,
-  ApplicationStatus.passed,
+  ApplicationStatus.APPLIED,
+  ApplicationStatus.INTERVIEW,
+  ApplicationStatus.OFFER,
+  ApplicationStatus.REJECTED,
+  ApplicationStatus.ACCEPTED,
+  ApplicationStatus.PASSED,
 ];
 
 export enum ColumnNameEnum {
-  Applied = "Applied",
-  Interview = "Interview",
-  Offer = "Offer",
-  Rejected = "Rejected",
-  Accepted = "Accepted",
-  Passed = "Passed",
+  APPLIED = "Applied",
+  INTERVIEW = "Interview",
+  OFFER = "Offer",
+  REJECTED = "Rejected",
+  ACCEPTED = "Accepted",
+  PASSED = "Passed",
 }
 
 export interface BoardStructureInterface {

@@ -131,6 +131,11 @@ export async function POST(request: ApiRequest) {
               id: job.id,
             },
           },
+          user: {
+            connect: {
+              id: user.id,
+            },
+          },
         },
       });
 

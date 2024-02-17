@@ -97,6 +97,7 @@ describe("updateCompensation", () => {
         salaryRangeMax: 150000,
         hoursWeek: 40,
         negotiable: true,
+        user: { connect: { id: "user123" } },
       },
     });
   });
