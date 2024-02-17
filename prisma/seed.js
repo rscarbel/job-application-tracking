@@ -58,12 +58,6 @@ const prisma = new PrismaClient();
 const NUM_APPLICATION_CARDS = 10;
 const TAG_OPTIONS = ["Near Home", "Good Benefits", "Tech Industry"];
 
-const getRandomTags = () => {
-  const shuffledTags = [...TAG_OPTIONS].sort(() => 0.5 - Math.random());
-  const numberOfTags = getRandomInteger(0, TAG_OPTIONS.length);
-  return shuffledTags.slice(0, numberOfTags);
-};
-
 const getRandomDesireability = () => {
   const desireabilityValues = Object.values(CompanyDesireability).push(null);
   const randomIndex = getRandomInteger(0, desireabilityValues.length - 1);
@@ -221,8 +215,26 @@ async function main() {
   BENEFIT_NAMES.map(
     async (name) =>
       await prisma.benefit.create({
-        data: { name, userId: user1.id },
+        data: {
+          name,
+          user: {
+            connect: {
+              id: user1.id,
+            },
+          },
+        },
       })
+  );
+
+  await Promise.all(
+    TAG_OPTIONS.map(async (tag) => {
+      return await prisma.applicationTag.create({
+        data: {
+          name: tag,
+          userId: user1.id,
+        },
+      });
+    })
   );
 
   await createDocumentsForUser(user1.id, prisma);
@@ -241,26 +253,6 @@ async function main() {
       userId: user1.id,
     },
   });
-
-  const createdTags = await Promise.all(
-    TAG_OPTIONS.map(async (tag) => {
-      return await prisma.applicationTag.create({
-        data: {
-          name: tag,
-          group: {
-            connect: {
-              id: group1.id,
-            },
-          },
-        },
-      });
-    })
-  );
-
-  const tagMap = createdTags.reduce((acc, tag) => {
-    acc[tag.name] = tag.id;
-    return acc;
-  }, {});
 
   const statusIndices = Object.values(ApplicationStatus).reduce(
     (acc, status) => {
@@ -395,6 +387,11 @@ async function main() {
             salaryRangeMin: salaryRangeMin,
             salaryRangeMax: salaryRangeMax,
             negotiable: negotiable,
+            user: {
+              connect: {
+                id: user1.id,
+              },
+            },
           },
         },
         responsibilities: generateJobResponsibilities(),
@@ -424,15 +421,21 @@ async function main() {
       .slice(0, numBenefits)
       .map((benefit) => ({ id: benefit.id }));
 
+    const createdTags = await prisma.applicationTag.findMany();
+
+    const numTags = getRandomInteger(0, createdTags.length);
+
+    const tags = createdTags
+      .sort(() => 0.5 - Math.random())
+      .slice(0, numTags)
+      .map((tag) => ({ id: tag.id }));
+
     await prisma.jobBenefit.createMany({
       data: benefits.map((benefit) => ({
         jobId: job.id,
         benefitId: benefit.id,
       })),
     });
-
-    const randomTags = getRandomTags();
-    const tagIds = randomTags.map((tagName) => tagMap[tagName]);
 
     const application = await prisma.application.create({
       data: {
@@ -454,10 +457,19 @@ async function main() {
             id: group1.id,
           },
         },
-        tags: {
-          connect: tagIds.map((id) => ({ id })),
+        user: {
+          connect: {
+            id: user1.id,
+          },
         },
       },
+    });
+
+    await prisma.applicationApplicationTag.createMany({
+      data: tags.map((tag) => ({
+        applicationId: application.id,
+        tagId: tag.id,
+      })),
     });
 
     if (currentStatus !== ApplicationStatus.applied) {
@@ -466,11 +478,20 @@ async function main() {
       for (let k = 0; k < numInterviews; k++) {
         await prisma.interview.create({
           data: {
-            applicationId: application.id,
+            application: {
+              connect: {
+                id: application.id,
+              },
+            },
             scheduledTime: faker.date.future(),
             location: faker.location.city(),
             notes: faker.lorem.sentence(),
             feedback: faker.lorem.sentences(2),
+            user: {
+              connect: {
+                id: user1.id,
+              },
+            },
           },
         });
       }
