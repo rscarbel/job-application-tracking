@@ -188,11 +188,11 @@ const Form = ({
         <Dropdown
           id="workMode"
           name="workMode"
-          value={workMode}
+          value={workMode.toLowerCase()}
           className={STYLE_CLASSES.FORM_BASIC_INPUT}
           options={["remote", "onsite", "hybrid"]}
           onChange={(e) => {
-            onInputChange(e.target.name, e.target.value);
+            onInputChange(e.target.name, e.target.value.toUpperCase());
           }}
           placeholder="Select a Status"
         />
@@ -326,12 +326,12 @@ const Form = ({
           value={status}
           className={STYLE_CLASSES.FORM_BASIC_INPUT}
           options={[
-            ApplicationStatus.applied,
-            ApplicationStatus.interview,
-            ApplicationStatus.offer,
-            ApplicationStatus.rejected,
-            ApplicationStatus.accepted,
-            ApplicationStatus.passed,
+            ApplicationStatus.APPLIED,
+            ApplicationStatus.INTERVIEW,
+            ApplicationStatus.OFFER,
+            ApplicationStatus.REJECTED,
+            ApplicationStatus.ACCEPTED,
+            ApplicationStatus.PASSED,
           ]}
           onChange={(e) => {
             onInputChange(e.target.name, e.target.value);

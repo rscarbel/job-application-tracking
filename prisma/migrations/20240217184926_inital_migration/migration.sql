@@ -1,14 +1,14 @@
 -- CreateEnum
-CREATE TYPE "WorkMode" AS ENUM ('onsite', 'remote', 'hybrid');
+CREATE TYPE "WorkMode" AS ENUM ('ONSITE', 'REMOTE', 'HYBRID');
 
 -- CreateEnum
-CREATE TYPE "CompanyDesireability" AS ENUM ('high', 'medium', 'low');
+CREATE TYPE "CompanyDesireability" AS ENUM ('HIGH', 'MEDIUM', 'LOW');
 
 -- CreateEnum
-CREATE TYPE "ApplicationStatus" AS ENUM ('applied', 'interview', 'offer', 'rejected', 'accepted', 'passed');
+CREATE TYPE "ApplicationStatus" AS ENUM ('APPLIED', 'INTERVIEW', 'OFFER', 'REJECTED', 'ACCEPTED', 'PASSED');
 
 -- CreateEnum
-CREATE TYPE "PayFrequency" AS ENUM ('hourly', 'weekly', 'biweekly', 'monthly', 'yearly');
+CREATE TYPE "PayFrequency" AS ENUM ('HOURLY', 'WEEKLY', 'BIWEEKLY', 'MONTHLY', 'ANNUALLY');
 
 -- CreateEnum
 CREATE TYPE "DocumentType" AS ENUM ('RESUME', 'COVER_LETTER', 'PORTFOLIO', 'OTHER');
@@ -30,7 +30,7 @@ CREATE TABLE "Application" (
     "jobId" INTEGER NOT NULL,
     "positionIndex" INTEGER NOT NULL,
     "notes" TEXT,
-    "status" "ApplicationStatus" NOT NULL DEFAULT 'applied',
+    "status" "ApplicationStatus" NOT NULL DEFAULT 'APPLIED',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "applicationGroupId" INTEGER NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE "Job" (
     "description" TEXT,
     "companyId" INTEGER NOT NULL,
     "userId" TEXT NOT NULL,
-    "workMode" "WorkMode" NOT NULL DEFAULT 'onsite',
+    "workMode" "WorkMode" NOT NULL DEFAULT 'ONSITE',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -126,7 +126,7 @@ CREATE TABLE "JobBenefit" (
 CREATE TABLE "Compensation" (
     "id" SERIAL NOT NULL,
     "payAmount" DOUBLE PRECISION DEFAULT 0,
-    "payFrequency" "PayFrequency" NOT NULL DEFAULT 'hourly',
+    "payFrequency" "PayFrequency" NOT NULL DEFAULT 'HOURLY',
     "currency" TEXT NOT NULL DEFAULT 'USD',
     "salaryRangeMin" DOUBLE PRECISION,
     "salaryRangeMax" DOUBLE PRECISION,

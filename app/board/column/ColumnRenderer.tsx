@@ -17,8 +17,8 @@ const ColumnRenderer: FunctionComponent<ColumnRendererProps> = ({
   applications,
 }) => {
   const doubleColumns: { [key: string]: ApplicationStatus } = {
-    offer: ApplicationStatus.accepted,
-    rejected: ApplicationStatus.passed,
+    OFFER: ApplicationStatus.ACCEPTED,
+    REJECTED: ApplicationStatus.PASSED,
   };
 
   if (doubleColumns[columnId]) {

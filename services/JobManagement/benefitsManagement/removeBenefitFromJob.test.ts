@@ -1,5 +1,6 @@
 import { test, expect, mock, describe } from "bun:test";
 import { removeBenefitFromJob } from "./removeBenefitFromJob";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("removeBenefitFromJob", () => {
   const foundBenefit = {
@@ -49,7 +50,7 @@ describe("removeBenefitFromJob", () => {
       jobId,
     });
 
-    expect(mockPrisma.jobBenefit.delete).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.jobBenefit.delete, {
       where: {
         jobId_benefitId: {
           benefitId: foundBenefit.id,

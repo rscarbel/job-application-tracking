@@ -37,9 +37,9 @@ const defaultFormData: NewApplicationFormData = {
   jobId: undefined,
   jobTitle: "",
   jobDescription: "",
-  workMode: WorkMode.onsite,
+  workMode: WorkMode.ONSITE,
   payAmount: 0,
-  payFrequency: PayFrequency.hourly,
+  payFrequency: PayFrequency.HOURLY,
   currency: "USD",
   streetAddress: "",
   city: "",
@@ -50,7 +50,7 @@ const defaultFormData: NewApplicationFormData = {
   applicationDate: TODAY,
   positionIndex: 0,
   notes: "",
-  status: ApplicationStatus.applied,
+  status: ApplicationStatus.APPLIED,
 };
 
 const CreateCard: React.FC = () => {

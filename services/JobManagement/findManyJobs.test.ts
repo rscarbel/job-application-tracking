@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, expect, mock, describe, afterEach } from "bun:test";
 import { findManyJobs } from "./findManyJobs";
 import {
   WorkMode,
@@ -7,6 +7,7 @@ import {
   CompanyType,
 } from "@prisma/client";
 import { JobSortFieldEnum } from "./ManyJobsInterface";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("findManyJobs", () => {
   const mockCompanyDetails = {
@@ -24,28 +25,9 @@ describe("findManyJobs", () => {
   const mockJob = {
     id: 1,
     title: "Software Engineer",
-    workMode: WorkMode.remote,
+    workMode: WorkMode.REMOTE,
     responsibilities: ["Develop software", "Review code"],
     company: mockCompanyDetails,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const mockBenefit = {
-    id: 1,
-    name: "Health Insurance",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-
-  const mockLocation = {
-    id: 1,
-    streetAddress: "123 Tech Lane",
-    streetAddress2: "Suite 100",
-    city: "Innovation City",
-    state: "CA",
-    country: "USA",
-    zipCode: "90001",
     createdAt: new Date(),
     updatedAt: new Date(),
   };
@@ -64,6 +46,10 @@ describe("findManyJobs", () => {
     return { default: mockPrisma };
   });
 
+  afterEach(() => {
+    mockJobsFindMany.mockClear();
+  });
+
   test("should return jobs based on filters", async () => {
     const jobs = await findManyJobs({
       userId: "user123",
@@ -76,11 +62,11 @@ describe("findManyJobs", () => {
       sort: { field: JobSortFieldEnum.pay, order: "desc" },
       filters: {
         companies: ["Tech Innovations"],
-        workModes: [WorkMode.remote],
+        workModes: [WorkMode.REMOTE],
         benefits: ["Health Insurance"],
         payMinimum: 50000,
         payMaximum: 150000,
-        payFrequencies: [PayFrequency.yearly],
+        payFrequencies: [PayFrequency.ANNUALLY],
         currencies: ["USD"],
         companySizes: [CompanySize.MEDIUM],
         companyTypes: [CompanyType.PRIVATE],
@@ -91,12 +77,12 @@ describe("findManyJobs", () => {
         },
         createdAt: new Date(),
         excludeBenefits: ["Dental Insurance"],
-        excludePayFrequencies: [PayFrequency.weekly],
+        excludePayFrequencies: [PayFrequency.WEEKLY],
         excludeCurrencies: ["EUR"],
         excludeCompanies: ["Tech Innovations"],
         excludeCompanySizes: [CompanySize.SMALL],
         excludeCompanyTypes: [CompanyType.PUBLIC],
-        excludeWorkModes: [WorkMode.hybrid],
+        excludeWorkModes: [WorkMode.HYBRID],
         excludeLocations: {
           cities: ["Goldnerberg"],
           states: ["Texas"],
@@ -116,7 +102,7 @@ describe("findManyJobs", () => {
 
     expect(jobs).toHaveLength(1);
     expect(jobs[0].title).toEqual("Software Engineer");
-    expect(mockJobsFindMany).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobsFindMany, {
       where: {
         userId: "user123",
         company: {
@@ -126,7 +112,7 @@ describe("findManyJobs", () => {
             type: { not: { in: ["PUBLIC"] } },
           },
         },
-        workMode: { not: { in: ["hybrid"] } },
+        workMode: { not: { in: ["HYBRID"] } },
         benefits: {
           some: {
             benefit: {
@@ -136,7 +122,7 @@ describe("findManyJobs", () => {
         },
         compensation: {
           payAmount: { gte: 50000, lte: 150000 },
-          payFrequency: { not: { in: ["weekly"] } },
+          payFrequency: { not: { in: ["WEEKLY"] } },
           currency: { not: { in: ["EUR"] } },
         },
         address: {
@@ -168,7 +154,7 @@ describe("findManyJobs", () => {
 
     expect(jobs).toHaveLength(1);
     expect(jobs[0].title).toEqual("Software Engineer");
-    expect(mockJobsFindMany).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobsFindMany, {
       where: { userId: "user123" },
       skip: 0,
       take: 10,

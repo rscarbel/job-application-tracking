@@ -26,7 +26,9 @@ export const calculateBoardStructure = (
   const generatedColumns = columns.reduce<GeneratedColumnsInterface>(
     (acc, column) => {
       const columnApplications = applications.filter(
-        (application) => application.status === column.id
+        (application) =>
+          application.status.toLocaleLowerCase() ===
+          column.id.toLocaleLowerCase()
       );
       acc[column.id] = {
         ...column,
@@ -54,33 +56,33 @@ export const calculateBoardStructure = (
 
 const columns: ColumnInterface[] = [
   {
-    id: ApplicationStatus.applied,
-    title: ColumnNameEnum.Applied,
+    id: ApplicationStatus.APPLIED,
+    title: ColumnNameEnum.APPLIED,
     applicationIds: [],
   },
   {
-    id: ApplicationStatus.interview,
-    title: ColumnNameEnum.Interview,
+    id: ApplicationStatus.INTERVIEW,
+    title: ColumnNameEnum.INTERVIEW,
     applicationIds: [],
   },
   {
-    id: ApplicationStatus.offer,
-    title: ColumnNameEnum.Offer,
+    id: ApplicationStatus.OFFER,
+    title: ColumnNameEnum.OFFER,
     applicationIds: [],
   },
   {
-    id: ApplicationStatus.rejected,
-    title: ColumnNameEnum.Rejected,
+    id: ApplicationStatus.REJECTED,
+    title: ColumnNameEnum.REJECTED,
     applicationIds: [],
   },
   {
-    id: ApplicationStatus.passed,
-    title: ColumnNameEnum.Passed,
+    id: ApplicationStatus.PASSED,
+    title: ColumnNameEnum.PASSED,
     applicationIds: [],
   },
   {
-    id: ApplicationStatus.accepted,
-    title: ColumnNameEnum.Accepted,
+    id: ApplicationStatus.ACCEPTED,
+    title: ColumnNameEnum.ACCEPTED,
     applicationIds: [],
   },
 ];

@@ -28,7 +28,7 @@ const defaultCompanyAddress: CompanyAddressInterface = {
 };
 
 const defaultCompanyPreferences: CompanyPreferenceInterface = {
-  desireability: CompanyDesireability.medium,
+  desireability: CompanyDesireability.MEDIUM,
   notes: "",
 };
 

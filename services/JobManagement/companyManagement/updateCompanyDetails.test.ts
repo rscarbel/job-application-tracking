@@ -1,6 +1,7 @@
 import { test, expect, mock, beforeEach, describe } from "bun:test";
 import { CompanySize, CompanyType } from "@prisma/client";
 import { updateCompanyDetails } from "./updateCompanyDetails";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("updateCompanyDetails", () => {
   let mockPrisma: any;
@@ -77,7 +78,7 @@ describe("updateCompanyDetails", () => {
     await updateCompanyDetails(updateCompanyArgs);
 
     expect(mockPrisma.companyDetail.update).toHaveBeenCalled();
-    expect(mockPrisma.companyDetail.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.companyDetail.update, {
       where: {
         companyId: 1,
       },

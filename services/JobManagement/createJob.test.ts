@@ -1,6 +1,7 @@
 import { test, expect, mock, beforeEach, describe } from "bun:test";
 import { WorkMode, PayFrequency } from "@prisma/client";
 import { createJob } from "./createJob";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("createJob", () => {
   let mockPrisma: any;
@@ -125,9 +126,9 @@ describe("createJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       compensation: {
-        payFrequency: PayFrequency.monthly,
+        payFrequency: PayFrequency.MONTHLY,
         currency: "USD",
         salaryRangeMin: 60000,
         salaryRangeMax: 90000,
@@ -136,11 +137,10 @@ describe("createJob", () => {
     };
 
     await createJob(jobDetails);
-
-    expect(mockPrisma.job.create).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.job.create, {
       data: {
         title: "Software Engineer",
-        workMode: "remote",
+        workMode: "REMOTE",
         responsibilities: [],
         company: {
           connect: {
@@ -154,7 +154,7 @@ describe("createJob", () => {
         },
         compensation: {
           create: {
-            payFrequency: "monthly",
+            payFrequency: "MONTHLY",
             currency: "USD",
             salaryRangeMin: 60000,
             salaryRangeMax: 90000,
@@ -180,12 +180,12 @@ describe("createJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       responsibilities: ["Write code", "Test code"],
       description: "A software engineer to write and test code",
       compensation: {
         payAmount: undefined,
-        payFrequency: PayFrequency.monthly,
+        payFrequency: PayFrequency.MONTHLY,
         currency: "USD",
         salaryRangeMin: 60000,
         salaryRangeMax: 90000,
@@ -205,10 +205,10 @@ describe("createJob", () => {
 
     await createJob(jobDetails);
 
-    expect(mockPrisma.job.create).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.job.create, {
       data: {
         title: "Software Engineer",
-        workMode: "remote",
+        workMode: "REMOTE",
         responsibilities: ["Write code", "Test code"],
         description: "A software engineer to write and test code",
         company: {
@@ -224,7 +224,7 @@ describe("createJob", () => {
         compensation: {
           create: {
             payAmount: undefined,
-            payFrequency: "monthly",
+            payFrequency: "MONTHLY",
             currency: "USD",
             salaryRangeMin: 60000,
             salaryRangeMax: 90000,
@@ -251,9 +251,9 @@ describe("createJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       compensation: {
-        payFrequency: PayFrequency.monthly,
+        payFrequency: PayFrequency.MONTHLY,
         currency: "USD",
       },
     };
