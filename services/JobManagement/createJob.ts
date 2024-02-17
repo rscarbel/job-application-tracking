@@ -16,12 +16,13 @@ const defaultAddress = {
 
 const defaultCompensation = {
   payAmount: 0,
-  payFrequency: PayFrequency.hourly,
+  payFrequency: PayFrequency.HOURLY,
   currency: "USD",
   salaryRangeMin: undefined,
   salaryRangeMax: undefined,
   hoursWeek: 40,
   negotiable: true,
+  userId: "user123",
 };
 
 export const createJob = async ({
@@ -29,7 +30,7 @@ export const createJob = async ({
   userId,
   company,
   description,
-  workMode = WorkMode.remote,
+  workMode = WorkMode.REMOTE,
   responsibilities = [],
   benefits,
   compensation = defaultCompensation,

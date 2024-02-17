@@ -7,6 +7,7 @@ import {
   CompanyType,
 } from "@prisma/client";
 import { JobSortFieldEnum } from "./ManyJobsInterface";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("findManyJobs", () => {
   const mockCompanyDetails = {
@@ -116,7 +117,7 @@ describe("findManyJobs", () => {
 
     expect(jobs).toHaveLength(1);
     expect(jobs[0].title).toEqual("Software Engineer");
-    expect(mockJobsFindMany).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobsFindMany, {
       where: {
         userId: "user123",
         company: {
@@ -168,7 +169,7 @@ describe("findManyJobs", () => {
 
     expect(jobs).toHaveLength(1);
     expect(jobs[0].title).toEqual("Software Engineer");
-    expect(mockJobsFindMany).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobsFindMany, {
       where: { userId: "user123" },
       skip: 0,
       take: 10,

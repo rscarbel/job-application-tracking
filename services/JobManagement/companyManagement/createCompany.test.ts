@@ -1,10 +1,7 @@
 import { test, expect, mock, describe } from "bun:test";
 import { createCompany } from "./createCompany";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
-import { CompanyDetailsInterface } from "./CompanyDetailsInterface";
-import { CompanyAddressInterface } from "./CompanyAddressInterface";
-import { CompanyPreferenceInterface } from "./CompanyPreferenceInterface";
-import { connect } from "http2";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("createCompany", () => {
   const mockCompanyCreate = mock(async (data) => {
@@ -65,7 +62,7 @@ describe("createCompany", () => {
 
     await createCompany(companyInput);
 
-    expect(mockPrisma.company.create).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.company.create, {
       data: {
         name: "The Empire",
         user: {
@@ -132,14 +129,14 @@ describe("createCompany", () => {
         country: "Galactic Empire",
       },
       preferences: {
-        desireability: CompanyDesireability.high,
+        desireability: CompanyDesireability.HIGH,
         notes: "The Empire is a great place to work",
       },
     };
 
     await createCompany(companyInput);
 
-    expect(mockPrisma.company.create).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.company.create, {
       data: {
         name: "The Empire",
         user: {

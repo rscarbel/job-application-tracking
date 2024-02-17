@@ -1,6 +1,7 @@
 import { test, expect, mock, describe } from "bun:test";
 import { updateJob } from "./updateJob";
 import { WorkMode } from "@prisma/client";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("updateJob", () => {
   const mockCompany = {
@@ -16,7 +17,7 @@ describe("updateJob", () => {
     title: "Software Engineer",
     userId: "user123",
     company: mockCompany,
-    workMode: WorkMode.remote,
+    workMode: WorkMode.REMOTE,
     responsibilities: ["Existing responsibility"],
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -159,7 +160,7 @@ describe("updateJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       compensation: {
         payAmount: 100000,
       },
@@ -167,7 +168,7 @@ describe("updateJob", () => {
 
     expect(mockCompensationUpdate).toHaveBeenCalled();
 
-    expect(mockCompensationUpdate).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockCompensationUpdate, {
       where: {
         jobId: 1,
       },
@@ -188,7 +189,7 @@ describe("updateJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       address: {
         streetAddress: "123 Tech Lane",
         city: "Innovation City",
@@ -200,7 +201,7 @@ describe("updateJob", () => {
 
     expect(mockAddressUpdate).toHaveBeenCalled();
 
-    expect(mockAddressUpdate).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockAddressUpdate, {
       where: {
         jobId: 1,
       },
@@ -219,7 +220,7 @@ describe("updateJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       benefits: ["Health Insurance", "Equity"],
     });
 
@@ -231,7 +232,7 @@ describe("updateJob", () => {
         benefitId: 1,
       },
     });
-    expect(mockJobBenefitCreate).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobBenefitCreate, {
       data: {
         jobId: 1,
         benefitId: 2,
@@ -244,11 +245,11 @@ describe("updateJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       responsibilities: ["Develop software", "Review code"],
     });
 
-    expect(mockJobUpdate).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobUpdate, {
       where: {
         id: 1,
       },
@@ -265,17 +266,17 @@ describe("updateJob", () => {
       title: "Software Engineer",
       userId: "user123",
       company: mockCompany,
-      workMode: WorkMode.remote,
+      workMode: WorkMode.REMOTE,
       description: "A software engineer to write and test code",
       newTitle: "Senior Software Engineer",
-      newWorkMode: WorkMode.onsite,
+      newWorkMode: WorkMode.ONSITE,
     });
 
-    expect(mockJobUpdate).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockJobUpdate, {
       where: { id: 1 },
       data: {
         title: "Senior Software Engineer",
-        workMode: WorkMode.onsite,
+        workMode: WorkMode.ONSITE,
         description: "A software engineer to write and test code",
       },
     });

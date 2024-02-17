@@ -1,5 +1,6 @@
 import { test, expect, mock, describe } from "bun:test";
 import { addBenefitToJob } from "./addBenefitToJob";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("addBenefitToJob", () => {
   const foundBenefit = {
@@ -90,7 +91,7 @@ describe("addBenefitToJob", () => {
       jobId,
     });
 
-    expect(mockPrisma.jobBenefit.create).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.jobBenefit.create, {
       data: {
         jobId,
         benefitId: newBenefit.id,

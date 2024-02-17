@@ -1,6 +1,7 @@
 import { test, expect, mock, describe } from "bun:test";
 import { deleteJob } from "./deleteJob";
 import { WorkMode } from "@prisma/client";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("deleteJob", () => {
   const existingJob = {
@@ -9,7 +10,7 @@ describe("deleteJob", () => {
     userId: "user123",
     responsibilities: [],
     description: "A pirate's life for me",
-    workMode: WorkMode.remote,
+    workMode: WorkMode.REMOTE,
     companyId: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -30,7 +31,7 @@ describe("deleteJob", () => {
   test("should delete a job", async () => {
     await deleteJob({ job: existingJob });
 
-    expect(mockPrisma.job.delete).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.job.delete, {
       where: {
         id: existingJob.id,
       },

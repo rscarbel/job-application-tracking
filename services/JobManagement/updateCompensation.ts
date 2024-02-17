@@ -1,10 +1,10 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { PayFrequency } from "@prisma/client";
 import { JobCompensationInterface } from "./JobCompensationInterface";
 
 interface UpdateCompensationInterface extends JobCompensationInterface {
   jobId: number;
+  userId: string;
   client?: TransactionClient | typeof prisma;
 }
 
@@ -17,6 +17,7 @@ export const updateCompensation = async ({
   hoursWeek,
   negotiable,
   jobId,
+  userId,
   client = prisma,
 }: UpdateCompensationInterface) => {
   return client.compensation.update({
@@ -31,6 +32,11 @@ export const updateCompensation = async ({
       salaryRangeMax,
       hoursWeek,
       negotiable,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
     },
   });
 };

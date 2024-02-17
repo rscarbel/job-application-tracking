@@ -1,6 +1,7 @@
 import { test, expect, mock, beforeEach, describe } from "bun:test";
 import { PayFrequency } from "@prisma/client";
 import { updateCompensation } from "./updateCompensation";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("updateCompensation", () => {
   let mockPrisma: any;
@@ -17,6 +18,9 @@ describe("updateCompensation", () => {
           salaryRangeMax,
           hoursWeek,
           negotiable,
+          user: {
+            connect: { id },
+          },
         },
       }) => {
         if (jobId === 1) {
@@ -30,6 +34,7 @@ describe("updateCompensation", () => {
             negotiable,
             id: 1,
             jobId,
+            userId: id,
             updatedAt: new Date(),
             createdAt: new Date(),
           };
@@ -55,12 +60,13 @@ describe("updateCompensation", () => {
       id: 1,
       jobId: 1,
       payAmount: 120000,
-      payFrequency: PayFrequency.yearly,
+      payFrequency: PayFrequency.ANNUALLY,
       currency: "USD",
       salaryRangeMin: 100000,
       salaryRangeMax: 150000,
       hoursWeek: 40,
       negotiable: true,
+      userId: "user123",
     };
 
     const result = await updateCompensation(compensationDetails);
@@ -69,22 +75,23 @@ describe("updateCompensation", () => {
       id: 1,
       jobId: 1,
       payAmount: 120000,
-      payFrequency: PayFrequency.yearly,
+      payFrequency: PayFrequency.ANNUALLY,
       currency: "USD",
       salaryRangeMin: 100000,
       salaryRangeMax: 150000,
       hoursWeek: 40,
       negotiable: true,
+      userId: "user123",
       updatedAt: new Date(),
       createdAt: new Date(),
     });
-    expect(mockPrisma.compensation.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.compensation.update, {
       where: {
         jobId: 1,
       },
       data: {
         payAmount: 120000,
-        payFrequency: PayFrequency.yearly,
+        payFrequency: PayFrequency.ANNUALLY,
         currency: "USD",
         salaryRangeMin: 100000,
         salaryRangeMax: 150000,
@@ -98,27 +105,33 @@ describe("updateCompensation", () => {
     const compensationDetails = {
       jobId: 314159265358979,
       payAmount: 120000,
-      payFrequency: PayFrequency.yearly,
+      payFrequency: PayFrequency.ANNUALLY,
       currency: "USD",
       salaryRangeMin: 100000,
       salaryRangeMax: 150000,
       negotiable: true,
+      userId: "user123",
     };
 
     const result = await updateCompensation(compensationDetails);
 
     expect(result).toBeNull();
-    expect(mockPrisma.compensation.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.compensation.update, {
       where: {
         jobId: 314159265358979,
       },
       data: {
         payAmount: 120000,
-        payFrequency: PayFrequency.yearly,
+        payFrequency: PayFrequency.ANNUALLY,
         currency: "USD",
         salaryRangeMin: 100000,
         salaryRangeMax: 150000,
         negotiable: true,
+        user: {
+          connect: {
+            id: "user123",
+          },
+        },
       },
     });
   });

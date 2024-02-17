@@ -1,5 +1,6 @@
 import { test, expect, mock, describe } from "bun:test";
 import { deleteCompany } from "./deleteCompany";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("deleteCompany", () => {
   const foundCompany = {
@@ -37,7 +38,7 @@ describe("deleteCompany", () => {
       userId,
     });
 
-    expect(mockPrisma.company.delete).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.company.delete, {
       where: {
         name_userId: {
           name: companyName,

@@ -1,5 +1,6 @@
 import { test, expect, mock, describe } from "bun:test";
 import { findCompanyByName } from "./findCompanyByName";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("findCompanyByName", () => {
   interface Company {
@@ -49,7 +50,7 @@ describe("findCompanyByName", () => {
 
     expect(result).toEqual(expectedCompany);
     expect(mockPrisma.company.findUnique).toHaveBeenCalled();
-    expect(mockPrisma.company.findUnique).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.company.findUnique, {
       where: {
         name_userId: {
           name: "East Indian Trading Company",

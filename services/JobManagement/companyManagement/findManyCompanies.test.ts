@@ -2,6 +2,7 @@ import { test, expect, mock, describe } from "bun:test";
 import { findManyCompanies } from "./findManyCompanies";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import { CompanySortFieldEnum } from "./ManyCompaniesInterface";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("findManyCompanies", () => {
   const mockCompanyDetails = {
@@ -12,7 +13,7 @@ describe("findManyCompanies", () => {
       type: CompanyType.PRIVATE,
     },
     preferences: {
-      desireability: CompanyDesireability.high,
+      desireability: CompanyDesireability.HIGH,
     },
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -56,7 +57,7 @@ describe("findManyCompanies", () => {
         names: ["Innovative Startups"],
         companySizes: [CompanySize.SMALL],
         companyTypes: [CompanyType.PRIVATE],
-        desireabilities: [CompanyDesireability.high],
+        desireabilities: [CompanyDesireability.HIGH],
         locations: {
           cities: ["Tech City"],
           states: ["Innovation State"],
@@ -66,7 +67,7 @@ describe("findManyCompanies", () => {
         excludeNames: ["Old Enterprises"],
         excludeCompanySizes: [CompanySize.LARGE],
         excludeCompanyTypes: [CompanyType.PUBLIC],
-        excludeDesireabilities: [CompanyDesireability.low],
+        excludeDesireabilities: [CompanyDesireability.LOW],
         excludeLocations: {
           cities: ["Old Town"],
           states: ["Old State"],
@@ -86,7 +87,7 @@ describe("findManyCompanies", () => {
 
     expect(companies).toHaveLength(1);
     expect(companies[0].name).toEqual("Innovative Startups");
-    expect(mockCompaniesFindMany).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockCompaniesFindMany, {
       where: {
         userId: "user456",
         name: { notIn: ["Old Enterprises"] },
@@ -116,7 +117,7 @@ describe("findManyCompanies", () => {
 
     expect(companies).toHaveLength(1);
     expect(companies[0].name).toEqual("Innovative Startups");
-    expect(mockCompaniesFindMany).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockCompaniesFindMany, {
       where: { userId: "user456" },
       skip: 0,
       take: 10,

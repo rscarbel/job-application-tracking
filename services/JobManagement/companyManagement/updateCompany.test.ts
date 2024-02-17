@@ -1,6 +1,7 @@
 import { test, expect, mock, describe } from "bun:test";
 import { updateCompany } from "./updateCompany";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("updateCompany", () => {
   const mockCompanyUpdate = mock(async ({ where: { id }, data: { name } }) => {
@@ -109,7 +110,7 @@ describe("updateCompany", () => {
     });
 
     expect(mockPrisma.company.update).toHaveBeenCalled();
-    expect(mockPrisma.company.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.company.update, {
       where: {
         id: 1,
       },
@@ -141,7 +142,7 @@ describe("updateCompany", () => {
     await updateCompany(updateCompanyArgs);
 
     expect(mockPrisma.companyDetail.update).toHaveBeenCalled();
-    expect(mockPrisma.companyDetail.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.companyDetail.update, {
       where: {
         companyId: 1,
       },
@@ -186,7 +187,7 @@ describe("updateCompany", () => {
     });
 
     expect(mockPrisma.companyAddress.update).toHaveBeenCalled();
-    expect(mockPrisma.companyAddress.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.companyAddress.update, {
       where: {
         companyId: 1,
       },
@@ -206,7 +207,7 @@ describe("updateCompany", () => {
       name: "The Empire",
       userId: "darthVader123",
       preferences: {
-        desireability: CompanyDesireability.high,
+        desireability: CompanyDesireability.HIGH,
         notes: "The most powerful company in the galaxy",
       },
     };
@@ -214,12 +215,12 @@ describe("updateCompany", () => {
     await updateCompany(updateCompanyArgs);
 
     expect(mockPrisma.companyPreference.update).toHaveBeenCalled();
-    expect(mockPrisma.companyPreference.update).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.companyPreference.update, {
       where: {
         companyId: 1,
       },
       data: {
-        desireability: CompanyDesireability.high,
+        desireability: CompanyDesireability.HIGH,
         notes: "The most powerful company in the galaxy",
       },
     });

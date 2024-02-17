@@ -9,32 +9,32 @@ datasource db {
 }
 
 enum WorkMode {
-  onsite
-  remote
-  hybrid
+  ONSITE
+  REMOTE
+  HYBRID
 }
 
 enum CompanyDesireability {
-  high
-  medium
-  low
+  HIGH
+  MEDIUM
+  LOW
 }
 
 enum ApplicationStatus {
-  applied
-  interview
-  offer
-  rejected
-  accepted
-  passed
+  APPLIED
+  INTERVIEW
+  OFFER
+  REJECTED
+  ACCEPTED
+  PASSED
 }
 
 enum PayFrequency {
-  hourly
-  weekly
-  biweekly
-  monthly
-  yearly
+  HOURLY
+  WEEKLY
+  BIWEEKLY
+  MONTHLY
+  ANNUALLY
 }
 
 enum DocumentType {
@@ -74,7 +74,7 @@ model Application {
   jobId              Int                         @unique
   positionIndex      Int
   notes              String?
-  status             ApplicationStatus           @default(applied)
+  status             ApplicationStatus           @default(APPLIED)
   createdAt          DateTime                    @default(now())
   updatedAt          DateTime                    @default(now()) @updatedAt
   applicationGroup   ApplicationGroup            @relation(fields: [applicationGroupId], references: [id], onDelete: Cascade)
@@ -152,7 +152,7 @@ model Job {
   applications     Application[]
   user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId           String
-  workMode         WorkMode      @default(onsite)
+  workMode         WorkMode      @default(ONSITE)
   compensation     Compensation?
   address          JobAddress?
   createdAt        DateTime      @default(now())
@@ -197,7 +197,7 @@ model JobBenefit {
 model Compensation {
   id             Int          @id @default(autoincrement())
   payAmount      Float?       @default(0)
-  payFrequency   PayFrequency @default(hourly)
+  payFrequency   PayFrequency @default(HOURLY)
   currency       String       @default("USD")
   salaryRangeMin Float?
   salaryRangeMax Float?

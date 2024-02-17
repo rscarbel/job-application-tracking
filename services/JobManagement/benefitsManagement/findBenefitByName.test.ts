@@ -1,5 +1,6 @@
 import { test, expect, mock, describe } from "bun:test";
 import { findBenefitByName } from "./findBenefitByName";
+import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("findBenefitByName", () => {
   interface Benefit {
@@ -49,7 +50,7 @@ describe("findBenefitByName", () => {
 
     expect(result).toEqual(expectedBenefit);
     expect(mockPrisma.benefit.findUnique).toHaveBeenCalled();
-    expect(mockPrisma.benefit.findUnique).toHaveBeenCalledWith({
+    expectToHaveBeenCalledWith(mockPrisma.benefit.findUnique, {
       where: {
         name_userId: {
           name: "Health Insurance",

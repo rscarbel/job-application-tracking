@@ -37,7 +37,7 @@ const defaultFormData: NewApplicationFormData = {
   jobId: undefined,
   jobTitle: "",
   jobDescription: "",
-  workMode: WorkMode.onsite,
+  workMode: WorkMode.ONSITE,
   payAmount: 0,
   payFrequency: PayFrequency.hourly,
   currency: "USD",

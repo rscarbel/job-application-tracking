@@ -12,7 +12,7 @@ export const updateJob = async ({
   title,
   userId,
   company,
-  workMode = WorkMode.remote,
+  workMode = WorkMode.REMOTE,
   newTitle,
   newWorkMode,
   description,
@@ -50,6 +50,7 @@ export const updateJob = async ({
     await updateCompensation({
       jobId: job.id,
       ...compensation,
+      userId,
       client,
     });
   }
