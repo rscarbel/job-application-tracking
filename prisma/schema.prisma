@@ -67,45 +67,78 @@ enum CompanyType {
 }
 
 model Application {
-  id                 Int               @id @default(autoincrement())
-  applicationDate    DateTime          @default(now())
+  id                 Int                         @id @default(autoincrement())
+  applicationDate    DateTime                    @default(now())
   applicationLink    String?
-  job                Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId              Int
+  job                Job                         @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  jobId              Int                         @unique
   positionIndex      Int
   notes              String?
-  status             ApplicationStatus @default(applied)
-  createdAt          DateTime          @default(now())
-  updatedAt          DateTime          @default(now()) @updatedAt
-  applicationGroup   ApplicationGroup  @relation(fields: [applicationGroupId], references: [id], onDelete: Cascade)
+  status             ApplicationStatus           @default(applied)
+  createdAt          DateTime                    @default(now())
+  updatedAt          DateTime                    @default(now()) @updatedAt
+  applicationGroup   ApplicationGroup            @relation(fields: [applicationGroupId], references: [id], onDelete: Cascade)
   applicationGroupId Int
   documents          Document[]
   interviews         Interview[]
-  tags               ApplicationTag[]
+  tags               ApplicationApplicationTag[]
+  user               User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId             String
 
   @@index([applicationGroupId])
+  @@index([jobId])
+  @@index([userId])
+}
+
+model ApplicationGroup {
+  id           Int           @id @default(autoincrement())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  isActive     Boolean       @default(true)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  applications Application[]
+
+  @@unique([name, userId])
 }
 
 model ApplicationTag {
-  id           Int              @id @default(autoincrement())
+  id           Int                         @id @default(autoincrement())
   name         String
-  group        ApplicationGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  groupId      Int
-  applications Application[]
+  applications ApplicationApplicationTag[]
+  userId       String
+  user         User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([name, groupId])
-  @@index([groupId])
+  @@unique([name, userId])
+  @@index([name])
+  @@index([userId])
+}
+
+model ApplicationApplicationTag {
+  applicationId Int
+  tagId         Int
+  application   Application    @relation(fields: [applicationId], references: [id])
+  tag           ApplicationTag @relation(fields: [tagId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+
+  @@id([tagId, applicationId])
+  @@index([applicationId])
+  @@index([tagId])
 }
 
 model Benefit {
   id        Int          @id @default(autoincrement())
   name      String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   jobs      JobBenefit[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @default(now()) @updatedAt
 
   @@unique([name, userId])
+  @@index([userId])
 }
 
 model Job {
@@ -143,9 +176,8 @@ model JobAddress {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @default(now()) @updatedAt
   Job            Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  jobId          Int
+  jobId          Int      @unique
 
-  @@unique([jobId])
   @@index([jobId])
 }
 
@@ -175,23 +207,12 @@ model Compensation {
   updatedAt      DateTime     @default(now()) @updatedAt
   job            Job          @relation(fields: [jobId], references: [id], onDelete: Cascade)
   jobId          Int          @unique
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         String
 
   @@index([jobId])
   @@index([payAmount])
-}
-
-model ApplicationGroup {
-  id           Int              @id @default(autoincrement())
-  name         String
-  createdAt    DateTime         @default(now())
-  updatedAt    DateTime         @default(now()) @updatedAt
-  isActive     Boolean          @default(true)
-  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId       String
-  applications Application[]
-  tags         ApplicationTag[]
-
-  @@unique([name, userId])
+  @@index([userId])
 }
 
 model User {
@@ -206,10 +227,15 @@ model User {
   emailTemplates    EmailTemplate[]
   contacts          Contact[]
   jobs              Job[]
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @default(now()) @updatedAt
   addresses         Address[]
   documents         Document[]
+  applications      Application[]
+  interviews        Interview[]
+  applicationTags   ApplicationTag[]
+  jobBenefits       Benefit[]
+  compensations     Compensation[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
 }
 
 model Company {
@@ -293,6 +319,9 @@ model Contact {
   addresses    Address[]
   user         User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String
+  interviews   Interview[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @default(now()) @updatedAt
 
   @@unique([userId, firstName, lastName, email, companyId])
   @@index([companyId])
@@ -348,13 +377,18 @@ model Interview {
   application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   applicationId Int
   scheduledTime DateTime
+  interviewType String?
   location      String?
   notes         String?
   feedback      String?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @default(now()) @updatedAt
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+  contacts      Contact[]
 
   @@index([applicationId])
+  @@index([userId])
 }
 
 model OAuth {
@@ -367,6 +401,7 @@ model OAuth {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@unique([provider, externalId])
+  @@index([userId])
 }
 
 model Document {
@@ -381,7 +416,9 @@ model Document {
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @default(now()) @updatedAt
 
+  @@unique([name, userId])
   @@index([userId])
+  @@index([type])
 }
 
 model ContactInteraction {
