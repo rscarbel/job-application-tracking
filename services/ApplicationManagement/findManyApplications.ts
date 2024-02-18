@@ -17,6 +17,9 @@ interface WhereInterface {
     some: { tag: { name: { in?: string[]; not?: { in: string[] } } } };
   };
   applicationDate?: { gte?: Date; lte?: Date };
+  applicationGroup?: {
+    some: { name: { in?: string[]; not?: { in: string[] } } };
+  };
 }
 
 const defaultInclude = {
@@ -129,6 +132,23 @@ export const findManyApplications = async ({
       where.applicationDate = {
         ...where.applicationDate,
         lte: filters.beforeDate,
+      };
+    }
+
+    if (filters.groups) {
+      where.applicationGroup = {
+        some: { name: { in: filters.groups } },
+      };
+    }
+
+    if (filters.excludeGroups) {
+      where.applicationGroup = {
+        some: {
+          name: {
+            ...where.applicationGroup?.some.name,
+            not: { in: filters.excludeGroups },
+          },
+        },
       };
     }
   }

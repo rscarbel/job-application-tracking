@@ -29,6 +29,8 @@ interface FilterInterface {
   excludeTags?: string[];
   afterDate?: Date;
   beforeDate?: Date;
+  groups?: string[];
+  excludeGroups?: string[];
 }
 
 interface SelectInterface {

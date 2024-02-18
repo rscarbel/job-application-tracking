@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, mock, describe } from "bun:test";
 import { deleteCompany } from "./deleteCompany";
 import { expectToHaveBeenCalledWith } from "@/testHelper";
 

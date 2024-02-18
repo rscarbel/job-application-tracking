@@ -59,6 +59,8 @@ describe("findManyApplications", () => {
         excludeCompanies: ["Old Tech Corp"],
         excludeStatuses: [ApplicationStatus.REJECTED],
         excludeTags: ["Backend"],
+        groups: ["group1"],
+        excludeGroups: ["group2"],
       },
       pagination: {
         offset: 0,
@@ -92,6 +94,11 @@ describe("findManyApplications", () => {
         applicationDate: {
           gte: new Date("2022-01-01"),
           lte: new Date("2023-01-01"),
+        },
+        applicationGroup: {
+          some: {
+            name: { in: ["group1"], not: { in: ["group2"] } },
+          },
         },
       },
       skip: 0,
