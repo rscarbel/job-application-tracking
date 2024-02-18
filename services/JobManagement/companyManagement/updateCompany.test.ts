@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, expect, mock, describe, afterEach } from "bun:test";
 import { updateCompany } from "./updateCompany";
 import { CompanySize, CompanyType, CompanyDesireability } from "@prisma/client";
 import { expectToHaveBeenCalledWith } from "@/testHelper";
@@ -100,6 +100,14 @@ describe("updateCompany", () => {
 
   mock.module("@/services/globalPrismaClient", () => {
     return { default: mockPrisma };
+  });
+
+  afterEach(() => {
+    mockCompanyUpdate.mockClear();
+    mockDetailUpdate.mockClear();
+    mockAddressUpdate.mockClear();
+    mockPreferencesUpdate.mockClear();
+    mockCompanyFindUnique.mockClear();
   });
 
   test("should update the company with the new name", async () => {

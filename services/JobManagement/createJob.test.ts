@@ -154,6 +154,7 @@ describe("createJob", () => {
         },
         compensation: {
           create: {
+            userId: "user123",
             payFrequency: "MONTHLY",
             currency: "USD",
             salaryRangeMin: 60000,
@@ -223,6 +224,7 @@ describe("createJob", () => {
         },
         compensation: {
           create: {
+            userId: "user123",
             payAmount: undefined,
             payFrequency: "MONTHLY",
             currency: "USD",
