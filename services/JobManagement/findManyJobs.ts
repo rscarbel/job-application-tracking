@@ -105,6 +105,7 @@ export const findManyJobs = async ({
       where.company = {
         ...where.company,
         name: {
+          ...where.company?.name,
           not: {
             in: filters.excludeCompanies,
           },
@@ -115,12 +116,14 @@ export const findManyJobs = async ({
     if (filters.companySizes || filters.companyTypes) {
       where.company = where.company || {};
       where.company.details = where.company.details || {};
+
       if (filters.companySizes) {
         where.company.details.size = { in: filters.companySizes };
       }
 
       if (filters.excludeCompanySizes) {
         where.company.details.size = {
+          ...where.company.details.size,
           not: { in: filters.excludeCompanySizes },
         };
       }
@@ -131,6 +134,7 @@ export const findManyJobs = async ({
 
       if (filters.excludeCompanyTypes) {
         where.company.details.type = {
+          ...where.company.details.type,
           not: { in: filters.excludeCompanyTypes },
         };
       }
@@ -141,7 +145,10 @@ export const findManyJobs = async ({
     }
 
     if (filters.excludeWorkModes) {
-      where.workMode = { not: { in: filters.excludeWorkModes } };
+      where.workMode = {
+        ...where.workMode,
+        not: { in: filters.excludeWorkModes },
+      };
     }
 
     if (filters.benefits) {
@@ -152,7 +159,14 @@ export const findManyJobs = async ({
 
     if (filters.excludeBenefits) {
       where.benefits = {
-        some: { benefit: { name: { not: { in: filters.excludeBenefits } } } },
+        some: {
+          benefit: {
+            name: {
+              ...where.benefits?.some.benefit.name,
+              not: { in: filters.excludeBenefits },
+            },
+          },
+        },
       };
     }
 
@@ -180,6 +194,7 @@ export const findManyJobs = async ({
     if (filters.excludePayFrequencies) {
       where.compensation = where.compensation || {};
       where.compensation.payFrequency = {
+        ...where.compensation.payFrequency,
         not: { in: filters.excludePayFrequencies },
       };
     }
@@ -192,6 +207,7 @@ export const findManyJobs = async ({
     if (filters.excludeCurrencies) {
       where.compensation = where.compensation || {};
       where.compensation.currency = {
+        ...where.compensation.currency,
         not: { in: filters.excludeCurrencies },
       };
     }
@@ -203,7 +219,9 @@ export const findManyJobs = async ({
       }
 
       if (filters.locations.states) {
-        where.address.state = { in: filters.locations.states };
+        where.address.state = {
+          in: filters.locations.states,
+        };
       }
       if (filters.locations.countries) {
         where.address.country = { in: filters.locations.countries };
@@ -211,23 +229,25 @@ export const findManyJobs = async ({
     }
 
     if (filters.excludeLocations) {
+      where.address = where.address || {};
+
       if (filters.excludeLocations.cities) {
-        where.address = where.address || {};
         where.address.city = {
+          ...where.address.city,
           not: { in: filters.excludeLocations.cities },
         };
       }
 
       if (filters.excludeLocations.states) {
-        where.address = where.address || {};
         where.address.state = {
+          ...where.address.state,
           not: { in: filters.excludeLocations.states },
         };
       }
 
       if (filters.excludeLocations.countries) {
-        where.address = where.address || {};
         where.address.country = {
+          ...where.address.country,
           not: { in: filters.excludeLocations.countries },
         };
       }

@@ -85,11 +85,18 @@ describe("findManyCompanies", () => {
     expectToHaveBeenCalledWith(mockCompaniesFindMany, {
       where: {
         userId: "user456",
-        name: { notIn: ["Old Enterprises"] },
-        details: { type: { notIn: ["PUBLIC"] } },
+        name: { in: ["Innovative Startups"], notIn: ["Old Enterprises"] },
+        details: {
+          size: { in: ["SMALL"], notIn: ["LARGE"] },
+          type: { in: ["PRIVATE"], notIn: ["PUBLIC"] },
+        },
         createdAt: { gte: new Date() },
-        preferences: { desireability: { notIn: ["LOW"] } },
-        address: { country: { notIn: ["Oldland"] } },
+        preferences: { desireability: { in: ["HIGH"], notIn: ["LOW"] } },
+        address: {
+          city: { in: ["Tech City"], notIn: ["Old Town"] },
+          state: { in: ["Innovation State"], notIn: ["Old State"] },
+          country: { in: ["Techland"], notIn: ["Oldland"] },
+        },
       },
       skip: 0,
       take: 10,
