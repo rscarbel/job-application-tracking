@@ -35,9 +35,3 @@ jobs:
 
       - name: Run tests
         run: bun run test
-
-      - name: Setup Prisma
-        run: npx prisma generate
-
-      - name: Run migrations
-        run: bun run migrate:test
