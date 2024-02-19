@@ -1,7 +1,7 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
 import { WorkMode, Company } from "@prisma/client";
-import { findCompanyByName } from "./companyManagement";
+import { findCompanyByName } from "./CompanyManagement";
 
 interface JobInterface {
   title: string;
