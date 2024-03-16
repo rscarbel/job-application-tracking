@@ -1,5 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
+import { addTagToApplication } from "./ApplicationTagManagement/addTagToApplication";
 import { ApplicationStatus, Application, Job } from "@prisma/client";
 
 export const updateApplication = async ({
@@ -21,6 +22,17 @@ export const updateApplication = async ({
   tags?: string[];
   client?: TransactionClient | typeof prisma;
 }) => {
+  if (tags) {
+    for (const tag of tags) {
+      await addTagToApplication({
+        userId: application.userId,
+        applicationId: application.id,
+        value: tag,
+        client,
+      });
+    }
+  }
+
   await client.application.update({
     where: {
       id: application.id,
@@ -37,11 +49,6 @@ export const updateApplication = async ({
         : undefined,
       positionIndex,
       status,
-      tags: tags
-        ? {
-            set: tags,
-          }
-        : undefined,
     },
   });
 };
