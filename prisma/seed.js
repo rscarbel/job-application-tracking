@@ -230,7 +230,7 @@ async function main() {
     TAG_OPTIONS.map(async (tag) => {
       return await prisma.applicationTag.create({
         data: {
-          name: tag,
+          value: tag,
           userId: user1.id,
         },
       });

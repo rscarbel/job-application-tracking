@@ -1,5 +1,6 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
+import { findBenefitByName } from "./findBenefitByName";
 
 export const updateBenefit = async ({
   name,
@@ -12,6 +13,12 @@ export const updateBenefit = async ({
   userId: string;
   client?: TransactionClient | typeof prisma;
 }) => {
+  const isNewNameEmpty = newName === undefined || newName === null;
+
+  if (isNewNameEmpty || newName === name) {
+    return findBenefitByName({ benefitName: name, userId, client });
+  }
+
   return client.benefit.update({
     where: {
       name_userId: {
