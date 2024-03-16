@@ -22,12 +22,6 @@ const DELAY_FACTOR = 5;
 interface BoardProps {
   board: BoardStructureInterface;
 }
-
-type CardDropResult = DropResult & {
-  draggableId: ApplicationStatus;
-  destination: { droppableId: ApplicationStatus };
-};
-
 const Board: FunctionComponent<BoardProps> = ({ board }) => {
   const [boardData, setBoardData] = useState<BoardStructureInterface>(board);
   const [lastSavedBoardData, setLastSavedBoardData] =
@@ -37,7 +31,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
     useState<IndividualFormattedCardInterface | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const toast = useRef<Toast>(null);
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = React.useRef<number | null>(null);
 
   const { columns, applications, columnOrder } = boardData;
 
@@ -195,7 +189,7 @@ const Board: FunctionComponent<BoardProps> = ({ board }) => {
       saveTimeoutRef.current = null;
     }
 
-    saveTimeoutRef.current = setTimeout(async () => {
+    saveTimeoutRef.current = window.setTimeout(async () => {
       try {
         const { response, data } = await updateCardStatus(
           parseInt(applicationId),
