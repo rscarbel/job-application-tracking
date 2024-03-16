@@ -1,7 +1,10 @@
 import { test, expect, mock, describe, afterEach } from "bun:test";
 import { findManyApplications } from "./findManyApplications";
 import { ApplicationStatus } from "@prisma/client";
-import { ApplicationSortFieldEnum } from "./ManyApplicationsInterface";
+import {
+  ApplicationSortFieldEnum,
+  OrderDirectionEnum,
+} from "./ManyApplicationsInterface";
 import { expectToHaveBeenCalledWith } from "@/testHelper";
 
 describe("findManyApplications", () => {
@@ -49,7 +52,10 @@ describe("findManyApplications", () => {
         interviews: true,
         tags: true,
       },
-      sort: { field: ApplicationSortFieldEnum.applicationDate, order: "desc" },
+      sort: {
+        field: ApplicationSortFieldEnum.applicationDate,
+        order: OrderDirectionEnum.desc,
+      },
       filters: {
         companies: ["Web Solutions"],
         statuses: [ApplicationStatus.APPLIED],
@@ -87,7 +93,7 @@ describe("findManyApplications", () => {
         tags: {
           some: {
             tag: {
-              name: { in: ["Frontend"], not: { in: ["Backend"] } },
+              value: { in: ["Frontend"], not: { in: ["Backend"] } },
             },
           },
         },
@@ -96,9 +102,7 @@ describe("findManyApplications", () => {
           lte: new Date("2023-01-01"),
         },
         applicationGroup: {
-          some: {
-            name: { in: ["group1"], not: { in: ["group2"] } },
-          },
+          name: { in: ["group1"], not: { in: ["group2"] } },
         },
       },
       skip: 0,
@@ -122,7 +126,7 @@ describe("findManyApplications", () => {
     sortFields.forEach(async (field) => {
       await findManyApplications({
         userId: "user123",
-        sort: { field, order: "asc" },
+        sort: { field, order: OrderDirectionEnum.asc },
       });
 
       expect(mockApplicationsFindMany).toHaveBeenCalled();

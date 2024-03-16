@@ -8,9 +8,14 @@ export enum ApplicationSortFieldEnum {
   applicationDate = "applicationDate",
 }
 
+export enum OrderDirectionEnum {
+  asc = "asc",
+  desc = "desc",
+}
+
 interface SortInterface {
   field: ApplicationSortFieldEnum;
-  order: "asc" | "desc";
+  order: OrderDirectionEnum;
 }
 
 interface IncludesInterface {

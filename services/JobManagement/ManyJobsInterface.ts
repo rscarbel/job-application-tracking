@@ -16,9 +16,14 @@ export enum JobSortFieldEnum {
   companySize = "companySize",
 }
 
+export enum OrderDirectionEnum {
+  asc = "asc",
+  desc = "desc",
+}
+
 interface SortInterface {
   field: JobSortFieldEnum;
-  order: "asc" | "desc";
+  order: OrderDirectionEnum;
 }
 
 interface IncludesInterface {

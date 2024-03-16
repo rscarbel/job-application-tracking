@@ -3,6 +3,7 @@ import { ApplicationStatus } from "@prisma/client";
 import {
   ManyApplicationsInterface,
   ApplicationSortFieldEnum,
+  OrderDirectionEnum,
 } from "./ManyApplicationsInterface";
 
 interface WhereInterface {
@@ -14,11 +15,12 @@ interface WhereInterface {
   };
   status?: { in?: ApplicationStatus[]; not?: { in: ApplicationStatus[] } };
   tags?: {
-    some: { tag: { name: { in?: string[]; not?: { in: string[] } } } };
+    some: { tag: { value: { in?: string[]; not?: { in: string[] } } } };
   };
   applicationDate?: { gte?: Date; lte?: Date };
   applicationGroup?: {
-    some: { name: { in?: string[]; not?: { in: string[] } } };
+    isActive?: boolean;
+    name?: { in?: string[]; not?: { in: string[] } };
   };
 }
 
@@ -57,18 +59,20 @@ export const findManyApplications = async ({
   const tags = include?.tags || defaultInclude.tags;
 
   const orderBy = [];
-  if (sort) {
-    switch (sort.field) {
-      case ApplicationSortFieldEnum.createdAt:
-        orderBy.push({ createdAt: sort.order });
-        break;
-      case ApplicationSortFieldEnum.applicationDate:
-        orderBy.push({ applicationDate: sort.order });
-        break;
-      case ApplicationSortFieldEnum.status:
-        orderBy.push({ status: sort.order });
-        break;
-    }
+
+  switch (sort?.field) {
+    case ApplicationSortFieldEnum.createdAt:
+      orderBy.push({ createdAt: sort.order });
+      break;
+    case ApplicationSortFieldEnum.applicationDate:
+      orderBy.push({ applicationDate: sort.order });
+      break;
+    case ApplicationSortFieldEnum.status:
+      orderBy.push({ status: sort.order });
+      break;
+    default:
+      orderBy.push({ positionIndex: OrderDirectionEnum.asc });
+      break;
   }
 
   select = select || defaultSelect;
@@ -107,7 +111,7 @@ export const findManyApplications = async ({
 
     if (filters.tags) {
       where.tags = {
-        some: { tag: { name: { in: filters.tags } } },
+        some: { tag: { value: { in: filters.tags } } },
       };
     }
 
@@ -115,8 +119,8 @@ export const findManyApplications = async ({
       where.tags = {
         some: {
           tag: {
-            name: {
-              ...where.tags?.some.tag.name,
+            value: {
+              ...where.tags?.some.tag.value,
               not: { in: filters.excludeTags },
             },
           },
@@ -135,19 +139,21 @@ export const findManyApplications = async ({
       };
     }
 
+    where.applicationGroup = {
+      isActive: true,
+    };
+
     if (filters.groups) {
       where.applicationGroup = {
-        some: { name: { in: filters.groups } },
+        name: { in: filters.groups },
       };
     }
 
     if (filters.excludeGroups) {
       where.applicationGroup = {
-        some: {
-          name: {
-            ...where.applicationGroup?.some.name,
-            not: { in: filters.excludeGroups },
-          },
+        name: {
+          ...where.applicationGroup?.name,
+          not: { in: filters.excludeGroups },
         },
       };
     }
