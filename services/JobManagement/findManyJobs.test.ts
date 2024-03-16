@@ -106,29 +106,35 @@ describe("findManyJobs", () => {
       where: {
         userId: "user123",
         company: {
-          name: { not: { in: ["Tech Innovations"] } },
+          name: {
+            in: ["Tech Innovations"],
+            not: { in: ["Tech Innovations"] },
+          },
           details: {
-            size: { not: { in: ["SMALL"] } },
-            type: { not: { in: ["PUBLIC"] } },
+            size: { in: ["MEDIUM"], not: { in: ["SMALL"] } },
+            type: { in: ["PRIVATE"], not: { in: ["PUBLIC"] } },
           },
         },
-        workMode: { not: { in: ["HYBRID"] } },
+        workMode: { in: ["REMOTE"], not: { in: ["HYBRID"] } },
         benefits: {
           some: {
             benefit: {
-              name: { not: { in: ["Dental Insurance"] } },
+              name: {
+                in: ["Health Insurance"],
+                not: { in: ["Dental Insurance"] },
+              },
             },
           },
         },
         compensation: {
           payAmount: { gte: 50000, lte: 150000 },
-          payFrequency: { not: { in: ["WEEKLY"] } },
-          currency: { not: { in: ["EUR"] } },
+          payFrequency: { in: ["ANNUALLY"], not: { in: ["WEEKLY"] } },
+          currency: { in: ["USD"], not: { in: ["EUR"] } },
         },
         address: {
-          city: { not: { in: ["Goldnerberg"] } },
-          state: { not: { in: ["Texas"] } },
-          country: { not: { in: ["Germany"] } },
+          city: { in: ["Innovation City"], not: { in: ["Goldnerberg"] } },
+          state: { in: ["CA"], not: { in: ["Texas"] } },
+          country: { in: ["USA"], not: { in: ["Germany"] } },
         },
         createdAt: { gte: new Date() },
       },

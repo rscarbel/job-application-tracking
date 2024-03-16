@@ -95,52 +95,96 @@ export const findManyCompanies = async ({
       where.name = { in: filters.names };
     }
     if (filters.excludeNames) {
-      where.name = { notIn: filters.excludeNames };
+      where.name = { ...where.name, notIn: filters.excludeNames };
     }
+
+    if (filters.companySizes || filters.companyTypes) {
+      where.details = {};
+    }
+
     if (filters.companySizes) {
       where.details = { size: { in: filters.companySizes } };
     }
+
     if (filters.excludeCompanySizes) {
-      where.details = { size: { notIn: filters.excludeCompanySizes } };
+      where.details = {
+        ...where.details,
+        size: { ...where.details?.size, notIn: filters.excludeCompanySizes },
+      };
     }
     if (filters.companyTypes) {
-      where.details = { type: { in: filters.companyTypes } };
+      where.details = { ...where.details, type: { in: filters.companyTypes } };
     }
     if (filters.excludeCompanyTypes) {
-      where.details = { type: { notIn: filters.excludeCompanyTypes } };
+      where.details = {
+        ...where.details,
+        type: { ...where.details?.type, notIn: filters.excludeCompanyTypes },
+      };
     }
     if (filters.createdAt) {
       where.createdAt = { gte: filters.createdAt };
     }
+
+    if (filters.desireabilities || filters.excludeDesireabilities) {
+      where.preferences = {};
+    }
+
     if (filters.desireabilities) {
       where.preferences = { desireability: { in: filters.desireabilities } };
     }
     if (filters.excludeDesireabilities) {
       where.preferences = {
-        desireability: { notIn: filters.excludeDesireabilities },
+        desireability: {
+          ...where.preferences?.desireability,
+          notIn: filters.excludeDesireabilities,
+        },
       };
     }
     if (filters.locations) {
+      where.address = {};
+
       if (filters.locations.cities) {
         where.address = { city: { in: filters.locations.cities } };
       }
       if (filters.locations.states) {
-        where.address = { state: { in: filters.locations.states } };
+        where.address = {
+          ...where.address,
+          state: { in: filters.locations.states },
+        };
       }
       if (filters.locations.countries) {
-        where.address = { country: { in: filters.locations.countries } };
+        where.address = {
+          ...where.address,
+          country: { in: filters.locations.countries },
+        };
       }
     }
     if (filters.excludeLocations) {
       if (filters.excludeLocations.cities) {
-        where.address = { city: { notIn: filters.excludeLocations.cities } };
+        where.address = {
+          ...where.address,
+          city: {
+            ...where.address?.city,
+            notIn: filters.excludeLocations.cities,
+          },
+        };
       }
       if (filters.excludeLocations.states) {
-        where.address = { state: { notIn: filters.excludeLocations.states } };
+        where.address = {
+          ...where.address,
+          state: {
+            ...where.address?.state,
+            notIn: filters.excludeLocations.states,
+          },
+        };
       }
       if (filters.excludeLocations.countries) {
         where.address = {
-          country: { notIn: filters.excludeLocations.countries },
+          ...where.address,
+          country: {
+            ...where.address?.country,
+            notIn: filters.excludeLocations.countries,
+          },
         };
       }
     }

@@ -6,7 +6,7 @@ import { JobAddressInterface } from "./JobAddressInterface";
 import { JobCompensationInterface } from "./JobCompensationInterface";
 import { findJob } from "./findJob";
 import { updateJobAddress } from "./updateJobAddress";
-import { addBenefitToJob } from "./benefitsManagement";
+import { addBenefitToJob } from "./BenefitsManagement";
 
 export const updateJob = async ({
   title,

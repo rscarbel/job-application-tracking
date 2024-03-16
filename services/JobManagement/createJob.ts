@@ -3,7 +3,7 @@ import { TransactionClient } from "@/utils/databaseTypes";
 import { Company, PayFrequency, WorkMode } from "@prisma/client";
 import { JobAddressInterface } from "./JobAddressInterface";
 import { JobCompensationInterface } from "./JobCompensationInterface";
-import { addBenefitToJob } from "./benefitsManagement";
+import { addBenefitToJob } from "./BenefitsManagement";
 
 const defaultAddress = {
   streetAddress: "",

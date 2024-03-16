@@ -105,13 +105,13 @@ model ApplicationGroup {
 
 model ApplicationTag {
   id           Int                         @id @default(autoincrement())
-  name         String
+  value        String
   applications ApplicationApplicationTag[]
   userId       String
   user         User                        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([name, userId])
-  @@index([name])
+  @@unique([value, userId])
+  @@index([value])
   @@index([userId])
 }
 

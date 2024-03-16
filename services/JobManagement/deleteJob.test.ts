@@ -1,4 +1,4 @@
-import { test, expect, mock, describe } from "bun:test";
+import { test, mock, describe } from "bun:test";
 import { deleteJob } from "./deleteJob";
 import { WorkMode } from "@prisma/client";
 import { expectToHaveBeenCalledWith } from "@/testHelper";
@@ -29,11 +29,12 @@ describe("deleteJob", () => {
   });
 
   test("should delete a job", async () => {
-    await deleteJob({ job: existingJob });
+    await deleteJob({ job: existingJob, userId: existingJob.userId });
 
     expectToHaveBeenCalledWith(mockPrisma.job.delete, {
       where: {
         id: existingJob.id,
+        userId: existingJob.userId,
       },
     });
   });

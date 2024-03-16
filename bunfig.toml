@@ -1,4 +1,4 @@
 [test]
 coverage = true
 coverageSkipTestFiles = true
-preload = ["./testSetup.test.js"]
+preload = ["./testSetup.js"]

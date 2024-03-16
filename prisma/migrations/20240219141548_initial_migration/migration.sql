@@ -54,7 +54,7 @@ CREATE TABLE "ApplicationGroup" (
 -- CreateTable
 CREATE TABLE "ApplicationTag" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "ApplicationTag_pkey" PRIMARY KEY ("id")
@@ -353,13 +353,13 @@ CREATE INDEX "Application_userId_idx" ON "Application"("userId");
 CREATE UNIQUE INDEX "ApplicationGroup_name_userId_key" ON "ApplicationGroup"("name", "userId");
 
 -- CreateIndex
-CREATE INDEX "ApplicationTag_name_idx" ON "ApplicationTag"("name");
+CREATE INDEX "ApplicationTag_value_idx" ON "ApplicationTag"("value");
 
 -- CreateIndex
 CREATE INDEX "ApplicationTag_userId_idx" ON "ApplicationTag"("userId");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "ApplicationTag_name_userId_key" ON "ApplicationTag"("name", "userId");
+CREATE UNIQUE INDEX "ApplicationTag_value_userId_key" ON "ApplicationTag"("value", "userId");
 
 -- CreateIndex
 CREATE INDEX "ApplicationApplicationTag_applicationId_idx" ON "ApplicationApplicationTag"("applicationId");

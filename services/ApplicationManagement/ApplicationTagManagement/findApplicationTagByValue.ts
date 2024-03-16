@@ -1,20 +1,21 @@
 import prisma from "@/services/globalPrismaClient";
 import { TransactionClient } from "@/utils/databaseTypes";
-import { Job } from "@prisma/client";
 
-export const deleteJob = async ({
-  job,
+export const findApplicationTagByValue = async ({
+  value,
   userId,
   client = prisma,
 }: {
-  job: Job;
+  value: string;
   userId: string;
   client?: TransactionClient | typeof prisma;
 }) => {
-  return client.job.delete({
+  return client.applicationTag.findUnique({
     where: {
-      id: job.id,
-      userId: job.userId,
+      value_userId: {
+        value,
+        userId,
+      },
     },
   });
 };
