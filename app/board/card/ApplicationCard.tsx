@@ -1,3 +1,5 @@
+"use client";
+
 import { FC } from "react";
 import { Draggable } from "@hello-pangea/dnd";
 import { useEditCard } from "./EditCardContext";
