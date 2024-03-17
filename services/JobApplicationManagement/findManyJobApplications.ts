@@ -3,14 +3,15 @@ import {
   ApplicationStatus,
   CompanySize,
   CompanyType,
-  WorkMode,
   PayFrequency,
+  WorkMode,
 } from "@prisma/client";
 import {
   JobApplicationSortFieldEnum,
   ManyJobApplicationsInterface,
   OrderDirectionEnum,
 } from "./ManyJobApplicationsInterface";
+import { buildSelectQuery } from "./buildSelectQuery";
 
 interface WhereInterface {
   userId: string;
@@ -48,39 +49,6 @@ interface WhereInterface {
   };
 }
 
-const defaultInclude = {
-  documents: false,
-  job: true,
-  interviews: false,
-  tags: false,
-};
-
-const defaultSelect = {
-  id: true,
-  applicationDate: true,
-  applicationLink: false,
-  notes: false,
-  positionIndex: false,
-  status: true,
-  createdAt: false,
-  updatedAt: false,
-  job: {
-    select: {
-      id: true,
-      title: true,
-      workMode: true,
-      company: {
-        select: {
-          name: true,
-          details: true,
-        },
-      },
-      address: true,
-      compensation: true,
-    },
-  },
-};
-
 export const findManyJobApplications = async ({
   userId,
   include,
@@ -92,10 +60,7 @@ export const findManyJobApplications = async ({
 }: ManyJobApplicationsInterface) => {
   const { offset: skip, limit: take } = pagination;
 
-  const documents = include?.documents || defaultInclude.documents;
-  const job = include?.job || defaultInclude.job;
-  const interviews = include?.interviews || defaultInclude.interviews;
-  const tags = include?.tags || defaultInclude.tags;
+  const selectQuery = buildSelectQuery(select, include);
 
   const orderBy = [];
 
@@ -125,11 +90,16 @@ export const findManyJobApplications = async ({
       orderBy.push({ job: { company: { details: { size: sort.order } } } });
       break;
     default:
-      orderBy.push({ positionIndex: OrderDirectionEnum.asc });
+      orderBy.push({
+        status: OrderDirectionEnum.asc,
+      });
+      orderBy.push({
+        positionIndex: OrderDirectionEnum.asc,
+      });
       break;
   }
 
-  select = select || defaultSelect;
+  select = select || {};
 
   const where: WhereInterface = { userId };
 
@@ -382,11 +352,7 @@ export const findManyJobApplications = async ({
     take,
     orderBy,
     select: {
-      ...select,
-      documents,
-      job,
-      interviews,
-      tags,
+      ...selectQuery,
     },
   };
 

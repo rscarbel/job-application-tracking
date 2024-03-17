@@ -1,10 +1,10 @@
 import { TransactionClient } from "@/utils/databaseTypes";
 import prisma from "@/services/globalPrismaClient";
 import {
-  WorkMode,
-  PayFrequency,
   CompanySize,
   CompanyType,
+  PayFrequency,
+  WorkMode,
 } from "@prisma/client";
 import { ApplicationStatus } from "@prisma/client";
 
@@ -29,21 +29,10 @@ interface SortInterface {
   order: OrderDirectionEnum;
 }
 
-interface IncludesInterface {
-  address?: boolean;
-  benefits?: boolean;
-  company?: boolean;
-  compensation?: boolean;
-  documents?: boolean;
-  interviews?: boolean;
-  job?: boolean;
-  tags?: boolean;
-}
-
 interface LocationInterface {
   cities?: string[];
-  states?: string[];
   countries?: string[];
+  states?: string[];
 }
 
 interface FilterInterface {
@@ -76,7 +65,62 @@ interface FilterInterface {
   workModes?: WorkMode[];
 }
 
-interface SelectInterface {
+export interface IncludesInterface {
+  address?: boolean;
+  company?: boolean;
+  job?: boolean;
+  compensation?: boolean;
+  tags?: boolean;
+  documents?: boolean;
+  group?: boolean;
+  interviews?: boolean;
+}
+
+interface CompanyFieldsInterface {
+  name?: boolean;
+  createdAt?: boolean;
+  updatedAt?: boolean;
+  notes?: boolean;
+  id?: boolean;
+  culture?: boolean;
+  size?: boolean;
+  website?: boolean;
+  type?: boolean;
+  history?: boolean;
+  mission?: boolean;
+  vision?: boolean;
+  values?: boolean;
+  description?: boolean;
+  desireability?: boolean;
+  industry?: boolean;
+}
+
+interface AddressFieldsInterface {
+  city?: boolean;
+  country?: boolean;
+  postalCode?: boolean;
+  state?: boolean;
+  streetAddress?: boolean;
+  streetAddress2?: boolean;
+}
+
+interface JobDetailsInterface {
+  id?: boolean;
+  title?: boolean;
+  responsibilities?: boolean;
+  description?: boolean;
+  workMode?: boolean;
+  payAmount?: boolean;
+  payFrequency?: boolean;
+  currency?: boolean;
+  salaryRangeMin?: boolean;
+  salaryRangeMax?: boolean;
+  hoursWeek?: boolean;
+  negotiable?: boolean;
+  benefits?: boolean;
+}
+
+export interface SelectInterface {
   applicationDate?: boolean;
   applicationLink?: boolean;
   createdAt?: boolean;
@@ -84,11 +128,11 @@ interface SelectInterface {
   id?: boolean;
   notes?: boolean;
   positionIndex?: boolean;
-  responsibilities?: boolean;
   status?: boolean;
-  title?: boolean;
   updatedAt?: boolean;
-  workMode?: boolean;
+  companyFields?: CompanyFieldsInterface;
+  addressFields?: AddressFieldsInterface;
+  jobFields?: JobDetailsInterface;
 }
 
 interface PaginationInterface {
